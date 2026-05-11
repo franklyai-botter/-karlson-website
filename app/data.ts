@@ -16,7 +16,7 @@ export const socialLinks = [
   {
     label: "Facebook",
     handle: "Karlson Haupt",
-    href: "https://www.facebook.com/search/top?q=Karlson%20Haupt",
+    href: "https://www.facebook.com/share/1AgM26JpAY/?mibextid=wwXIfr",
   },
 ];
 
