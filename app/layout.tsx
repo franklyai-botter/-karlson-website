@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import "./globals.css";
-import { navItems, site } from "./data";
+import { navItems, site, socialLinks } from "./data";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -54,6 +54,14 @@ function Header() {
         ))}
       </nav>
 
+      <div className="header-social" aria-label="Social Media">
+        {socialLinks.map((item) => (
+          <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+            {item.label}
+          </a>
+        ))}
+      </div>
+
       <Link className="header-cta" href="/buchung">
         Auftritt anfragen
       </Link>
@@ -65,6 +73,11 @@ function Header() {
             <Link key={item.href} href={item.href}>
               {item.label}
             </Link>
+          ))}
+          {socialLinks.map((item) => (
+            <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+              {item.label}
+            </a>
           ))}
           <Link href="/buchung">Auftritt anfragen</Link>
         </div>
@@ -93,6 +106,13 @@ function Footer() {
         <Link href="/impressum">Impressum</Link>
         <Link href="/datenschutz">Datenschutz</Link>
         <Link href="/agb">AGB</Link>
+      </nav>
+      <nav aria-label="Social Media">
+        {socialLinks.map((item) => (
+          <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+            {item.label} <span>{item.handle}</span>
+          </a>
+        ))}
       </nav>
     </footer>
   );

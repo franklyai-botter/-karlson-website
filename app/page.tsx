@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { appearancePlaces, faqs, programs, repertoireGroups, site } from "./data";
+import { appearancePlaces, faqs, programs, repertoireGroups, site, socialLinks } from "./data";
 import { galleryImages } from "./gallery";
 
 export default function Home() {
@@ -29,6 +29,14 @@ export default function Home() {
           <div className="hero-actions">
             <Link className="button" href="/buchung">Auftritt anfragen</Link>
             <Link className="button secondary" href="/programme">Programme ansehen</Link>
+          </div>
+          <div className="social-links hero-social" aria-label="Karlson online">
+            {socialLinks.map((item) => (
+              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+                <strong>{item.label}</strong>
+                <span>{item.handle}</span>
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -147,6 +155,14 @@ export default function Home() {
           <div className="actions">
             <Link className="button" href="/buchung">Buchung anfragen</Link>
             <Link className="button secondary" href="/veranstalter">Infos für Veranstalter</Link>
+          </div>
+          <div className="social-links">
+            {socialLinks.map((item) => (
+              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+                <strong>{item.label}</strong>
+                <span>{item.handle}</span>
+              </a>
+            ))}
           </div>
         </div>
       </section>

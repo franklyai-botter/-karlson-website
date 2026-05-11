@@ -7,6 +7,19 @@ export const site = {
   area: "Havelland, Brandenburg und Berlin",
 };
 
+export const socialLinks = [
+  {
+    label: "YouTube",
+    handle: "@karlikarlson1967",
+    href: "https://www.youtube.com/@karlikarlson1967",
+  },
+  {
+    label: "Facebook",
+    handle: "Karlson Haupt",
+    href: "https://www.facebook.com/search/top?q=Karlson%20Haupt",
+  },
+];
+
 export const navItems = [
   { href: "/programme", label: "Programme" },
   { href: "/repertoire", label: "Repertoire" },

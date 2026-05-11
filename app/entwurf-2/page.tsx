@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { appearancePlaces, programs, repertoireGroups, site } from "../data";
+import { appearancePlaces, programs, repertoireGroups, site, socialLinks } from "../data";
 import { galleryImages } from "../gallery";
 
 export const metadata = {
@@ -41,6 +41,13 @@ export default function EntwurfZweiPage() {
             <p className="v2-kicker">Liedermacher aus dem Havelland</p>
             <h1>Karlson</h1>
             <p>Frank Haupt-Tschachtschal</p>
+            <div className="v2-social" aria-label="Karlson online">
+              {socialLinks.map((item) => (
+                <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+                  {item.label}: {item.handle}
+                </a>
+              ))}
+            </div>
           </div>
         </header>
 
@@ -130,6 +137,13 @@ export default function EntwurfZweiPage() {
           <div className="v2-actions">
             <Link href="/buchung">Auftritt anfragen</Link>
             <a href={`mailto:${site.email}`}>{site.email}</a>
+          </div>
+          <div className="v2-social v2-social-contact" aria-label="Social Media">
+            {socialLinks.map((item) => (
+              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+                {item.label}: {item.handle}
+              </a>
+            ))}
           </div>
         </section>
 
