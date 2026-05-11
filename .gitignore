@@ -51,3 +51,5 @@ Photos-Galerie/
 # original image drops; curated deploy assets live in /public/karlson
 *.jpg
 !public/**/*.jpg
+
+.vercel
