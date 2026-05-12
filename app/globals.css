@@ -255,18 +255,19 @@ main {
 
 .eyebrow {
   display: inline-flex;
-  color: var(--blue);
-  background: #fffaf2;
+  color: #fffaf2;
+  background: var(--blue);
   border-radius: 999px;
-  padding: 8px 12px;
-  font-size: 0.78rem;
+  padding: 10px 16px;
+  font-size: 1rem;
   font-weight: 900;
+  box-shadow: 0 8px 22px rgba(35, 85, 122, 0.2);
 }
 
 h1,
 h2,
 h3 {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
   line-height: 1.08;
   margin: 0;
 }
@@ -274,7 +275,7 @@ h3 {
 h1 {
   max-width: 840px;
   margin-top: 18px;
-  font-size: 4.4rem;
+  font-size: 3.6rem;
 }
 
 h2 {
@@ -586,7 +587,7 @@ textarea {
   }
 
   h1 {
-    font-size: 3.35rem;
+    font-size: 2.85rem;
   }
 
   .section-head,
@@ -621,7 +622,7 @@ textarea {
   }
 
   h1 {
-    font-size: 2.55rem;
+    font-size: 2.2rem;
   }
 
   h2 {

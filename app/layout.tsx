@@ -1,8 +1,16 @@
 import type { Metadata, Viewport } from "next";
+import { Cormorant_Garamond } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import "./globals.css";
 import { navItems, site, socialLinks } from "./data";
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -120,7 +128,7 @@ function Footer() {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de">
+    <html lang="de" className={cormorant.variable}>
       <body>
         <Header />
         {children}
