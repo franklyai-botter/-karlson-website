@@ -5,6 +5,7 @@
   --blue-dark: #124a7c;
   --brown: #a8662e;
   --brown-dark: #5b351f;
+  --logo-brown: #6b3f24;
   --cream: #f7f1e8;
   --paper: #fffaf2;
   --ink: #221a15;
@@ -59,8 +60,8 @@ main {
   gap: 22px;
   min-height: 72px;
   padding: max(12px, env(safe-area-inset-top)) 28px 12px;
-  border-bottom: 1px solid rgba(255, 250, 242, 0.22);
-  background: rgba(34, 26, 21, 0.82);
+  border-bottom: 1px solid rgba(255, 250, 242, 0.26);
+  background: rgba(107, 63, 36, 0.94);
   color: #fffaf2;
   backdrop-filter: blur(18px);
 }
@@ -174,7 +175,7 @@ main {
   gap: 6px;
   padding: 14px;
   border-radius: 8px;
-  background: #221a15;
+  background: var(--logo-brown);
   box-shadow: var(--shadow);
   max-height: calc(100svh - 84px);
   overflow-y: auto;
