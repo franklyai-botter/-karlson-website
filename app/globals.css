@@ -239,7 +239,8 @@ main {
   z-index: 3;
   width: min(1120px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 86px 0 70px;
+  padding: 86px clamp(360px, 38vw, 500px) 70px 0;
+  box-sizing: border-box;
 }
 
 .eyebrow {
@@ -594,9 +595,9 @@ textarea {
   .hero-main-image {
     right: 22px;
     bottom: 34px;
-    width: min(38vw, 260px);
+    width: min(34vw, 240px);
     height: 42svh;
-    opacity: 0.72;
+    opacity: 0.64;
   }
 }
 
@@ -934,11 +935,11 @@ textarea {
   }
 
   .hero-content {
-    padding-right: 26vw;
+    padding-right: 34vw;
   }
 
   .hero-main-image {
-    width: 30vw;
+    width: 28vw;
     height: 44svh;
   }
 
