@@ -243,6 +243,16 @@ main {
   box-sizing: border-box;
 }
 
+.hero-logo {
+  display: block;
+  width: clamp(88px, 9vw, 128px);
+  height: auto;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 250, 242, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.28);
+}
+
 .eyebrow {
   display: inline-flex;
   color: var(--blue);

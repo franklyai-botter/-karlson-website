@@ -19,6 +19,14 @@ export default function Home() {
           <Image src="/karlson/hero.jpg" alt="" fill priority sizes="(max-width: 960px) 72vw, 34vw" />
         </div>
         <div className="hero-content">
+          <Image
+            className="hero-logo"
+            src="/karlson/logo.jpg"
+            alt="Karlson Logo"
+            width={128}
+            height={128}
+            priority
+          />
           <span className="eyebrow">Live-Musik aus Ketzin</span>
           <h1>Karlson bringt das Havelland auf die Bühne.</h1>
           <p className="lead">
