@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { appearancePlaces, faqs, programs, repertoireGroups, site, socialLinks } from "./data";
+import { appearancePlaces, events2026, faqs, programs, repertoireGroups, site, socialLinks } from "./data";
 import { galleryImages } from "./gallery";
 
 export default function Home() {
@@ -70,6 +70,28 @@ export default function Home() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="section home-events">
+        <div className="section-head">
+          <div>
+            <span className="eyebrow">Termine 2026</span>
+            <h2>Aktuelle Auftritte auf einen Blick.</h2>
+          </div>
+          <p>
+            Die vollständige Übersicht enthält öffentliche Auftritte und bereits
+            belegte private Veranstaltungen.
+          </p>
+        </div>
+        <div className="event-preview">
+          {events2026.slice(0, 6).map((event) => (
+            <Link className="event-preview-item" href="/termine" key={event.date}>
+              <time dateTime={event.date}>{event.displayDate}</time>
+              <span>{event.title}{event.location ? " in " + event.location : ""}</span>
+            </Link>
+          ))}
+        </div>
+        <Link className="text-link" href="/termine">Alle Termine ansehen</Link>
       </section>
 
       <section className="split-band">

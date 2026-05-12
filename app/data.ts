@@ -70,6 +70,26 @@ export const appearancePlaces = [
   "Kinderfeste",
 ];
 
+export const events2026 = [
+  { date: "2026-01-16", displayDate: "16.1.", title: "Grüne Woche", location: "Berlin", type: "public" },
+  { date: "2026-01-24", displayDate: "24.1.", title: "Privatparty", location: "Werder", type: "private" },
+  { date: "2026-02-15", displayDate: "15.2.", title: "Privatparty", location: "Blankenfelde", type: "private" },
+  { date: "2026-04-04", displayDate: "4.4.", title: "Osterfeuer", location: "Tremmen", type: "public" },
+  { date: "2026-04-11", displayDate: "11.4.", title: "Stammtisch", location: "Paretz", type: "public" },
+  { date: "2026-04-25", displayDate: "25.4.", title: "Baumblüte", location: "Werder", type: "public" },
+  { date: "2026-05-16", displayDate: "16.5.", title: "Privatparty", location: "Werder", type: "private" },
+  { date: "2026-06-20", displayDate: "20.6.", title: "Privatparty", location: "Malchow", type: "private" },
+  { date: "2026-06-30", displayDate: "30.6.", title: "Sommerempfang Stadt Ketzin", location: "Ketzin", type: "public" },
+  { date: "2026-08-01", displayDate: "1.8.", title: "Privatparty", location: "Ketzin", type: "private" },
+  { date: "2026-10-02", displayDate: "2.10.", title: "Privatparty", location: "Zachow", type: "private" },
+  { date: "2026-11-07", displayDate: "7.11.", title: "Neubürgerempfang", location: "Ketzin", type: "public" },
+  { date: "2026-11-11", displayDate: "11.11.", title: "Laternenfest Biene Maja", location: "", type: "public" },
+  { date: "2026-11-13", displayDate: "13.11.", title: "Laterne", location: "Tremmen", type: "public" },
+  { date: "2026-11-28", displayDate: "28.11.", title: "Privatparty", location: "Ketzin", type: "private" },
+  { date: "2026-11-29", displayDate: "29.11.", title: "Adventssingen Kirche Elstal", location: "Elstal", type: "public" },
+  { date: "2026-12-05", displayDate: "5.12.", title: "Adventsmarkt", location: "Tremmen", type: "public" },
+] as const;
+
 export const faqs = [
   {
     question: "Wo tritt Karlson auf?",

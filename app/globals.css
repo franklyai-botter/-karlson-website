@@ -966,3 +966,127 @@ textarea {
     gap: 8px;
   }
 }
+
+.event-list {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.event-card {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 250, 242, 0.92);
+  padding: 16px 18px;
+  box-shadow: 0 10px 28px rgba(34, 26, 21, 0.07);
+}
+
+.event-card time {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--blue-dark);
+}
+
+.event-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.event-card p {
+  margin: 3px 0 0;
+  color: var(--muted);
+}
+
+.event-card > span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--brown-dark);
+  background: #fff;
+}
+
+.event-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.event-preview-item {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 74px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 250, 242, 0.92);
+  padding: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.event-preview-item time {
+  color: var(--blue-dark);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 800;
+}
+
+.text-link {
+  color: var(--blue-dark);
+  font-weight: 800;
+  text-underline-offset: 4px;
+}
+
+.v2-events {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.v2-events li {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+  border-bottom: 1px solid rgba(103, 78, 54, 0.2);
+  padding: 8px 0;
+}
+
+.v2-events time {
+  font-weight: 800;
+  color: #5f371d;
+}
+
+@media (max-width: 720px) {
+  .event-card {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .event-card > span {
+    width: fit-content;
+  }
+
+  .event-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .event-preview-item {
+    grid-template-columns: 62px minmax(0, 1fr);
+  }
+
+  .v2-events li {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+}

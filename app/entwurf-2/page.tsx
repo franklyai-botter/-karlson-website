@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { appearancePlaces, programs, repertoireGroups, site, socialLinks } from "../data";
+import { appearancePlaces, events2026, programs, repertoireGroups, site, socialLinks } from "../data";
 import { galleryImages } from "../gallery";
 
 export const metadata = {
@@ -11,6 +11,7 @@ export const metadata = {
 const nav = [
   ["Home", "#home"],
   ["Vorstellung", "#vorstellung"],
+  ["Termine", "#termine"],
   ["Galerie", "#galerie"],
   ["Referenzen", "#referenzen"],
   ["Kontakt", "#kontakt"],
@@ -89,6 +90,18 @@ export default function EntwurfZweiPage() {
           </div>
         </section>
 
+        <section className="v2-section" id="termine">
+          <h2>Aktuelle Termine 2026</h2>
+          <ul className="v2-events">
+            {events2026.map((event) => (
+              <li key={event.date}>
+                <time dateTime={event.date}>{event.displayDate}</time>
+                <span>{event.title}{event.location ? " in " + event.location : ""}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section className="v2-section" id="galerie">
           <h2>Galerie</h2>
           <div className="v2-gallery">
@@ -136,7 +149,7 @@ export default function EntwurfZweiPage() {
           </p>
           <div className="v2-actions">
             <Link href="/buchung">Auftritt anfragen</Link>
-            <a href={`mailto:${site.email}`}>{site.email}</a>
+            <a href={"mailto:" + site.email}>{site.email}</a>
           </div>
           <div className="v2-social v2-social-contact" aria-label="Social Media">
             {socialLinks.map((item) => (
