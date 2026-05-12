@@ -90,6 +90,10 @@ export const events2026 = [
   { date: "2026-12-05", displayDate: "5.12.", title: "Adventsmarkt", location: "Tremmen", type: "public" },
 ] as const;
 
+const upcomingEventsCutoff = "2026-05-12";
+
+export const upcomingEvents2026 = events2026.filter((event) => event.date >= upcomingEventsCutoff);
+
 export const faqs = [
   {
     question: "Wo tritt Karlson auf?",

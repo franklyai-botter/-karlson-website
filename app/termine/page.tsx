@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { events2026 } from "../data";
+import { events2026, upcomingEvents2026 } from "../data";
 
 export const metadata = {
   title: "Termine",
-  description: "Aktuelle Termine 2026 und Auftritte von Karlson im Havelland, in Brandenburg und Berlin.",
+  description: "Kommende Termine 2026 und Auftritte von Karlson im Havelland, in Brandenburg und Berlin.",
 };
 
-const publicEvents = events2026.filter((event) => event.type === "public");
-const privateEvents = events2026.filter((event) => event.type === "private");
+const publicEvents = upcomingEvents2026.filter((event) => event.type === "public");
+const privateEvents = upcomingEvents2026.filter((event) => event.type === "private");
 
 function EventCard({ event }: { event: (typeof events2026)[number] }) {
   const locationText = event.location ? " in " + event.location : "";
@@ -31,10 +31,10 @@ export default function TerminePage() {
       <section className="page-hero">
         <div className="section">
           <span className="eyebrow">Termine</span>
-          <h1>Aktuelle Termine 2026.</h1>
+          <h1>Kommende Termine 2026.</h1>
           <p>
-            Die Liste wurde aus Karlsons aktueller Terminübersicht übernommen.
-            Private Feiern sind aus Datenschutzgründen bewusst nur knapp mit Ort
+            Angezeigt werden nur Termine, die noch nicht stattgefunden haben.
+            Private Feiern bleiben aus Datenschutzgründen bewusst knapp mit Ort
             aufgeführt.
           </p>
         </div>

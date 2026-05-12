@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { appearancePlaces, events2026, programs, repertoireGroups, site, socialLinks } from "../data";
+import { appearancePlaces, programs, repertoireGroups, site, socialLinks, upcomingEvents2026 } from "../data";
 import { galleryImages } from "../gallery";
 
 export const metadata = {
@@ -91,9 +91,9 @@ export default function EntwurfZweiPage() {
         </section>
 
         <section className="v2-section" id="termine">
-          <h2>Aktuelle Termine 2026</h2>
+          <h2>Kommende Termine 2026</h2>
           <ul className="v2-events">
-            {events2026.map((event) => (
+            {upcomingEvents2026.map((event) => (
               <li key={event.date}>
                 <time dateTime={event.date}>{event.displayDate}</time>
                 <span>{event.title}{event.location ? " in " + event.location : ""}</span>
