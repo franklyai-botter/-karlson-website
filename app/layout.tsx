@@ -64,7 +64,7 @@ function Header() {
 
       <div className="header-social" aria-label="Social Media">
         {socialLinks.map((item) => (
-          <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+          <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
             {item.label}
           </a>
         ))}
@@ -83,7 +83,7 @@ function Header() {
             </Link>
           ))}
           {socialLinks.map((item) => (
-            <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+            <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
               {item.label}
             </a>
           ))}
@@ -117,7 +117,7 @@ function Footer() {
       </nav>
       <nav aria-label="Social Media">
         {socialLinks.map((item) => (
-          <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+          <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
             {item.label} <span>{item.handle}</span>
           </a>
         ))}

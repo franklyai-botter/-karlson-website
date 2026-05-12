@@ -44,7 +44,7 @@ export default function EntwurfZweiPage() {
             <p>Frank Haupt-Tschachtschal</p>
             <div className="v2-social" aria-label="Karlson online">
               {socialLinks.map((item) => (
-                <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+                <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
                   {item.label}: {item.handle}
                 </a>
               ))}
@@ -153,7 +153,7 @@ export default function EntwurfZweiPage() {
           </div>
           <div className="v2-social v2-social-contact" aria-label="Social Media">
             {socialLinks.map((item) => (
-              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+              <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
                 {item.label}: {item.handle}
               </a>
             ))}

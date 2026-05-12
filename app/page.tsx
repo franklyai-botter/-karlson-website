@@ -36,7 +36,7 @@ export default function Home() {
           </p>
           <div className="social-links hero-social" aria-label="Karlson online">
             {socialLinks.map((item) => (
-              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+              <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
                 <strong>{item.label}</strong>
                 <span>{item.handle}</span>
               </a>
@@ -184,7 +184,7 @@ export default function Home() {
           </div>
           <div className="social-links">
             {socialLinks.map((item) => (
-              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+              <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
                 <strong>{item.label}</strong>
                 <span>{item.handle}</span>
               </a>

@@ -6,6 +6,8 @@
   --brown: #a8662e;
   --brown-dark: #5b351f;
   --logo-brown: #6b3f24;
+  --header-beige: #efe1cc;
+  --label-blue: #17649c;
   --cream: #f7f1e8;
   --paper: #fffaf2;
   --ink: #221a15;
@@ -60,9 +62,9 @@ main {
   gap: 22px;
   min-height: 72px;
   padding: max(12px, env(safe-area-inset-top)) 28px 12px;
-  border-bottom: 1px solid rgba(255, 250, 242, 0.26);
-  background: rgba(107, 63, 36, 0.94);
-  color: #fffaf2;
+  border-bottom: 1px solid rgba(91, 53, 31, 0.18);
+  background: rgba(239, 225, 204, 0.94);
+  color: var(--brown-dark);
   backdrop-filter: blur(18px);
 }
 
@@ -88,7 +90,7 @@ main {
 
 .brand small {
   display: block;
-  color: rgba(255, 250, 242, 0.72);
+  color: rgba(91, 53, 31, 0.72);
   font-size: 0.76rem;
 }
 
@@ -107,22 +109,29 @@ main {
 }
 
 .header-social a {
-  border: 1px solid rgba(255, 250, 242, 0.24);
+  border: 1px solid rgba(91, 53, 31, 0.22);
   border-radius: 999px;
-  padding: 7px 10px;
-  color: rgba(255, 250, 242, 0.82);
+  padding: 7px 12px 7px 8px;
+  color: var(--brown-dark);
   font-size: 0.76rem;
   font-weight: 900;
+  background: rgba(255, 250, 242, 0.58);
 }
 
-.desktop-nav a,
+.desktop-nav a {
+  color: rgba(91, 53, 31, 0.84);
+}
+
+.desktop-nav a:hover {
+  color: var(--blue-dark);
+}
+
 .site-footer a {
   color: rgba(255, 250, 242, 0.78);
 }
 
-.desktop-nav a:hover,
 .site-footer a:hover {
-  color: #fff;
+  color: #fffaf2;
 }
 
 .header-cta,
@@ -155,11 +164,13 @@ main {
 .mobile-menu summary {
   min-height: 44px;
   padding: 10px 12px;
-  border: 1px solid rgba(255, 250, 242, 0.34);
+  border: 1px solid rgba(91, 53, 31, 0.24);
   border-radius: 6px;
   cursor: pointer;
   list-style: none;
   font-weight: 800;
+  color: var(--brown-dark);
+  background: rgba(255, 250, 242, 0.48);
 }
 
 .mobile-menu summary::-webkit-details-marker {
@@ -175,7 +186,7 @@ main {
   gap: 6px;
   padding: 14px;
   border-radius: 8px;
-  background: var(--logo-brown);
+  background: var(--header-beige);
   box-shadow: var(--shadow);
   max-height: calc(100svh - 84px);
   overflow-y: auto;
@@ -184,7 +195,41 @@ main {
 .mobile-menu a {
   padding: 12px;
   border-radius: 6px;
-  color: #fffaf2;
+  color: var(--brown-dark);
+}
+
+.social-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-button::before {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.86rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.social-youtube::before {
+  content: "▶";
+  border-radius: 7px;
+  background: #ff0033;
+  font-size: 0.72rem;
+  text-indent: 1px;
+}
+
+.social-facebook::before {
+  content: "f";
+  border-radius: 999px;
+  background: #1877f2;
+  font-size: 1rem;
 }
 
 .hero {
@@ -256,13 +301,25 @@ main {
 
 .eyebrow {
   display: inline-flex;
-  color: #fffaf2;
-  background: var(--blue);
-  border-radius: 999px;
-  padding: 10px 16px;
+  color: var(--brown-dark);
+  background: var(--header-beige);
+  border-radius: 3px;
+  padding: 9px 14px;
   font-size: 1rem;
   font-weight: 900;
-  box-shadow: 0 8px 22px rgba(35, 85, 122, 0.2);
+  border: 1px solid rgba(91, 53, 31, 0.16);
+  box-shadow: 0 8px 22px rgba(91, 53, 31, 0.12);
+}
+
+.hero .eyebrow {
+  color: #fffaf2;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  padding: 0;
 }
 
 h1,
@@ -271,12 +328,17 @@ h3 {
   font-family: var(--font-display), Georgia, "Times New Roman", serif;
   line-height: 1.08;
   margin: 0;
+  color: var(--brown-dark);
 }
 
 h1 {
   max-width: 840px;
   margin-top: 18px;
   font-size: 3.6rem;
+}
+
+.hero h1 {
+  color: #fffaf2;
 }
 
 h2 {
@@ -309,14 +371,23 @@ h3 {
 }
 
 .social-links a {
-  display: inline-grid;
-  gap: 1px;
   min-width: 150px;
   border: 1px solid rgba(34, 26, 21, 0.16);
   border-radius: 8px;
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.74);
   color: var(--brown-dark);
+}
+
+.social-links a {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 1px 9px;
+  align-items: center;
+}
+
+.social-links a::before {
+  grid-row: span 2;
 }
 
 .social-links strong {
@@ -811,7 +882,7 @@ textarea {
 }
 
 .v2-card-grid h3 {
-  color: var(--blue-dark);
+  color: var(--brown-dark);
   font-size: 1.25rem;
 }
 
