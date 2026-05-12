@@ -34,10 +34,6 @@ export default function Home() {
             Hochzeiten, private Feiern, Kulturabende und Kinderprogramme in
             Brandenburg und Berlin.
           </p>
-          <div className="hero-actions">
-            <Link className="button" href="/buchung">Auftritt anfragen</Link>
-            <Link className="button secondary" href="/programme">Programme ansehen</Link>
-          </div>
           <div className="social-links hero-social" aria-label="Karlson online">
             {socialLinks.map((item) => (
               <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
