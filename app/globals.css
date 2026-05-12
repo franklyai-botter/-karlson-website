@@ -291,9 +291,9 @@ main {
 
 .hero-logo {
   display: block;
-  width: clamp(88px, 9vw, 128px);
+  width: clamp(132px, 13.5vw, 192px);
   height: auto;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   border: 1px solid rgba(255, 250, 242, 0.5);
   border-radius: 999px;
   padding: 5px;
