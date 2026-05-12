@@ -20,7 +20,7 @@ export default function UeberKarlsonPage() {
         </div>
       </section>
       <section className="section media-band">
-        <Image src="/karlson/hero.jpg" alt="Karlson mit Gitarre" width={1090} height={1599} />
+        <Image className="about-portrait" src="/karlson/gallery-full/foto-14.jpg" alt="Karlson mit Gitarre vor einer Backsteinwand" width={900} height={1600} />
         <div>
           <h2>Handgemacht, persönlich, spontan.</h2>
           <p className="muted">

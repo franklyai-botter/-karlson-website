@@ -501,6 +501,11 @@ h3 {
   border-radius: 8px;
 }
 
+.media-band img.about-portrait {
+  aspect-ratio: 4 / 5;
+  object-position: center 18%;
+}
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;
