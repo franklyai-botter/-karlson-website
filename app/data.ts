@@ -1,9 +1,18 @@
 export const site = {
   name: "Karlson",
   legalName: "Frank Haupt-Tschachtschal",
-  claim: "Liedermacher aus Ketzin im Havelland",
-  email: "kontakt@karlson-musik.de",
-  phone: "",
+  claim: "One-Man-Band aus Ketzin im Havelland",
+  email: "karlson.11.10@gmail.com",
+  phone: "0172 4732644",
+  phoneHref: "tel:+491724732644",
+  address: {
+    street: "Etziner Dorfstraße 28",
+    zip: "14669",
+    city: "Ketzin/Havel",
+    country: "Deutschland",
+  },
+  taxNumber: "051/228/00794",
+  taxStatus: "Kleinunternehmer gemäß § 19 UStG (keine Umsatzsteuer)",
   area: "Havelland, Brandenburg und Berlin",
 };
 
@@ -31,19 +40,24 @@ export const navItems = [
 
 export const programs = [
   {
-    title: "Liedermacher-Abend",
-    text: "Eigene Havelland-Lieder, persönliche Geschichten und bekannte Songs in Karlsons eigener Handschrift.",
-    details: "Für Kulturabende, Wohnzimmerkonzerte, Vereine und besondere private Feiern.",
+    title: "Alleinunterhalter (One-Man-Band)",
+    text: "Gitarre, Mundharmonika, Fußpercussion und Gesang – alles gleichzeitig. Ein Mann, ein Sound wie eine kleine Band.",
+    details: "Für Stadt- und Dorffeste, Firmenfeiern, Empfänge, Hochzeiten und private Feiern.",
   },
   {
-    title: "Alleinunterhalter",
-    text: "Gitarre, Gesang, Mundharmonika, Fußpercussion und Kazoo: ein flexibles Live-Programm für Feste.",
-    details: "Für Hochzeiten, Geburtstage, Stadtfeste, Firmenfeiern und Gartenpartys.",
+    title: "Liedermacher-Abend",
+    text: "Eigene Havelland-Lieder, persönliche Geschichten und bekannte Songs in Karlsons eigener Handschrift.",
+    details: "Für Kulturabende, Wohnzimmerkonzerte, Vereine und besondere private Anlässe.",
   },
   {
     title: "Kinderlieder-Mitmachprogramm",
-    text: "Ein einstündiges Mitmachprogramm mit musiktherapeutischer Erfahrung und viel Nähe zum Publikum.",
+    text: "Ein etwa einstündiges Mitmachprogramm mit musiktherapeutischer Erfahrung und viel Nähe zum Publikum.",
     details: "Für Kitas, Schulen, Familienfeste, Kinderfeste und kommunale Veranstaltungen.",
+  },
+  {
+    title: "Duo-Besetzung mit Klavier",
+    text: "Auf Wunsch ergänzt Karlson sein Solo-Programm um Klavierbegleitung – mehr Klangfülle für besondere Abende.",
+    details: "Für Hochzeiten, Empfänge, Kulturveranstaltungen und stimmungsvolle Privatfeiern.",
   },
 ];
 
@@ -58,15 +72,30 @@ export const repertoireGroups = [
   "Eigene Havelland-Lieder",
 ];
 
+export const highlightAppearances = [
+  {
+    title: "Fischerfest Ketzin",
+    note: "Traditionsfest im Havelland",
+  },
+  {
+    title: "Brandenburgtag Perleberg",
+    note: "Landesweite Bühne für brandenburgische Künstler",
+  },
+  {
+    title: "Grüne Woche Berlin",
+    note: "Internationale Messe in Berlin",
+  },
+];
+
 export const appearancePlaces = [
   "Fischerfest Ketzin",
+  "Brandenburgtag Perleberg",
   "Grüne Woche Berlin",
-  "Brandenburg-Tag",
   "Baumblüte Werder",
   "BraLa Paaren im Glien",
   "Werder Classics",
-  "Adventsmärkte",
-  "Pfarrhoffeste",
+  "Adventsmärkte und Pfarrhoffeste",
+  "Stadtfeste und Vereinsfeiern",
   "Kinderfeste",
 ];
 
@@ -90,14 +119,19 @@ export const events2026 = [
   { date: "2026-12-05", displayDate: "5.12.", title: "Adventsmarkt", location: "Tremmen", type: "public" },
 ] as const;
 
-const upcomingEventsCutoff = "2026-05-12";
+const upcomingEventsCutoff = "2026-05-28";
 
 export const upcomingEvents2026 = events2026.filter((event) => event.date >= upcomingEventsCutoff);
+
+export const youtubeLinks = [
+  { id: "c-FGXQMpaXw", label: "Karlson live auf YouTube" },
+  { id: "MrqLqCjhr_o", label: "Karlson live auf YouTube" },
+];
 
 export const faqs = [
   {
     question: "Wo tritt Karlson auf?",
-    answer: "Karlson spielt vor allem im Havelland, in Brandenburg und in Berlin. Als Richtwert gilt ein Umkreis von etwa 80 Kilometern um Ketzin.",
+    answer: "Karlson spielt vor allem im Havelland, in ganz Brandenburg und in Berlin. Im Umkreis von 10 km um Ketzin entstehen keine Fahrtkostenaufschläge.",
   },
   {
     question: "Welche Musikrichtungen spielt Karlson?",
@@ -105,11 +139,15 @@ export const faqs = [
   },
   {
     question: "Wie lange dauert ein Auftritt?",
-    answer: "Karlson kann sehr flexibel reagieren. Das Programm reicht von kurzen Auftritten bis zu mehreren Stunden Live-Musik.",
+    answer: "Komplett flexibel je nach Wunsch – vom kurzen Empfang bis zur langen Feier mit mehreren Stunden Live-Musik.",
   },
   {
     question: "Gibt es ein Kinderprogramm?",
     answer: "Ja. Karlson bietet ein etwa einstündiges Kinderlieder-Mitmachprogramm an.",
+  },
+  {
+    question: "Was kostet ein Auftritt?",
+    answer: "Honorare richten sich nach Programm, Dauer, Anfahrt und Anlass. Für ein konkretes Angebot bitte direkt anfragen.",
   },
 ];
 

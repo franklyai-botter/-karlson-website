@@ -1,6 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
-import { appearancePlaces, faqs, programs, repertoireGroups, site, socialLinks, upcomingEvents2026 } from "./data";
+import {
+  appearancePlaces,
+  faqs,
+  highlightAppearances,
+  programs,
+  repertoireGroups,
+  site,
+  socialLinks,
+  upcomingEvents2026,
+} from "./data";
 import { galleryImages } from "./gallery";
 
 export default function Home() {
@@ -27,12 +36,13 @@ export default function Home() {
             height={128}
             priority
           />
-          <span className="eyebrow">Live-Musik aus Ketzin</span>
-          <h1>Karlson bringt das Havelland auf die Bühne.</h1>
+          <span className="eyebrow">Live-Musik aus Ketzin · Brandenburg · Berlin</span>
+          <h1>Karlson – One-Man-Band aus dem Havelland.</h1>
           <p className="lead">
-            Liedermacher, Singer-Songwriter und Alleinunterhalter für Stadtfeste,
-            Hochzeiten, private Feiern, Kulturabende und Kinderprogramme in
-            Brandenburg und Berlin.
+            Gitarre, Mundharmonika, Fußpercussion und Gesang – alles
+            gleichzeitig. Ein Musiker, der klingt wie eine kleine Band: für
+            Stadt- und Dorffeste, Firmenfeiern, Empfänge, Hochzeiten,
+            Kulturabende und Kinderprogramme.
           </p>
           <div className="social-links hero-social" aria-label="Karlson online">
             {socialLinks.map((item) => (
@@ -47,10 +57,10 @@ export default function Home() {
 
       <section className="section compact">
         <div className="stats">
+          <div className="stat"><strong>4</strong><span>Programme für jeden Anlass</span></div>
           <div className="stat"><strong>320</strong><span>Titel im Repertoire</span></div>
-          <div className="stat"><strong>6h</strong><span>flexibel spielbar</span></div>
-          <div className="stat"><strong>3</strong><span>Programme für Anlässe</span></div>
-          <div className="stat"><strong>80 km</strong><span>rund um Ketzin</span></div>
+          <div className="stat"><strong>flexibel</strong><span>Auftrittsdauer je nach Wunsch</span></div>
+          <div className="stat"><strong>10 km</strong><span>um Ketzin ohne Aufschlag</span></div>
         </div>
       </section>
 
@@ -58,19 +68,40 @@ export default function Home() {
         <div className="section-head">
           <div>
             <span className="eyebrow">Programme</span>
-            <h2>Ein Musiker, viele Situationen.</h2>
+            <h2>Ein Musiker, viele Anlässe.</h2>
           </div>
           <p>
-            Karlson spielt nicht nach Schema F. Das Programm passt sich Publikum,
-            Ort und Anlass an: nahbar, direkt und live.
+            Karlson spielt nicht nach Schema F. Das Programm passt sich
+            Publikum, Ort und Anlass an: nahbar, direkt und live.
           </p>
         </div>
-        <div className="grid-3">
+        <div className="grid-2">
           {programs.map((program) => (
             <article className="card" key={program.title}>
               <h3>{program.title}</h3>
               <p>{program.text}</p>
               <p><strong>{program.details}</strong></p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-head">
+          <div>
+            <span className="eyebrow">Bekannte Bühnen</span>
+            <h2>Wo Karlson schon gespielt hat.</h2>
+          </div>
+          <p>
+            Drei Auftritte stehen exemplarisch für die Bandbreite – vom
+            Traditionsfest im Havelland bis zur internationalen Messe in Berlin.
+          </p>
+        </div>
+        <div className="grid-3">
+          {highlightAppearances.map((item) => (
+            <article className="card" key={item.title}>
+              <h3>{item.title}</h3>
+              <p className="muted">{item.note}</p>
             </article>
           ))}
         </div>
@@ -104,8 +135,10 @@ export default function Home() {
             <span className="eyebrow">Repertoire</span>
             <h2>Von Havelland-Liedern bis Rockklassiker.</h2>
             <p className="muted">
-              Eigene Songs über Orte, Menschen und Momente aus der Region treffen
-              auf bekannte Titel aus Pop, Rock, Schlager, Volkslied und Oldies.
+              Rund 30 eigene Lieder über Orte, Menschen und Momente aus der
+              Region treffen auf bekannte Titel aus Pop, Rock, Schlager,
+              Volkslied und Oldies. Insgesamt vier bis sechs Stunden Live-Musik
+              ohne Wiederholung.
             </p>
             <div className="tag-list">
               {repertoireGroups.map((group) => <span key={group}>{group}</span>)}
@@ -118,12 +151,12 @@ export default function Home() {
       <section className="section">
         <div className="section-head">
           <div>
-            <span className="eyebrow">Referenzen</span>
-            <h2>Bekannt auf Festen in der Region.</h2>
+            <span className="eyebrow">Auftrittsorte</span>
+            <h2>Bekannt auf Festen und Bühnen der Region.</h2>
           </div>
           <p>
-            Die Auswahl wird vor Launch noch mit Karlson bestätigt. Sie dient jetzt
-            als strukturierter Platz für lokale Suchmaschinen- und Veranstalterrelevanz.
+            Eine Auswahl aus dem Havelland, Brandenburg und Berlin – für
+            Gemeinden, Vereine, Veranstalter und private Buchungen.
           </p>
         </div>
         <ul className="place-list">
@@ -175,11 +208,15 @@ export default function Home() {
           <span className="eyebrow">{site.area}</span>
           <h2>Ein Auftritt soll passen, nicht nur stattfinden.</h2>
           <p>
-            Für Buchungen klären wir Anlass, Ort, gewünschte Stimmung,
-            Auftrittsdauer und technische Rahmenbedingungen.
+            Anfragen kommen am liebsten direkt per Telefon oder E-Mail – so
+            kann Karlson gleich konkret antworten.
           </p>
           <div className="actions">
-            <Link className="button" href="/buchung">Buchung anfragen</Link>
+            <a className="button" href={site.phoneHref}>{site.phone}</a>
+            <a className="button secondary" href={`mailto:${site.email}`}>{site.email}</a>
+          </div>
+          <div className="actions">
+            <Link className="button secondary" href="/buchung">Mehr zur Buchung</Link>
             <Link className="button secondary" href="/veranstalter">Infos für Veranstalter</Link>
           </div>
           <div className="social-links">

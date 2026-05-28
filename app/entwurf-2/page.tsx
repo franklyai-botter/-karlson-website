@@ -39,7 +39,7 @@ export default function EntwurfZweiPage() {
         <header className="v2-header">
           <Image src="/karlson/logo.jpg" alt="Karlson Logo" width={118} height={118} />
           <div>
-            <p className="v2-kicker">Liedermacher aus dem Havelland</p>
+            <p className="v2-kicker">One-Man-Band aus dem Havelland</p>
             <h1>Karlson</h1>
             <p>Frank Haupt-Tschachtschal</p>
             <div className="v2-social" aria-label="Karlson online">
@@ -148,8 +148,9 @@ export default function EntwurfZweiPage() {
             Programmwunsch angeben.
           </p>
           <div className="v2-actions">
-            <Link href="/buchung">Auftritt anfragen</Link>
+            <a href={site.phoneHref}>{site.phone}</a>
             <a href={"mailto:" + site.email}>{site.email}</a>
+            <Link href="/buchung">Mehr zur Buchung</Link>
           </div>
           <div className="v2-social v2-social-contact" aria-label="Social Media">
             {socialLinks.map((item) => (

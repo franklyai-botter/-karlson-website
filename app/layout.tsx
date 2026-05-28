@@ -25,18 +25,20 @@ export const metadata: Metadata = {
     template: "%s | Karlson",
   },
   description:
-    "Karlson ist Liedermacher, Singer-Songwriter und Alleinunterhalter aus Ketzin im Havelland. Live-Musik für Feiern, Stadtfeste, Kulturabende und Kinderprogramme.",
+    "Karlson ist Liedermacher, Singer-Songwriter und One-Man-Band aus Ketzin im Havelland. Live-Musik für Stadt- und Dorffeste, Firmenfeiern, Empfänge, Hochzeiten, Kulturabende und Kinderprogramme.",
   keywords: [
     "Liedermacher Havelland",
     "Alleinunterhalter Brandenburg",
+    "One-Man-Band Ketzin",
     "Musiker Ketzin",
-    "Hochzeitssänger Brandenburg",
+    "Stadtfest Musiker Brandenburg",
+    "Firmenfeier Musiker Brandenburg",
     "Kinderlieder Brandenburg",
   ],
   openGraph: {
-    title: "Karlson | Liedermacher aus dem Havelland",
+    title: "Karlson | One-Man-Band aus dem Havelland",
     description:
-      "Live-Musik aus Ketzin: Liedermacher, Alleinunterhalter und Kinderprogramm für Brandenburg und Berlin.",
+      "Live-Musik aus Ketzin: Liedermacher, One-Man-Band und Kinderprogramm für Brandenburg und Berlin.",
     type: "website",
     locale: "de_DE",
     images: [{ url: "/karlson/hero.jpg", width: 1090, height: 1599, alt: site.claim }],
@@ -100,7 +102,7 @@ function Footer() {
       <div>
         <Image src="/karlson/logo.jpg" alt="" width={54} height={54} />
         <p>
-          {site.name} ist Liedermacher, Singer-Songwriter und Alleinunterhalter
+          {site.name} ist Liedermacher, Singer-Songwriter und One-Man-Band
           aus Ketzin im Havelland.
         </p>
       </div>
