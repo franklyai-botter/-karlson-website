@@ -49,7 +49,7 @@ function Header() {
   return (
     <header className="site-header">
       <Link className="brand" href="/" aria-label="Karlson Startseite">
-        <Image src="/karlson/logo.jpg" alt="" width={42} height={42} />
+        <Image src="/karlson/logo.png" alt="" width={42} height={42} />
         <span>
           <strong>{site.name}</strong>
           <small>{site.claim}</small>
@@ -100,7 +100,7 @@ function Footer() {
   return (
     <footer className="site-footer">
       <div>
-        <Image src="/karlson/logo.jpg" alt="" width={54} height={54} />
+        <Image src="/karlson/logo.png" alt="" width={54} height={54} />
         <p>
           {site.name} ist Liedermacher, Singer-Songwriter und One-Man-Band
           aus Ketzin im Havelland.

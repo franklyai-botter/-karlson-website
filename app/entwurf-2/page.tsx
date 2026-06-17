@@ -37,7 +37,7 @@ export default function EntwurfZweiPage() {
         </nav>
 
         <header className="v2-header">
-          <Image src="/karlson/logo.jpg" alt="Karlson Logo" width={118} height={118} />
+          <Image src="/karlson/logo.png" alt="Karlson Logo" width={118} height={118} />
           <div>
             <p className="v2-kicker">One-Man-Band aus dem Havelland</p>
             <h1>Karlson</h1>

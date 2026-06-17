@@ -30,7 +30,7 @@ export default function Home() {
         <div className="hero-content">
           <Image
             className="hero-logo"
-            src="/karlson/logo.jpg"
+            src="/karlson/logo.png"
             alt="Karlson Logo"
             width={128}
             height={128}
