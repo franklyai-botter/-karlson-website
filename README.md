@@ -4,10 +4,16 @@ Next.js/Vercel Website für Karlson, Liedermacher aus Ketzin im Havelland.
 
 ## Stack
 
-- Next.js App Router
+- Next.js App Router (standalone-Output, Coolify-ready)
 - TypeScript
 - Tailwind v4 Basissetup, eigenes CSS-Designsystem
-- Deploymentziel: Vercel via GitHub
+- Deploymentziel: Vercel via GitHub, spaeter umstellbar auf Hetzner/Coolify
+
+## Deploy
+
+Komplette Anleitung fuer Karlson + Codex und fuer Coolify/Hetzner steht in
+[DEPLOY.md](DEPLOY.md). Kurzfassung: **immer ueber `git push origin main`**,
+Vercel deployt automatisch.
 
 ## Routen
 

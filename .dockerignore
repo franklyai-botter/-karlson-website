@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.gitignore
+README.md
+DEPLOY.md
+.env*
+!.env.example
+.vercel
+*.log
+*.zip
+*.pdf
+*.heic
+Photos-Galerie
+.DS_Store

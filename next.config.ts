@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "standalone",
+  images: {
+    unoptimized: process.env.NEXT_IMAGES_UNOPTIMIZED === "true",
+  },
 };
 
 export default nextConfig;
