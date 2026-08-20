@@ -1,3 +1,8 @@
+// Basis-URL fuer Meta-Tags, Sitemap und Link-Vorschauen.
+// Sobald die echte Domain steht: hier eintragen oder als Env-Variable
+// NEXT_PUBLIC_SITE_URL im Cloudflare-Projekt setzen.
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://karlson-website.vercel.app";
+
 export const site = {
   name: "Karlson",
   legalName: "Frank Haupt-Tschachtschal",
@@ -119,7 +124,10 @@ export const events2026 = [
   { date: "2026-12-05", displayDate: "5.12.", title: "Adventsmarkt", location: "Tremmen", type: "public" },
 ] as const;
 
-const upcomingEventsCutoff = "2026-05-28";
+// Stichtag ist der Build-Tag, nicht ein festes Datum: dadurch verschwinden
+// vergangene Termine bei jedem Deploy von allein. Wichtig: die Seite ist
+// statisch exportiert — die Liste aktualisiert sich erst beim naechsten Build.
+const upcomingEventsCutoff = new Date().toISOString().slice(0, 10);
 
 export const upcomingEvents2026 = events2026.filter((event) => event.date >= upcomingEventsCutoff);
 

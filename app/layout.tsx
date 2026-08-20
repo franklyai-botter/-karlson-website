@@ -3,7 +3,7 @@ import { Cormorant_Garamond } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import "./globals.css";
-import { navItems, site, socialLinks } from "./data";
+import { navItems, site, siteUrl, socialLinks } from "./data";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -19,7 +19,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://karlson-musik.de"),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Karlson | Liedermacher aus dem Havelland",
     template: "%s | Karlson",
