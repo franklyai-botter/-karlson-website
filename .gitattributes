@@ -1,0 +1,6 @@
+# Der Hook laeuft auf Karlsons Mac. Ein Shell-Skript mit Windows-Zeilenenden
+# startet dort nicht ("bad interpreter: /bin/sh^M"), und der Fehler ist von der
+# Meldung her kaum zu erraten. Deshalb hier festgenagelt.
+.githooks/* text eol=lf
+*.sh text eol=lf
+*.mjs text eol=lf

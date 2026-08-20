@@ -66,7 +66,29 @@ cd karlson-website
 npm install
 ```
 
-### 1.4 Codex auf den Ordner richten
+### 1.4 Bildprüfung einschalten
+
+```bash
+cd ~/karlson-website
+npm run hooks
+```
+
+Das musst du **einmal** machen. Danach schaut der Rechner bei jedem Hochladen
+kurz auf neue Bilder und meldet sich, wenn etwas nicht passt: zu große Dateien,
+das HEIC-Format vom iPhone, oder GPS-Koordinaten im Bild.
+
+Der letzte Punkt ist der wichtigste. Handyfotos speichern normalerweise den
+Ort, an dem sie aufgenommen wurden. Bei einer Privatfeier stünde damit die
+Adresse deines Kunden im Internet, für jeden auslesbar. Der Rechner findet das
+und bricht ab, bevor das Bild hochgeht.
+
+Alle Bilder auf einmal prüfen, ohne etwas hochzuladen:
+
+```bash
+npm run bilder
+```
+
+### 1.5 Codex auf den Ordner richten
 
 Öffne **Codex** auf dem Mac. Wenn Codex nach einem Projektordner fragt:
 `~/karlson-website` auswählen.

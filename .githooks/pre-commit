@@ -1,0 +1,24 @@
+#!/bin/sh
+# Prueft Bilder, die neu nach public/karlson/ kommen, bevor der Commit
+# entsteht. Absichtlich hier und nicht erst nach dem Push: was einmal auf
+# GitHub liegt, ist oeffentlich und bleibt in der Historie, auch wenn man es
+# danach wieder loescht.
+#
+# Aktivieren (einmalig, im Projektordner):
+#   git config core.hooksPath .githooks
+
+GEAENDERT=$(git diff --cached --name-only --diff-filter=ACMR -- public/karlson)
+if [ -z "$GEAENDERT" ]; then
+  exit 0
+fi
+
+if ! command -v node >/dev/null 2>&1; then
+  echo ""
+  echo "Hinweis: node ist hier nicht aufrufbar, die Bildpruefung wurde"
+  echo "uebersprungen. Der Commit laeuft durch. Bitte Frank sagen."
+  echo ""
+  exit 0
+fi
+
+git diff --cached --name-only --diff-filter=ACMR -z -- public/karlson \
+  | xargs -0 node scripts/bilder-pruefen.mjs

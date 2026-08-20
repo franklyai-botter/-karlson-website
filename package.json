@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "bilder": "node scripts/bilder-pruefen.mjs --alle",
+    "hooks": "git config core.hooksPath .githooks && echo Bildpruefung aktiviert."
   },
   "dependencies": {
     "next": "16.2.6",
