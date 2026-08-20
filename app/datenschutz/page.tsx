@@ -28,22 +28,29 @@ export default function DatenschutzPage() {
           E-Mail: <a href={`mailto:${site.email}`}>{site.email}</a>
         </p>
 
-        <h2>2. Hosting (Vercel)</h2>
+        <h2>2. Hosting (Cloudflare)</h2>
         <p>
-          Diese Website wird bei Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA
-          91789, USA gehostet. Beim Aufruf der Website werden technisch
-          notwendige Daten verarbeitet (insbesondere IP-Adresse, Datum/Uhrzeit
-          der Anfrage, aufgerufene Seite, Browsertyp, Referrer), damit die
-          Seite sicher und stabil ausgeliefert werden kann. Rechtsgrundlage ist
-          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
-          funktions­fähigen Website).
+          Diese Website wird von Cloudflare, Inc., 101 Townsend St., San
+          Francisco, CA 94107, USA ausgeliefert. Die Seiten sind statisch
+          vorgebaut; es gibt keine Datenbank und keine serverseitige
+          Anwendungs­logik. Beim Aufruf werden technisch notwendige Daten
+          verarbeitet (insbesondere IP-Adresse, Datum und Uhrzeit der Anfrage,
+          angeforderte Datei, Browsertyp und Referrer), damit die Seite
+          ausgeliefert und gegen Angriffe geschützt werden kann.
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+          Interesse an einer funktions­fähigen und sicheren Website).
         </p>
         <p>
-          Vercel kann Daten in Drittländer (insbesondere USA) übertragen. Vercel
-          beruft sich hierfür auf das EU-US Data Privacy Framework sowie auf
-          Standard­vertrags­klauseln. Weitere Informationen:{" "}
-          <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">
-            vercel.com/legal/privacy-policy
+          Cloudflare betreibt ein weltweites Netz von Rechenzentren und liefert
+          Inhalte vom jeweils nächstgelegenen Standort aus. Dabei können Daten
+          in Drittländer, insbesondere in die USA, übertragen werden. Cloudflare
+          ist nach dem EU-US Data Privacy Framework zertifiziert und stützt
+          Übermittlungen zusätzlich auf Standard­vertrags­klauseln. Die
+          Verarbeitung erfolgt auf Grundlage eines Auftrags­verarbeitungs­vertrags
+          nach Art. 28 DSGVO, den Cloudflare als Bestandteil seiner
+          Nutzungs­bedingungen bereitstellt. Weitere Informationen:{" "}
+          <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">
+            cloudflare.com/privacypolicy
           </a>
           .
         </p>

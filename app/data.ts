@@ -1,7 +1,7 @@
 // Basis-URL fuer Meta-Tags, Sitemap und Link-Vorschauen.
 // Sobald die echte Domain steht: hier eintragen oder als Env-Variable
 // NEXT_PUBLIC_SITE_URL im Cloudflare-Projekt setzen.
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://karlson-website.vercel.app";
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://karlson-solo-orchester.de";
 
 export const site = {
   name: "Karlson",
