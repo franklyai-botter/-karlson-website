@@ -39,8 +39,9 @@ export default function ProgrammePage() {
             <span className="eyebrow">Technik</span>
             <h2>Kompakt, flexibel, bühnentauglich.</h2>
             <p className="muted">
-              Karlson bringt Gitarre, Gesang, Mundharmonika, Fußpercussion und
-              je nach Ort die passende technische Grundausstattung mit. Der
+              Karlson bringt Gitarre, Gesang, Mundharmonika, Fußpercussion,
+              Kazoo und je nach Ort die passende technische Grundausstattung
+              mit. Der
               Veranstalter stellt einen funktionstüchtigen Stromanschluss
               bereit; bei Open-Air einen ausreichenden Wetterschutz für
               Künstler, Instrumente und Technik.

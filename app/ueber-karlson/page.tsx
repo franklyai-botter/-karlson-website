@@ -26,8 +26,8 @@ export default function UeberKarlsonPage() {
           <h2>Eine kleine Band in einer Person.</h2>
           <p className="muted">
             Karlson spielt gleichzeitig Gitarre, Mundharmonika, Fußpercussion
-            und singt – das klingt wie eine kleine Band, ist aber ein Mann auf
-            der Bühne. Mit einem Repertoire von rund 320 Titeln kann er auf
+            und Kazoo und singt – das klingt wie eine kleine Band, ist aber ein
+            Mann auf der Bühne. Mit einem Repertoire von rund 320 Titeln kann er auf
             Stimmung, Publikum und Ort reagieren, ohne den persönlichen
             Charakter zu verlieren.
           </p>

@@ -57,7 +57,7 @@ export default function VeranstalterPage() {
           <p>
             Karlson – bürgerlich Frank Haupt-Tschachtschal – ist Liedermacher,
             Singer-Songwriter und One-Man-Band aus Ketzin im Havelland.
-            Gitarre, Mundharmonika, Fußpercussion und Gesang spielt er
+            Gitarre, Mundharmonika, Fußpercussion, Kazoo und Gesang spielt er
             gleichzeitig – das klingt wie eine kleine Band, ist aber ein
             Mann. Sein Repertoire reicht von eigenen Havelland-Liedern bis zu
             Pop-, Rock- und Schlagerklassikern.

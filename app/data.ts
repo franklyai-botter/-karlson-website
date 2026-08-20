@@ -46,8 +46,8 @@ export const navItems = [
 export const programs = [
   {
     title: "Alleinunterhalter (One-Man-Band)",
-    text: "Gitarre, Mundharmonika, Fußpercussion und Gesang – alles gleichzeitig. Ein Mann, ein Sound wie eine kleine Band.",
-    details: "Für Stadt- und Dorffeste, Firmenfeiern, Empfänge, Hochzeiten und private Feiern.",
+    text: "Gitarre, Mundharmonika, Fußpercussion, Kazoo und Gesang – alles gleichzeitig. Ein Mann, ein Sound wie eine kleine Band.",
+    details: "Für Stadt- und Dorffeste, Firmenfeiern, Neujahrsempfänge, Hochzeiten, Gartenpartys und private Feiern.",
   },
   {
     title: "Liedermacher-Abend",
@@ -99,8 +99,11 @@ export const appearancePlaces = [
   "Baumblüte Werder",
   "BraLa Paaren im Glien",
   "Werder Classics",
-  "Adventsmärkte und Pfarrhoffeste",
+  "Ketzür rockt",
+  "Brandenburgisches Leistungshüten, Flugplatz Bienenfarm",
+  "Adventsmärkte, Hofweihnachten und Pfarrhoffeste",
   "Stadtfeste und Vereinsfeiern",
+  "Neujahrsempfänge und Gartenpartys",
   "Kinderfeste",
 ];
 

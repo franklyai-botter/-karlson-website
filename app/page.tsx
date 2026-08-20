@@ -39,10 +39,10 @@ export default function Home() {
           <span className="eyebrow">Live-Musik aus Ketzin · Brandenburg · Berlin</span>
           <h1>Karlson – One-Man-Band aus dem Havelland.</h1>
           <p className="lead">
-            Gitarre, Mundharmonika, Fußpercussion und Gesang – alles
+            Gitarre, Mundharmonika, Fußpercussion, Kazoo und Gesang – alles
             gleichzeitig. Ein Musiker, der klingt wie eine kleine Band: für
-            Stadt- und Dorffeste, Firmenfeiern, Empfänge, Hochzeiten,
-            Kulturabende und Kinderprogramme.
+            Stadt- und Dorffeste, Firmenfeiern, Neujahrsempfänge, Hochzeiten,
+            Gartenpartys, Kulturabende und Kinderprogramme.
           </p>
           <div className="social-links hero-social" aria-label="Karlson online">
             {socialLinks.map((item) => (

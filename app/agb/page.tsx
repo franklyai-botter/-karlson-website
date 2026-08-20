@@ -82,7 +82,7 @@ export default function AgbPage() {
         <h2>7. Technik und Bühne</h2>
         <p>
           Karlson bringt eine kompakte Grundausstattung mit (Gitarre, Gesang,
-          Mundharmonika, Fußpercussion, kleine PA). Der konkrete Technikbedarf
+          Mundharmonika, Fußpercussion, Kazoo, kleine PA). Der konkrete Technikbedarf
           – insbesondere Strom, Bühnenfläche und Wetterschutz – wird vor jeder
           Buchung abgestimmt. Der Veranstalter stellt einen funktionstüchtigen
           Stromanschluss bereit.
