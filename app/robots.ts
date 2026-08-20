@@ -8,8 +8,6 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // Interne Layout-Variante, soll nicht in den Suchindex.
-      disallow: "/entwurf-2/",
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   };

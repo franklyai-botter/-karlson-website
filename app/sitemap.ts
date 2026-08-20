@@ -3,7 +3,7 @@ import { siteUrl } from "./data";
 
 export const dynamic = "force-static";
 
-// Oeffentliche Routen. /entwurf-2 fehlt hier absichtlich: interne Variante.
+// Alle oeffentlichen Routen.
 const routes = [
   { path: "/", priority: 1 },
   { path: "/programme/", priority: 0.9 },

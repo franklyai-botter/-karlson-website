@@ -36,7 +36,6 @@ Details in [DEPLOY.md](DEPLOY.md), die Anleitung für Karlson in
 - `/impressum`
 - `/datenschutz`
 - `/agb`
-- `/entwurf-2` — alternative Layoutvariante, aus Suchindex und Sitemap ausgenommen
 
 ## Lokale Entwicklung
 
