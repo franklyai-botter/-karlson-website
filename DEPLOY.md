@@ -93,16 +93,22 @@ Node-Version: `.nvmrc` im Repo setzt 24, passend zur lokal getesteten
 Umgebung. Ohne die Datei nimmt Cloudflare seinen eigenen Standard, der sich
 irgendwann ändert und dann den Build brechen kann.
 
-### Schritt 2 — Umgebungsvariable setzen
+### Schritt 2 — Umgebungsvariable (nur wenn die Domain wechselt)
 
-Settings → **Variables and Secrets**:
+**Beim Launch nicht nötig.** `app/data.ts` hat die echte Domain als
+Rückfallwert, der Build schreibt also von allein die richtigen Adressen in
+Sitemap, `robots.txt` und Link-Vorschauen.
 
-```
-NEXT_PUBLIC_SITE_URL=https://karlson-solo-orchester.de
-```
+Wenn die Domain doch einmal wechselt: `NEXT_PUBLIC_SITE_URL` gehört unter
+Settings → **Build** → *Build variables and secrets*, **nicht** unter
+„Variables and Secrets" oben. Zwei Gründe:
 
-Ohne die Variable greift die Domain aus `app/data.ts` — das Ergebnis ist
-dasselbe. Die Variable ist der Weg, die Domain ohne Code-Änderung zu wechseln.
+- Ein Worker, der nur statische Assets ausliefert, nimmt gar keine
+  Laufzeit-Variablen an — das Dashboard sagt dort ausdrücklich *„Variables
+  cannot be added to a Worker that only has static assets."*
+- `NEXT_PUBLIC_*` wird von Next.js beim **Build** ins HTML gebacken. Zur
+  Laufzeit wäre sie ohnehin wirkungslos.
+
 Nach dem Setzen einen neuen Build auslösen, sonst steckt der alte Wert im HTML.
 
 ### Schritt 3 — Auf der Cloudflare-Testadresse prüfen
@@ -155,9 +161,38 @@ Voraussetzung: auf dem Hostnamen darf kein CNAME liegen — deshalb Schritt 4
 vorher aufräumen.
 
 `www` gehört ebenfalls erledigt, sonst landet jeder, der es eintippt, im Nichts.
-Empfehlung: **Redirect Rule** `www.karlson-solo-orchester.de/*` → 301 auf
-`https://karlson-solo-orchester.de/$1`. Ein 301 statt einer zweiten Custom
-Domain, weil Sitemap und Canonical-Tags auf die Adresse ohne `www` zeigen.
+Ein 301 statt einer zweiten Custom Domain, weil Sitemap und Canonical-Tags auf
+die Adresse ohne `www` zeigen. Zwei Handgriffe, beide in der Domain-Ansicht:
+
+1. **DNS → Add record**: Typ `AAAA`, Name `www`, Inhalt `100::`, **Proxied**.
+   Der Eintrag macht `www` überhaupt erst existent — ohne ihn kommt die Anfrage
+   nie bei Cloudflare an und keine Regel greift. `100::` ist eine Adresse, die
+   ins Nichts zeigt; erreicht wird sie nie, weil der Proxy vorher abfängt.
+2. **Rules → Overview → Vorlage „Redirect from WWW to root"** → *Create from
+   template*. Die Vorlage ist fertig (`https://www.*` → `https://${1}`,
+   Status 301). Nur **Preserve query string** anhaken, dann Deploy.
+
+Cloudflare warnt beim Deploy womöglich, `www` sei nicht proxied. Wenn Schritt 1
+gerade gemacht wurde, ist das nur die nachhinkende Dashboard-Prüfung —
+„Ignore and deploy rule anyway" ist dann richtig. **Nicht** „Create a new
+proxied DNS record" wählen, das legt einen zweiten Eintrag für denselben Namen
+an. Gegenprüfen von außen:
+`Resolve-DnsName www.<domain> -Server <cloudflare-ns>` muss Cloudflare-Adressen
+liefern, nicht `100::`.
+
+### Schritt 6b — HTTPS erzwingen
+
+**SSL/TLS → Edge Certificates → „Always Use HTTPS"** einschalten. Ohne den
+Schalter antwortet `http://` mit 200 statt umzuleiten, und Besucher bleiben
+unverschlüsselt.
+
+Gleich darunter **Minimum TLS Version von 1.0 auf 1.2** stellen. TLS 1.0/1.1
+gelten seit Jahren als überholt, und kein Browser der letzten zehn Jahre
+verliert dadurch Zugang.
+
+**HSTS erst später.** Browser merken sich die Regel monatelang; wenn dabei
+etwas schiefgeht, kommt man nicht schnell zurück. Erst ein paar Tage stabil
+laufen lassen.
 
 ### Schritt 7 — Abnahme unter der echten Domain
 
@@ -169,6 +204,39 @@ Domain, weil Sitemap und Canonical-Tags auf die Adresse ohne `www` zeigen.
   bereut.
 - `/sitemap.xml` nennt die echte Domain, nicht mehr den Vercel-Alias
 - Eine Teständerung pushen und nachsehen, ob der Build automatisch anläuft
+
+### Launch-Protokoll 20.08.2026
+
+Durchgeführt und von außen nachgemessen, nicht nur im Dashboard abgelesen:
+
+- Nameserver-Wechsel bei IONOS um **20:38**, bei DENIC nach **90 Sekunden**
+  sichtbar. Die von IONOS genannten „bis zu 48 Stunden" sind Sicherheitspuffer.
+- Zone-Aktivierung in Cloudflare hinkt der Technik nach: die Cloudflare-
+  Nameserver lieferten MX, SPF und SOA schon korrekt, während das Dashboard
+  noch „Waiting for your registrar" zeigte.
+- Alle Routen unter der echten Domain 200, unbekannte Pfade 404,
+  `http://` → 301 → `https://`, `www` → 301 → apex mit erhaltenem Pfad.
+
+### Stolpersteine, die Zeit gekostet haben
+
+**IONOS meldet nach dem Wechsel „Ihre Domain verfügt noch nicht über SSL".**
+Fehlalarm. Das Zertifikat kommt von Cloudflare. IONOS sieht nur, dass die
+Domain nicht mehr auf ihren Webspace zeigt. Dort SSL zu aktivieren bestellt ein
+Zertifikat für einen ungenutzten Webspace. Ebenso unnötig: „Domain Guard".
+
+**`ERR_SSL_PROTOCOL_ERROR` im eigenen Browser, während die Seite längst läuft.**
+Ursache ist der Resolver-Cache: er liefert noch die alte Registrar-IP, und dort
+liegt kein Zertifikat für die Domain. Erkennbar daran, dass verschiedene
+Resolver Verschiedenes sagen — `Resolve-DnsName <domain> -Server 1.1.1.1` gegen
+`-Server 8.8.8.8` gegenprüfen. Kein Grund, an der Konfiguration zu drehen. Wer
+sofort Gewissheit will, testet an Cloudflare vorbei am Cache:
+`curl --resolve <domain>:443:<cloudflare-ip> https://<domain>/`.
+
+**Der Import-Flow kann an einer alten GitHub-App-Installation scheitern**
+(„Error connecting to git account"). Dann die GitHub-App unter
+Settings → Applications deinstallieren und den Weg **von Cloudflare aus** neu
+starten — nur so entsteht die Verknüpfung zum Cloudflare-Konto. Vorher prüfen,
+dass keine anderen Cloudflare-Projekte an der Installation hängen.
 
 ### Schritt 8 — Erst danach Vercel abschalten
 
