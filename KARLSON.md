@@ -1,8 +1,28 @@
 # Anleitung für Karlson
 
 So pflegst du deine Webseite selbst mit Codex auf deinem Mac. Frank schaltet
-nur GitHub und Vercel im Hintergrund — du arbeitest nur in Codex und in deinem
-Projektordner.
+nur GitHub und Cloudflare im Hintergrund — du arbeitest nur in Codex und in
+deinem Projektordner.
+
+Deine Adresse: **https://karlson-solo-orchester.de**
+
+---
+
+## 0. Einmalig: deinen alten Stand aufräumen
+
+Nur nötig, wenn du das Repo schon auf dem Mac hast und dort schon einmal etwas
+committet hast, das nie hochgeladen wurde. Dann liegt bei dir eine alte Version
+der Änderung, und ein `git pull` würde sich mit der neuen beißen.
+
+```bash
+cd ~/karlson-website
+git fetch origin
+git reset --hard origin/main
+```
+
+Das verwirft deinen lokalen Stand und holt den aktuellen. **Deine Arbeit ist
+dabei nicht verloren:** Frank hat dieselbe Änderung schon eingebaut und
+hochgeladen. Wenn du unsicher bist, ruf ihn vorher an.
 
 ---
 
@@ -94,7 +114,8 @@ git commit -m "kurz beschreiben was du geändert hast"
 git push
 ```
 
-Nach 1 Minute ist die Änderung live auf `https://karlson-website.vercel.app`.
+Nach 1 bis 2 Minuten ist die Änderung live auf
+`https://karlson-solo-orchester.de`.
 
 ---
 
@@ -106,7 +127,9 @@ Kopier diesen Block in Codex am Anfang einer neuen Session:
 Du arbeitest am Projekt "karlson-website" auf meinem Mac in ~/karlson-website.
 
 Stack: Next.js 16 (App Router), TypeScript, Tailwind v4.
-Live: https://karlson-website.vercel.app
+Die Seite ist ein statischer Export (next.config.ts: output "export") und wird
+von Cloudflare ausgeliefert.
+Live: https://karlson-solo-orchester.de
 
 Wichtige Regeln:
 - Arbeite immer im Ordner ~/karlson-website.
@@ -116,10 +139,12 @@ Wichtige Regeln:
 - Seitentexte liegen in app/<seitenname>/page.tsx.
 - Nach Änderungen: `npm run dev` läuft lassen, ich schaue im Browser ob es passt.
 - Wenn ich OK gebe: `git add . && git commit -m "..." && git push`.
-- Niemals direkt deployen, niemals "vercel" Befehle nutzen. Nur git push.
+- Niemals direkt deployen. Keine "vercel"- und keine "wrangler"-Befehle. Nur git push.
+- Bilder klein halten: nichts über 400 Pixel Kantenlänge und nichts über 200 KB
+  in public/karlson/ ablegen, sonst wird die Seite langsam.
 - Wenn unklar: kurz nachfragen statt raten.
 
-Deployt automatisch nach 1 Minute auf Vercel sobald gepusht wurde.
+Deployt automatisch nach 1 bis 2 Minuten auf Cloudflare, sobald gepusht wurde.
 ```
 
 ---
@@ -154,9 +179,15 @@ Codex fragen: „Es gibt einen Merge-Konflikt, bitte löse ihn." Im Zweifel
 Frank kurz anrufen.
 
 **Seite sieht nach Push komisch aus:**
-Auf `https://vercel.com/franklyai-botter/karlson-website` schauen — wenn das
-letzte Deployment „Failed" zeigt, hat Codex einen Fehler eingebaut. Frank
-anrufen oder im Terminal `git revert HEAD` und nochmal pushen.
+Im Cloudflare-Dashboard unter „Workers & Pages" das Projekt `karlson-website`
+öffnen und die letzte Bereitstellung ansehen. Steht dort „Failed", hat Codex
+einen Fehler eingebaut. Frank anrufen oder im Terminal `git revert HEAD` und
+nochmal pushen.
+
+**Änderung ist nach 5 Minuten noch nicht zu sehen:**
+Erst mit `Cmd + Shift + R` neu laden, das umgeht den Browser-Zwischenspeicher.
+Ist sie dann noch nicht da, im Cloudflare-Dashboard nachsehen, ob die
+Bereitstellung überhaupt gelaufen ist.
 
 **Codex sagt etwas, das du nicht verstehst:**
 Bitte ihn: „Erklär mir das so, als ob ich kein Programmierer bin."
@@ -166,6 +197,9 @@ Bitte ihn: „Erklär mir das so, als ob ich kein Programmierer bin."
 ## 6. Was du NICHT machen sollst
 
 - Keine direkten Änderungen auf GitHub.com im Browser (außer Frank sagt's).
-- Keinen `vercel`-Befehl im Terminal.
+- Keinen `vercel`- und keinen `wrangler`-Befehl im Terminal.
 - Nicht `git push --force` benutzen.
-- Keine Dateien in `.next/` oder `node_modules/` anfassen.
+- Keine Dateien in `.next/`, `out/` oder `node_modules/` anfassen.
+- **Keine Passwörter, Codes oder Zugangsdaten in einen KI-Chat tippen.** Weder
+  bei Codex noch sonst wo. Wenn ein Programm eine Anmeldung braucht, machst du
+  die selbst im Browser oder rufst Frank an.

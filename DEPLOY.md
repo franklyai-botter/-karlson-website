@@ -1,102 +1,136 @@
 # Deploy-Anleitung Karlson Website
 
-Diese Webseite wird **immer ueber `git push`** deployt — nie direkt per Vercel CLI
-oder Coolify-Upload. Sonst laufen GitHub-Stand und Live-Stand auseinander.
+Diese Webseite wird **immer über `git push`** veröffentlicht. Nie per
+`wrangler deploy`, nie per Direkt-Upload. Sonst laufen GitHub-Stand und
+Live-Stand auseinander, und niemand weiß mehr, was eigentlich online ist.
+
+Live: https://karlson-solo-orchester.de
 
 ---
 
-## 1. Workflow fuer Karlson + Codex (Standardfall, Vercel)
+## 1. Workflow für Karlson + Codex (Standardfall)
+
+Die ausführliche, nicht-technische Fassung steht in [KARLSON.md](KARLSON.md).
 
 ### Einmalig vorbereiten
 
-Karlson braucht auf seinem Rechner:
-
-1. **Git** installiert (https://git-scm.com/download/win)
-2. **Node.js 20+** (https://nodejs.org)
-3. **GitHub-Account** mit Zugriff auf das Repo `franklyai-botter/-karlson-website`
-4. Repo lokal klonen:
+1. **Git** und **Node.js 20+**
+2. GitHub-Zugriff auf `franklyai-botter/-karlson-website`
+3. Repo klonen:
    ```bash
    git clone https://github.com/franklyai-botter/-karlson-website.git karlson-website
    cd karlson-website
    npm install
    ```
-5. Lokal starten zum Testen:
-   ```bash
-   npm run dev
-   ```
-   → öffnet `http://localhost:3000`
 
-### Jede Aenderung deployen
-
-Codex (oder Karlson selbst) arbeitet im Projektordner. Danach:
+### Jede Änderung veröffentlichen
 
 ```bash
-git pull origin main       # WICHTIG: immer zuerst, sonst Konflikte
-# ... Aenderungen machen, lokal mit "npm run dev" pruefen ...
+git pull origin main       # immer zuerst, sonst Konflikte
+# ... Änderungen machen, lokal mit "npm run dev" prüfen ...
 git add .
 git commit -m "kurze beschreibung"
 git push origin main
 ```
 
-Vercel deployt automatisch in ca. 1 Minute auf
-`https://karlson-website.vercel.app`.
+Cloudflare baut und veröffentlicht automatisch in ein bis zwei Minuten.
 
-### Was Codex auf Karlsons Rechner braucht
-
-Codex muss den **Projektordner als Working Directory** bekommen — nicht nur
-einzelne Dateien hochladen. Dann kann es echte Dateien aendern und committen.
+Codex braucht den **Projektordner als Working Directory**, nicht einzelne
+Dateien. Nur so kann es echte Dateien ändern und committen.
 
 ---
 
-## 2. Spaeter: Umzug auf Hetzner via Coolify
+## 2. Cloudflare einrichten (einmalig)
 
-Das Projekt ist schon vorbereitet. Auf dem Hetzner-Server mit installiertem
-Coolify:
+### Schritt 1 — Projekt anlegen
 
-### Schritt 1 — Neues Projekt in Coolify anlegen
-- Source: **GitHub** → Repo `franklyai-botter/-karlson-website` auswaehlen
+Cloudflare-Dashboard → **Workers & Pages** → **Create** → **Import a repository**
+
+- Repository: `franklyai-botter/-karlson-website`
 - Branch: `main`
-- Build Pack: **Dockerfile** (Coolify erkennt das `Dockerfile` automatisch)
-- Port: `3000`
+- Build command: `npm run build`
+- Build output directory: `out`
 
-### Schritt 2 — Environment Variables setzen
-In Coolify unter „Environment Variables":
+Ein `wrangler.jsonc` liegt im Repo und beschreibt die Auslieferung
+(`assets.directory: "./out"`, `not_found_handling: "404-page"`).
+
+### Schritt 2 — Umgebungsvariable setzen
+
+Unter „Settings" → „Variables and Secrets":
+
 ```
-NEXT_IMAGES_UNOPTIMIZED=true
+NEXT_PUBLIC_SITE_URL=https://karlson-solo-orchester.de
 ```
-(Wird auch im Dockerfile gesetzt — als Fallback hier nochmal eintragen.)
+
+Ohne die Variable greift die Domain aus `app/data.ts`. Beides führt zum
+gleichen Ergebnis; die Variable ist der Weg, die Domain ohne Code-Änderung zu
+wechseln.
 
 ### Schritt 3 — Domain verbinden
-In Coolify Domain eintragen (z. B. `karlson-grosse.de`). Coolify holt
-automatisch Let's-Encrypt-Zertifikat.
 
-### Schritt 4 — Deploy
-„Deploy" klicken. Ab da gilt: **jeder `git push` auf `main` triggert automatisch
-ein neues Coolify-Deployment** (wenn „Auto Deploy" aktiviert ist).
+Unter „Custom domains" die Domain `karlson-solo-orchester.de` hinzufügen.
+Cloudflare stellt das Zertifikat selbst aus.
 
-### Schritt 5 — Vercel abschalten (erst wenn Coolify lauft)
-- DNS auf den Hetzner-Server umstellen
-- Vercel-Projekt deaktivieren (nicht loeschen — als Backup behalten)
+**Wenn die Domain bei einem anderen Anbieter liegt (z. B. IONOS):** dort die
+Nameserver auf die von Cloudflare genannten umstellen. Zwei Fallen dabei:
+
+- **DNSSEC vorher abschalten.** Ist DNSSEC beim Registrar aktiv und die
+  Nameserver wechseln, ist die Domain zwischenzeitlich für niemanden
+  erreichbar, weil die Signaturen nicht mehr zur neuen Zone passen.
+- **Auto-Renew beim Registrar aktiv lassen.** Eine abgelaufene Domain ist
+  schlimmer als eine langsame.
+
+### Schritt 4 — Prüfen, dann Vercel abschalten
+
+Erst wenn die Cloudflare-Auslieferung unter der echten Domain läuft:
+
+- Vercel-Projekt **deaktivieren, nicht löschen.** Es bleibt die Rückfallebene,
+  bis die neue Auslieferung ein paar Tage stabil war.
+- Danach prüfen, dass keine Doku und kein Link mehr auf
+  `karlson-website.vercel.app` zeigt.
 
 ---
 
-## 3. Lokal mit Docker testen (optional)
+## 3. Auslieferung lokal prüfen
 
-Wenn du den Coolify-Build vorher lokal pruefen willst:
+Der Build schreibt nach `./out`. So testet man genau das, was Cloudflare
+ausliefert, ohne Anmeldung und ohne Deployment:
 
 ```bash
-docker build -t karlson-website .
-docker run -p 3000:3000 karlson-website
+npm run build
+npx wrangler dev
 ```
 
-→ `http://localhost:3000` sollte die Seite zeigen.
+Dann `http://localhost:8787` aufrufen. Auch die 404-Behandlung lässt sich so
+prüfen: ein Aufruf wie `/gibtsnicht/` muss mit Status 404 antworten.
 
 ---
 
 ## 4. Wichtige Regeln
 
-- **Nie `vercel --prod` oder direkter Coolify-Upload.** Immer ueber `git push`.
-- **Vor jeder Session `git pull`.** Lokal muss = GitHub sein.
-- **Nach UI-Aenderungen einmal lokal `npm run dev` durchklicken**, bevor du pushst.
-- **Geheime Werte** (API-Keys etc.) niemals committen. Immer ueber Env-Vars in
-  Vercel/Coolify setzen und in `.env.example` dokumentieren (ohne Werte).
+- **Nie `wrangler deploy`, nie `vercel --prod`.** Immer über `git push`.
+- **Vor jeder Session `git pull`.** Lokal muss gleich GitHub sein.
+- **Nach UI-Änderungen einmal lokal durchklicken**, bevor gepusht wird.
+- **Bilder klein halten.** Der statische Export hat keinen Image-Optimizer,
+  jede Datei geht in Originalgröße an den Besucher. Richtwert: 400 px
+  Kantenlänge, unter 200 KB.
+- **Termine aktualisieren sich nur beim Build.** Der Stichtag ist das
+  Build-Datum. Wer vergangene Termine verschwinden lassen will, muss einen
+  Deploy auslösen, ein Aufruf im Browser genügt nicht.
+- **Geheime Werte niemals committen.** Immer als Variable im
+  Cloudflare-Projekt setzen und in `.env.example` ohne Wert dokumentieren.
+
+---
+
+## 5. Nicht mehr verfolgt: Coolify auf Hetzner
+
+Bis Juni 2026 war ein Umzug auf einen eigenen Hetzner-Server mit Coolify
+vorbereitet (`output: "standalone"` plus `Dockerfile`). Das ist mit dem
+Wechsel auf den statischen Export hinfällig, `Dockerfile` und `.dockerignore`
+sind entfernt.
+
+Der Grund für die Entscheidung: die Seite hat keine API-Route, keine
+Middleware und keine Datenbank. Ein Server, der laufen und gepatcht werden
+muss, wäre für eine statische Seite Aufwand ohne Gegenwert. Sollte später
+doch serverseitige Logik dazukommen, ist die Historie der richtige Ort, um den
+alten Docker-Aufbau nachzulesen.
