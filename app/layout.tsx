@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import "./globals.css";
 import { navItems, site, siteUrl, socialLinks } from "./data";
+import { ArtistJsonLd } from "./structured-data";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -20,6 +21,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  // Relativer Canonical: Next setzt daraus je Route die eigene Adresse.
+  // Noetig, weil die Seite zusaetzlich unter der workers.dev-Adresse
+  // erreichbar ist — ohne Canonical kann Google zwei Fassungen derselben
+  // Seite sehen.
+  alternates: { canonical: "./" },
   title: {
     default: "Karlson | Liedermacher aus dem Havelland",
     template: "%s | Karlson",
@@ -132,6 +138,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de" className={cormorant.variable}>
       <body>
+        <ArtistJsonLd />
         <Header />
         {children}
         <Footer />

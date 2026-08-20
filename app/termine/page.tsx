@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { events2026, upcomingEvents2026 } from "../data";
+import { EventsJsonLd } from "../structured-data";
 
 export const metadata = {
   title: "Termine",
@@ -28,6 +29,7 @@ function EventCard({ event }: { event: (typeof events2026)[number] }) {
 export default function TerminePage() {
   return (
     <main>
+      <EventsJsonLd />
       <section className="page-hero">
         <div className="section">
           <span className="eyebrow">Termine</span>

@@ -11,10 +11,12 @@ import {
   upcomingEvents2026,
 } from "./data";
 import { galleryImages } from "./gallery";
+import { FaqJsonLd } from "./structured-data";
 
 export default function Home() {
   return (
     <main>
+      <FaqJsonLd />
       <section className="hero">
         <Image
           className="hero-background"
