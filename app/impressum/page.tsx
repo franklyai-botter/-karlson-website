@@ -50,15 +50,20 @@ export default function ImpressumPage() {
           {site.address.street}, {site.address.zip} {site.address.city}
         </p>
 
-        <h2>EU-Streitschlichtung</h2>
+        {/*
+          Der frühere Hinweis auf die EU-Plattform zur Online-Streitbeilegung ist
+          entfallen: die OS-Plattform wurde zum 20.07.2025 abgeschaltet, die
+          ODR-Verordnung (EU) 524/2013 ist durch Verordnung (EU) 2024/3228
+          aufgehoben. Ein Verweis darauf wäre heute ein toter Link.
+          Die Hinweispflicht aus § 36 Abs. 1 Nr. 1 VSBG greift hier ohnehin nicht
+          (§ 36 Abs. 3 VSBG: zehn oder weniger Beschäftigte). Der Satz bleibt
+          freiwillig stehen, weil er die Frage für Kunden klar beantwortet.
+        */}
+        <h2>Verbraucherstreitbeilegung</h2>
         <p>
-          Die Europäische Kommission stellt eine Plattform zur
-          Online-Streitbeilegung (OS) bereit:{" "}
-          <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">
-            https://ec.europa.eu/consumers/odr/
-          </a>
-          . Wir sind nicht bereit oder verpflichtet, an Streit­beilegungs­verfahren
-          vor einer Verbraucher­schlichtungsstelle teilzunehmen.
+          Wir sind nicht bereit und nicht verpflichtet, an
+          Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
+          teilzunehmen.
         </p>
 
         <h2>Haftung für Inhalte</h2>
