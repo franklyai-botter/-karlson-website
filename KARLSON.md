@@ -179,15 +179,23 @@ Codex fragen: „Es gibt einen Merge-Konflikt, bitte löse ihn." Im Zweifel
 Frank kurz anrufen.
 
 **Seite sieht nach Push komisch aus:**
-Im Cloudflare-Dashboard unter „Workers & Pages" das Projekt `karlson-website`
-öffnen und die letzte Bereitstellung ansehen. Steht dort „Failed", hat Codex
-einen Fehler eingebaut. Frank anrufen oder im Terminal `git revert HEAD` und
-nochmal pushen.
+Im Terminal `git revert HEAD`, dann `git push`. Damit ist die letzte Änderung
+zurückgenommen und die Seite ist wieder wie vorher. Danach Frank anrufen.
 
 **Änderung ist nach 5 Minuten noch nicht zu sehen:**
 Erst mit `Cmd + Shift + R` neu laden, das umgeht den Browser-Zwischenspeicher.
-Ist sie dann noch nicht da, im Cloudflare-Dashboard nachsehen, ob die
-Bereitstellung überhaupt gelaufen ist.
+Zweitens prüfen, ob der Push wirklich durchgegangen ist:
+
+```bash
+git status
+```
+Steht dort „Your branch is up to date with 'origin/main'", ist alles
+hochgeladen und die Veröffentlichung läuft bei Frank. Steht dort „ahead of
+'origin/main'", fehlt noch ein `git push`.
+
+Ist beides in Ordnung und die Seite trotzdem alt: Frank anrufen. Die
+Veröffentlichung läuft über seinen Zugang, dort kann er nachsehen, woran es
+hängt. Du brauchst dafür keinen eigenen Zugang.
 
 **Codex sagt etwas, das du nicht verstehst:**
 Bitte ihn: „Erklär mir das so, als ob ich kein Programmierer bin."
