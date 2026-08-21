@@ -6,7 +6,7 @@ also als Gate.
 | Befehl | Dauer (gemessen gegen live) | Was es abdeckt |
 |---|---|---|
 | `npm run pruefen:smoke` | ~40 s, 220 Pruefungen | 11 Routen × Desktop/Handy, nur Chromium. Status, Assets, Ueberlauf, JS-Fehler, Bilder, `alt`, genau eine `h1`. |
-| `npm run pruefen` | ~20 s, 1464 Pruefungen | Chromium **und WebKit**: Burgermenue, Social-Kacheln, 11 Routen, 14 Breiten mit Kontrast, Hero-Geometrie, CTA, Inline-Links, Formularfelder. |
+| `npm run pruefen` | ~20 s, 1578 Pruefungen | Chromium **und WebKit**: Burgermenue, Social-Kacheln, 11 Routen, 14 Breiten mit Kontrast, Hero-Geometrie, CTA, Inline-Links, Formularfelder, Honeypot. |
 
 Nach jeder Aenderung Stufe 1. Vor dem Push und nach jeder CSS-Aenderung Stufe 2.
 
@@ -93,6 +93,26 @@ die Hero-Spalte 152 px ueber den Rand ragte — unsichtbar, weil `.hero`
 Und: `document.documentElement.scrollWidth` allein reicht nicht. `overflow:
 hidden` verbirgt Ueberlaeufe genau dort, wo sie wehtun — innere Container
 werden mitgemessen.
+
+Eine einzige Ausnahme davon: Elemente, die **vollstaendig ausserhalb des
+Viewports** liegen (`right <= 0` oder `left >= vw`), werden uebersprungen. Das
+ist die uebliche Versteck-Technik, und der Honeypot nutzt sie — `left:-9999px`
+in einer 1px-Huelle, sein `<label>` laeuft dadurch zwangslaeufig ueber. Die
+Ausnahme prueft die Lage im Viewport und **nicht**, ob ein Vorfahre clippt;
+sonst waere der Hero-Fall wieder unsichtbar. Gegengeprueft mit injiziertem
+`padding-right: 3000px` auf `.hero-content`: wird weiterhin gemeldet.
+
+## Honeypot
+
+Drei eigene Pruefungen auf `/buchung/`, weil hier ein CSS-Versehen Geld kostet:
+Der Worker antwortet auf einen gefuellten Honeypot mit `{ok:true}` und **200,
+schickt aber keine Mail**. Wuerde das Feld sichtbar, fuellt ein Mensch es aus,
+sieht die Erfolgsmeldung — und seine Buchungsanfrage ist weg, ohne Spur.
+
+Geprueft wird deshalb, dass `input[name="webseite"]` existiert, ausserhalb des
+Viewports oder unsichtbar liegt, die Huelle `aria-hidden="true"` traegt und
+`tabIndex` `-1` ist. Gegenprobe gelaufen: zeigt der Selektor auf ein echtes
+Feld, schlagen alle drei fehl.
 
 ## Bekannte Meldungen
 

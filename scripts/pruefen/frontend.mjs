@@ -207,9 +207,15 @@ async function routePruefen(engine, seite, pfad) {
     for (const el of document.querySelectorAll("body *")) {
       if (el.scrollWidth > el.clientWidth + 1 && el.clientWidth > 0) {
         const cs = getComputedStyle(el);
-        if (cs.overflowX === "visible" && !["SELECT", "TEXTAREA", "INPUT"].includes(el.tagName)) {
-          innere.push(`${el.tagName.toLowerCase()}.${el.className?.toString().slice(0, 24)}`);
-        }
+        if (cs.overflowX !== "visible" || ["SELECT", "TEXTAREA", "INPUT"].includes(el.tagName)) continue;
+        // Absichtlich aus dem Bild geschobene Elemente ueberspringen: der
+        // Honeypot liegt bei left:-9999px in einer 1px-Huelle mit
+        // overflow:hidden, sein <label> "ueberlaeuft" damit zwangslaeufig.
+        // Bewusst eng gefasst — geprueft wird die Lage im Viewport, nicht ob
+        // ein Vorfahre clippt. Sonst waere der Hero-Fall wieder unsichtbar.
+        const r = el.getBoundingClientRect();
+        if (r.right <= 0 || r.left >= vw) continue;
+        innere.push(`${el.tagName.toLowerCase()}.${el.className?.toString().slice(0, 24)}`);
       }
     }
     return {
@@ -389,6 +395,34 @@ async function breitePruefen(engine, seite, breite) {
       }
     } else {
       pruefe(p, felder.length === 0, `${kennung}/formular-wirklich-aus`, `${felder.length} Felder da, obwohl FORMULAR=0 erwartet wurde`);
+    }
+
+    // Honeypot. Wird er je sichtbar, fuellt ihn ein Mensch aus, bekommt vom
+    // Worker {ok:true} und 200 — und seine Anfrage wird verworfen, ohne dass
+    // es jemand merkt. Ein stiller Verlust von Buchungsanfragen, deshalb
+    // eigene Pruefung und kein Vertrauen auf das CSS.
+    if (FORMULAR_AKTIV) {
+      const honig = await seite.evaluate(() => {
+        const feld = document.querySelector('input[name="webseite"]');
+        if (!feld) return null;
+        const huelle = feld.closest(".honeypot");
+        const r = feld.getBoundingClientRect();
+        const vw = document.documentElement.clientWidth;
+        const cs = getComputedStyle(feld);
+        return {
+          ausserhalb: r.right <= 0 || r.left >= vw,
+          unsichtbar: cs.visibility === "hidden" || cs.display === "none" || Number(cs.opacity) === 0,
+          ariaHidden: huelle?.getAttribute("aria-hidden") === "true",
+          tabIndex: feld.tabIndex,
+          links: Math.round(r.left),
+        };
+      });
+      pruefe(p, honig !== null, `${kennung}/honeypot-vorhanden`, 'input[name="webseite"] fehlt — Spam-Schutz weg?');
+      if (honig) {
+        pruefe(p, honig.ausserhalb || honig.unsichtbar, `${kennung}/honeypot-unsichtbar`, `Feld sichtbar bei x=${honig.links} — echte Anfragen wuerden still verworfen`);
+        pruefe(p, honig.ariaHidden, `${kennung}/honeypot-aria-hidden`, "Huelle ohne aria-hidden — Screenreader lesen das Feld vor");
+        pruefe(p, honig.tabIndex === -1, `${kennung}/honeypot-nicht-tabbar`, `tabIndex ${honig.tabIndex} statt -1`);
+      }
     }
   }
 }
