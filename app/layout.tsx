@@ -3,6 +3,7 @@ import { Cormorant_Garamond } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { navItems, site, siteUrl, socialLinks } from "./data";
+import { MobileMenu } from "./mobile-menu";
 import { Foto } from "./foto";
 import { ArtistJsonLd } from "./structured-data";
 
@@ -82,7 +83,7 @@ function Header() {
         Auftritt anfragen
       </Link>
 
-      <details className="mobile-menu">
+      <MobileMenu>
         <summary aria-label="Navigation öffnen">Menü</summary>
         <div>
           {navItems.map((item) => (
@@ -97,7 +98,7 @@ function Header() {
           ))}
           <Link href="/buchung">Auftritt anfragen</Link>
         </div>
-      </details>
+      </MobileMenu>
     </header>
   );
 }

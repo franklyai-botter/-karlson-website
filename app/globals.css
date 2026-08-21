@@ -212,6 +212,24 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  /* min-width: 0 bricht die Mindestbreite von Flex-Kindern auf, sonst kann der
+     Inhalt die Box nicht verlassen und ragt stattdessen heraus. flex-wrap
+     erlaubt dem Handle im Footer, in die naechste Zeile zu rutschen, statt
+     ueber den Rand zu laufen. Beides am 21.08.2026 auf allen iPhone-, Pixel-
+     und Galaxy-Breiten belegt: Inhalt brauchte 159px, Box war 69px breit. */
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+/* Wo neben dem Label auch der Handle steht (@karlikarlson1967, "Karlson
+   Haupt"), muss er notfalls innerhalb des Wortes umbrechen duerfen — ein
+   Handle hat keine Trennstellen, an denen der Browser das von sich aus
+   koennte. Ohne das schiebt er sich bei knappem Platz ueber den Rand. */
+.social-links strong,
+.social-links span,
+.site-footer .social-button span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .social-button::before {
@@ -758,6 +776,17 @@ textarea {
   color: var(--muted);
 }
 
+/* Zwischen 961px und 1134px reichte die Breite nicht fuer Marke + Navigation +
+   Social + CTA: der CTA ragte heraus und die ganze Seite scrollte horizontal
+   (am 21.08.2026 auf iPad Pro 13" mit 1024px auf jeder Seite belegt, 1134 > 1024).
+   Die Social-Buttons weichen zuerst, weil sie im Footer ohnehin stehen —
+   Navigation und CTA bleiben so bis zum Burger-Breakpoint erhalten. */
+@media (max-width: 1140px) {
+  .header-social {
+    display: none;
+  }
+}
+
 @media (max-width: 960px) {
   .desktop-nav,
   .header-social,
@@ -1143,9 +1172,14 @@ textarea {
 }
 
 @media (max-width: 420px) {
+  /* Eine Spalte, nicht zwei. Zwei Spalten waren hier die Ursache dafuer, dass
+     die YouTube- und Facebook-Kacheln ihren Text ueber den Rand geschoben
+     haben: im Hero ist der Container 153px breit, zwei Spalten ergeben daraus
+     je 71px, und "YouTube @karlikarlson1967" braucht 159px. Am 21.08.2026 auf
+     iPhone SE, iPhone 14 Pro, Pixel 7 und Galaxy S8 belegt. */
   .social-links {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 
   .social-links a {
