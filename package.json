@@ -10,7 +10,9 @@
     "bilder": "node scripts/bilder-pruefen.mjs --alle",
     "hooks": "git config core.hooksPath .githooks && echo Bildpruefung aktiviert.",
     "vorschau": "next build && wrangler dev",
-    "bilder:webp": "node scripts/bilder-optimieren.mjs"
+    "bilder:webp": "node scripts/bilder-optimieren.mjs",
+    "pruefen:smoke": "node scripts/pruefen/smoke.mjs",
+    "pruefen": "node scripts/pruefen/frontend.mjs"
   },
   "dependencies": {
     "next": "16.2.6",

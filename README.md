@@ -56,15 +56,38 @@ prüfen will, wie Cloudflare sie ausführt, kann das lokal ohne Anmeldung tun:
 npx wrangler dev
 ```
 
+⚠️ **`wrangler dev` vorher beenden, wenn neu gebaut wird.** Sonst bricht der
+Build unter Windows mit `EBUSY` ab und man prüft unbemerkt gegen einen
+Mischstand aus zwei Builds.
+
+## Prüfen
+
+```bash
+npm run pruefen:smoke   # ~40 s, 11 Routen × Desktop/Handy, Chromium
+npm run pruefen         # ~20 s, Chromium + WebKit, 1464 Prüfungen
+```
+
+Beide setzen den Exit-Code auf 1, wenn etwas fehlschlägt, und prüfen
+standardmäßig die Live-Seite. Playwright ist absichtlich **keine** Dependency —
+sonst zöge jeder Cloudflare-Build einen Browser mit. Einrichtung, Variablen und
+die Konstruktionsregeln stehen in
+[scripts/pruefen/README.md](scripts/pruefen/README.md).
+
 ## Hinweise
 
 - Originalmaterial, PDFs und ZIPs bleiben im Arbeitsordner und werden per
   `.gitignore` nicht committed. Kuratierte Webbilder liegen in `public/karlson`.
-- **Bilder klein halten:** ohne Image-Optimizer geht jede Datei in Originalgröße
-  an den Besucher. Richtwert 400 px Kantenlänge und unter 200 KB.
-- **Kein Kontaktformular.** Die Buchungsseite arbeitet mit Telefonlink und einer
-  vorbefüllten E-Mail, deshalb gibt es keinen Formularversand und keine
-  Serververarbeitung von Anfragedaten.
+- **Bilder klein halten.** `next/image` erzeugt bei `images.unoptimized` kein
+  srcset, deshalb baut `npm run bilder:webp` die WebP-Fassungen (400/800/1200 px)
+  plus Manifest; die erzeugten Dateien werden **mitcommittet**, damit der
+  Cloudflare-Build kein sharp braucht. Fehlt ein Bild im Manifest, geht das
+  Original raus — nur unverkleinert, nicht fehlend.
+- **Anfrageformular auf `/buchung/`**, seit 21.08.2026 produktiv. Der Versand
+  liegt in `worker/index.js` (der statische Export schließt eine Next-API-Route
+  aus), geht per Mailjet raus und speichert nichts. Sichtbar nur mit
+  `NEXT_PUBLIC_FORMULAR_AKTIV=1`; Spam-Schutz über Turnstile, Honeypot,
+  serverseitige Feldprüfung, Origin-Check und eine WAF-Rate-Limit-Regel auf
+  `/api/contact`. Details in [DEPLOY.md](DEPLOY.md).
 - **Termine filtern sich über das Build-Datum.** Vergangene Termine
   verschwinden erst beim nächsten Deploy, nicht von selbst im Browser.
 - `NEXT_PUBLIC_SITE_URL` überschreibt die Basis-URL für Meta-Tags und Sitemap.
