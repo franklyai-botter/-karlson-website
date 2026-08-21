@@ -56,14 +56,16 @@ export default function Home() {
             Stadt- und Dorffeste, Firmenfeiern, Neujahrsempfänge, Hochzeiten,
             Gartenpartys, Kulturabende und Kinderprogramme.
           </p>
-          <div className="social-links hero-social" aria-label="Karlson online">
+          {/* <nav> und nicht <div>: aria-label auf einem div ohne role wird von
+              keinem Screenreader ausgegeben. */}
+          <nav className="social-links hero-social" aria-label="Karlson online">
             {socialLinks.map((item) => (
               <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
                 <strong>{item.label}</strong>
                 <span>{item.handle}</span>
               </a>
             ))}
-          </div>
+          </nav>
         </div>
       </section>
 

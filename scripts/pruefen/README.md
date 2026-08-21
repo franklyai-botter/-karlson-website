@@ -6,7 +6,7 @@ also als Gate.
 | Befehl | Dauer (gemessen gegen live) | Was es abdeckt |
 |---|---|---|
 | `npm run pruefen:smoke` | ~40 s, 220 Pruefungen | 11 Routen × Desktop/Handy, nur Chromium. Status, Assets, Ueberlauf, JS-Fehler, Bilder, `alt`, genau eine `h1`. |
-| `npm run pruefen` | ~20 s, 1658 Pruefungen | Chromium **und WebKit**: Burgermenue, Social-Kacheln, 11 Routen, 14 Breiten mit Kontrast, Hero-Geometrie, CTA, Inline-Links, Formularfelder, Checkbox-Zeile, Honeypot. |
+| `npm run pruefen` | ~40 s, ~2100 Pruefungen | Chromium **und WebKit**: Burgermenue, Social-Kacheln, 11 Routen, 14 Breiten mit Kontrast, Hero-Geometrie, CTA, Inline-Links, Formularfelder, Checkbox-Zeile, Honeypot, Feldrahmen-Kontrast, Beschriftungen (aria-label, WCAG 2.5.3), Abstaende, Formularverhalten. |
 
 Nach jeder Aenderung Stufe 1. Vor dem Push und nach jeder CSS-Aenderung Stufe 2.
 
@@ -114,6 +114,54 @@ Auf dem Desktop war das unsichtbar, weil der Satz in eine Zeile passt. Bei
 320 px brach er auf sechs Zeilen um, und das Kästchen hing 56 px tiefer, neben
 Zeile 3. Behoben durch `:where()` um die Grundregel, die sie
 spezifitätsfrei (0,0,1) macht.
+
+## Kontrast wird mit Alpha gerechnet
+
+Farben werden **komponiert**, nicht direkt verglichen: `rgba(91,53,31,0.72)` auf
+beigem Grund ergibt 4,12:1, nicht die 8,26:1 des vollen Brauntons. Die
+Hintergrundkette wird im Browser bis zur ersten deckenden Farbe gesammelt
+(`HG_KETTE` in `lib.mjs`) und in Node ueber Weiss zusammengerechnet.
+
+Das ist keine Feinheit, sondern der Unterschied zwischen einer Pruefung, die
+etwas findet, und einer, die nur so aussieht: die erste Fassung verwarf den
+Alphakanal und haette weder den Befund am Markenzusatz (4,12:1) noch den am
+Feldrahmen (1,33:1) je gemeldet. Aufgefallen ist das erst in der Gegenprobe —
+die alten Farben zurueckinjiziert, und die Pruefung blieb gruen.
+
+## Beschriftungen
+
+Zwei Regeln, beide auf allen 11 Routen:
+
+- **`aria-label` muss wirken.** Auf einem `<div>`/`<span>`/`<p>` ohne `role`
+  gibt es kein Screenreader es aus. Zwei solche Faelle gab es (Header-Social,
+  Hero-Social), beide sind jetzt `<nav>`.
+- **WCAG 2.5.3, Label in Name.** Enthaelt ein Bedienelement sichtbaren Text,
+  muss der zugaengliche Name diesen Text enthalten — sonst trifft
+  Sprachsteuerung ihn nicht. Gemessen wird mit `innerText`, nicht
+  `textContent`: der Markenlink enthaelt `<strong>` und `<small>` als Bloecke,
+  die in `textContent` ohne Leerzeichen aneinanderstossen
+  ("KarlsonOne-Man-Band") — dagegen kann kein Label bestehen.
+
+## Formularverhalten
+
+Bei leerem Absenden: mindestens 6 Meldungen, mindestens 6 Felder mit
+`aria-invalid`, jede Meldung per `aria-describedby` einem Feld zugeordnet, Fokus
+im ersten fehlerhaften Feld — und **kein** Request an `/api/contact`.
+
+Zwei Zustaende brauchen Request-Manipulation, laufen dafuer ohne dass eine Mail
+rausgeht:
+
+- **Turnstile-Fehler:** `challenges.cloudflare.com` wird blockiert, danach muss
+  die Meldung mit `role="alert"` im Formular stehen. Laeuft nur, wenn ein
+  Sitekey gesetzt ist — also live, nicht gegen einen lokalen Build.
+- **Fokus nach Erfolg:** die Antwort auf `/api/contact` wird mit `{ok:true}`
+  beantwortet, ohne den Worker zu erreichen. Danach muss der Fokus im
+  Erfolgspanel liegen. Laeuft nur **ohne** Turnstile, weil sich das Absenden
+  mit aktivem Widget nicht ohne echtes Token durchspielen laesst — also gegen
+  einen lokalen Build.
+
+Beide melden im Bericht, wenn sie uebersprungen wurden. Ein stiller Skip waere
+genau das, was dieser Harness vermeiden soll.
 
 ## Honeypot
 

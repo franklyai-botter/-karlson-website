@@ -19,6 +19,15 @@ const turnstileSitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY ?? "";
 
 type Zustand = "bereit" | "sendet" | "erfolg" | "fehler";
 
+/**
+ * Zustand des Spam-Schutzes. Vorher gab es den nicht: schlug Turnstile fehl,
+ * blieb an der Stelle eine leere Flaeche von 73px, und der Besucher erfuhr erst
+ * beim Absenden aus einer Serverantwort, dass etwas nicht stimmt.
+ */
+type TurnstileZustand = "aus" | "laedt" | "bereit" | "fehler" | "abgelaufen";
+
+type Felder = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
 declare global {
   interface Window {
     turnstile?: {
@@ -38,12 +47,60 @@ declare global {
   }
 }
 
+/**
+ * Eigene Fehlertexte statt der Browsermeldungen. Grund: die Browsermeldung
+ * haengt an Browser und Systemsprache ("Füllen Sie dieses Feld aus."), sie
+ * verschwindet nach wenigen Sekunden von selbst, und sie ist fuer
+ * Screenreader nicht zuverlaessig abrufbar. Diese Texte stehen dauerhaft am
+ * Feld und sind per aria-describedby damit verbunden.
+ */
+function meldungFuer(el: Felder): string {
+  const v = el.validity;
+  if (v.valueMissing) {
+    if (el instanceof HTMLInputElement && el.type === "checkbox") {
+      return "Bitte bestätigen, sonst darf die Anfrage nicht verschickt werden.";
+    }
+    if (el instanceof HTMLInputElement && el.type === "date") {
+      return "Bitte ein Datum angeben — auch ein ungefähres hilft.";
+    }
+    return "Bitte ausfüllen.";
+  }
+  if (v.typeMismatch && el instanceof HTMLInputElement && el.type === "email") {
+    return "Das sieht nicht wie eine E-Mail-Adresse aus. Beispiel: name@beispiel.de";
+  }
+  if (v.tooLong) return "Der Text ist zu lang.";
+  return "Bitte die Eingabe prüfen.";
+}
+
+/**
+ * Meldung unter einem Feld. Die id passt zum aria-describedby des Feldes.
+ *
+ * Bewusst ausserhalb von AnfrageFormular: eine im Render erzeugte Komponente
+ * ist bei jedem Render eine neue und wird deshalb aus- und wieder eingehaengt,
+ * statt aktualisiert zu werden. Bei einer Fehlermeldung heisst das, dass der
+ * Screenreader sie erneut vorliest, obwohl sich nichts geaendert hat. Der
+ * Linter besteht zu Recht darauf (react-hooks/static-components).
+ */
+function Fehler({ fehler, name }: { fehler: Record<string, string>; name: string }) {
+  if (!fehler[name]) return null;
+  return (
+    <span className="feld-fehler" id={`${name}-fehler`}>
+      {fehler[name]}
+    </span>
+  );
+}
+
 export function AnfrageFormular() {
   const [zustand, setZustand] = useState<Zustand>("bereit");
   const [meldung, setMeldung] = useState("");
+  const [feldFehler, setFeldFehler] = useState<Record<string, string>>({});
+  const [turnstileZustand, setTurnstileZustand] = useState<TurnstileZustand>(
+    turnstileSitekey ? "laedt" : "aus",
+  );
   const turnstileContainer = useRef<HTMLDivElement | null>(null);
   const turnstileToken = useRef("");
   const turnstileWidget = useRef<string | null>(null);
+  const erfolgPanel = useRef<HTMLDivElement | null>(null);
 
   // Turnstile erst nach dem Mounten laden, und nur wenn ein Sitekey da ist.
   useEffect(() => {
@@ -58,12 +115,15 @@ export function AnfrageFormular() {
         language: "de",
         callback: (token: string) => {
           turnstileToken.current = token;
+          setTurnstileZustand("bereit");
         },
         "expired-callback": () => {
           turnstileToken.current = "";
+          setTurnstileZustand("abgelaufen");
         },
         "error-callback": () => {
           turnstileToken.current = "";
+          setTurnstileZustand("fehler");
         },
       });
     }
@@ -77,6 +137,7 @@ export function AnfrageFormular() {
     const vorhanden = document.querySelector<HTMLScriptElement>("script[data-turnstile]");
     if (vorhanden) {
       vorhanden.addEventListener("load", widgetRendern);
+      vorhanden.addEventListener("error", () => setTurnstileZustand("fehler"));
       return () => vorhanden.removeEventListener("load", widgetRendern);
     }
 
@@ -86,18 +147,74 @@ export function AnfrageFormular() {
     script.defer = true;
     script.dataset.turnstile = "true";
     script.addEventListener("load", widgetRendern);
+    // Blocker, Netzwerkfehler oder eine gesperrte Domain landen hier. Ohne das
+    // bliebe die Flaeche stumm leer.
+    script.addEventListener("error", () => setTurnstileZustand("fehler"));
     document.head.appendChild(script);
 
     return () => script.removeEventListener("load", widgetRendern);
   }, []);
+
+  /**
+   * Nach dem Absenden verschwindet das Formular und der Erfolgstext erscheint.
+   * Der Fokus lag auf dem Absendeknopf, der damit aus dem Dokument fliegt —
+   * er faellt dann auf <body>, und wer mit Tastatur oder Screenreader
+   * arbeitet, steht ohne Anhaltspunkt am Seitenanfang. Deshalb wandert er
+   * hierher. Das loest zugleich das zweite Problem: eine aria-live-Region, die
+   * gemeinsam mit ihrem Inhalt neu ins Dokument kommt, wird von
+   * Screenreadern oft nicht vorgelesen — ein fokussierter Bereich schon.
+   */
+  useEffect(() => {
+    if (zustand === "erfolg") erfolgPanel.current?.focus();
+  }, [zustand]);
+
+  /** Fehler eines Feldes verwerfen, sobald daran gearbeitet wird. */
+  function fehlerLoeschen(name: string) {
+    setFeldFehler((alt) => {
+      if (!alt[name]) return alt;
+      const neu = { ...alt };
+      delete neu[name];
+      return neu;
+    });
+  }
 
   async function absenden(ereignis: React.FormEvent<HTMLFormElement>) {
     ereignis.preventDefault();
     if (zustand === "sendet") return;
 
     const formular = ereignis.currentTarget;
-    const eingaben = new FormData(formular);
 
+    // Eigene Pruefung, weil das Formular noValidate ist: sonst blockt der
+    // Browser das submit-Ereignis und zeigt seine eigene Sprechblase, die
+    // dieser Code nie zu sehen bekaeme.
+    const gefunden: Record<string, string> = {};
+    let ersteUngueltige: Felder | null = null;
+    for (const el of formular.querySelectorAll<Felder>("input[name], select[name], textarea[name]")) {
+      if (el.name === "webseite") continue; // Honeypot, absichtlich unvalidiert
+      if (!el.checkValidity()) {
+        gefunden[el.name] = meldungFuer(el);
+        if (!ersteUngueltige) ersteUngueltige = el;
+      }
+    }
+    if (ersteUngueltige) {
+      setFeldFehler(gefunden);
+      setZustand("bereit");
+      setMeldung("");
+      ersteUngueltige.focus();
+      return;
+    }
+    setFeldFehler({});
+
+    // Ohne Token wuerde der Worker mit 400 antworten. Der Hinweis hier ist
+    // konkreter als eine Serverantwort und kommt vor dem Absenden.
+    if (turnstileSitekey && !turnstileToken.current) {
+      setTurnstileZustand((alt) => (alt === "fehler" ? "fehler" : "abgelaufen"));
+      setZustand("fehler");
+      setMeldung("Der Spam-Schutz ist noch nicht abgeschlossen. Bitte kurz warten und erneut senden.");
+      return;
+    }
+
+    const eingaben = new FormData(formular);
     const nutzlast: Record<string, string | boolean> = {
       datenschutz: eingaben.get("datenschutz") === "on",
       turnstileToken: turnstileToken.current,
@@ -134,6 +251,7 @@ export function AnfrageFormular() {
       if (window.turnstile && turnstileWidget.current !== null) {
         window.turnstile.reset(turnstileWidget.current);
         turnstileToken.current = "";
+        setTurnstileZustand("laedt");
       }
     } catch {
       setZustand("fehler");
@@ -145,7 +263,13 @@ export function AnfrageFormular() {
 
   if (zustand === "erfolg") {
     return (
-      <div className="card form-panel" role="status" aria-live="polite">
+      <div
+        className="card form-panel"
+        role="status"
+        aria-live="polite"
+        ref={erfolgPanel}
+        tabIndex={-1}
+      >
         <span className="eyebrow">Anfrage ist unterwegs</span>
         <h2>Danke – die Anfrage ist bei Karlson.</h2>
         <p>
@@ -153,7 +277,15 @@ export function AnfrageFormular() {
           Wenn es schneller gehen soll, ist ein Anruf der kürzeste Weg:{" "}
           <a href={site.phoneHref}>{site.phone}</a>.
         </p>
-        <button className="button secondary" type="button" onClick={() => setZustand("bereit")}>
+        <button
+          className="button secondary"
+          type="button"
+          onClick={() => {
+            setZustand("bereit");
+            setMeldung("");
+            setFeldFehler({});
+          }}
+        >
           Weitere Anfrage schreiben
         </button>
       </div>
@@ -162,8 +294,25 @@ export function AnfrageFormular() {
 
   const sendet = zustand === "sendet";
 
+  /** aria-Attribute, die ein Feld mit seiner Fehlermeldung verbinden. */
+  const fehlerAttr = (name: string) =>
+    feldFehler[name] ? ({ "aria-invalid": true, "aria-describedby": `${name}-fehler` } as const) : {};
+
   return (
-    <form className="card form-panel" onSubmit={absenden} noValidate={false}>
+    <form
+      className="card form-panel"
+      onSubmit={absenden}
+      onInput={(e) => {
+        const ziel = e.target as Felder;
+        if (ziel?.name) fehlerLoeschen(ziel.name);
+      }}
+      /* noValidate, weil dieses Formular eigene Fehlermeldungen zeigt: mit der
+         Browservalidierung kaeme das submit-Ereignis bei einem leeren
+         Pflichtfeld nie an, und der Besucher saehe nur die fluechtige
+         Sprechblase des Browsers. Die required-Attribute bleiben stehen —
+         checkValidity() im Handler wertet sie aus. */
+      noValidate
+    >
       <span className="eyebrow">Anfrageformular</span>
       <h2>Auftritt anfragen</h2>
       <p className="muted">
@@ -174,23 +323,28 @@ export function AnfrageFormular() {
       <div className="form-grid form-grid-2">
         <label>
           Name *
-          <input name="name" type="text" required maxLength={120} autoComplete="name" />
+          <input name="name" type="text" required maxLength={120} autoComplete="name" {...fehlerAttr("name")} />
+          <Fehler fehler={feldFehler} name="name" />
         </label>
         <label>
           E-Mail *
-          <input name="email" type="email" required maxLength={200} autoComplete="email" />
+          <input name="email" type="email" required maxLength={200} autoComplete="email" {...fehlerAttr("email")} />
+          <Fehler fehler={feldFehler} name="email" />
         </label>
         <label>
           Telefon
-          <input name="telefon" type="tel" maxLength={60} autoComplete="tel" />
+          <input name="telefon" type="tel" maxLength={60} autoComplete="tel" {...fehlerAttr("telefon")} />
+          <Fehler fehler={feldFehler} name="telefon" />
         </label>
         <label>
           Datum der Veranstaltung *
-          <input name="datum" type="date" required />
+          <input name="datum" type="date" required {...fehlerAttr("datum")} />
+          <Fehler fehler={feldFehler} name="datum" />
         </label>
         <label>
           Veranstaltungsort *
-          <input name="ort" type="text" required maxLength={160} placeholder="Ort oder Adresse" />
+          <input name="ort" type="text" required maxLength={160} placeholder="Ort oder Adresse" {...fehlerAttr("ort")} />
+          <Fehler fehler={feldFehler} name="ort" />
         </label>
         <label>
           Anlass *
@@ -200,7 +354,9 @@ export function AnfrageFormular() {
             required
             maxLength={160}
             placeholder="Stadtfest, Hochzeit, Firmenfeier …"
+            {...fehlerAttr("anlass")}
           />
+          <Fehler fehler={feldFehler} name="anlass" />
         </label>
         <label>
           Wunschprogramm
@@ -254,15 +410,34 @@ export function AnfrageFormular() {
       </div>
 
       <label className="checkbox-zeile">
-        <input name="datenschutz" type="checkbox" required />
+        <input name="datenschutz" type="checkbox" required {...fehlerAttr("datenschutz")} />
         <span>
           Ich bin damit einverstanden, dass meine Angaben zur Bearbeitung der
           Anfrage per E-Mail an Karlson übermittelt werden. Details in der{" "}
           <a href="/datenschutz/">Datenschutzerklärung</a>. *
+          <Fehler fehler={feldFehler} name="datenschutz" />
         </span>
       </label>
 
-      {turnstileSitekey ? <div ref={turnstileContainer} className="turnstile-feld" /> : null}
+      {turnstileSitekey ? (
+        <div className="turnstile-feld">
+          <div ref={turnstileContainer} />
+          {turnstileZustand === "fehler" ? (
+            <p className="feld-fehler" role="alert">
+              Der Spam-Schutz konnte nicht geladen werden. Das liegt meist an
+              einem Werbeblocker oder einer unterbrochenen Verbindung. Bitte die
+              Seite neu laden — oder einfach anrufen:{" "}
+              <a href={site.phoneHref}>{site.phone}</a>.
+            </p>
+          ) : null}
+          {turnstileZustand === "abgelaufen" ? (
+            <p className="feld-fehler" role="alert">
+              Die Prüfung des Spam-Schutzes ist abgelaufen. Sie läuft von selbst
+              erneut — bitte einen Moment warten und dann noch einmal senden.
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="actions">
         <button className="button" type="submit" disabled={sendet}>

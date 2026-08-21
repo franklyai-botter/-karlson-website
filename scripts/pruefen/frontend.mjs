@@ -31,14 +31,15 @@ import {
   FORMULAR_AKTIV,
   IPHONE_UA,
   ROUTEN,
+  HG_KETTE,
   bericht,
+  deckendeFarbe,
   fehlerSammler,
   konsoleAuswerten,
-  kontrast,
+  kontrastObj,
   neuesProtokoll,
   playwrightOderAbbruch,
   pruefe,
-  rgb,
 } from "./lib.mjs";
 
 const { chromium, webkit } = playwrightOderAbbruch();
@@ -269,33 +270,26 @@ async function breitePruefen(engine, seite, breite) {
 
     // .button.secondary war unsichtbar: color:#fffaf2 auf hellem Grund,
     // Kontrast 1,00:1 — betroffen waren drei von vier CTAs im Abschlussblock.
-    const sekundaer = await seite.evaluate(() => {
+    const sekundaer = await seite.evaluate(`(() => {
+      ${HG_KETTE}
       const out = [];
       for (const el of document.querySelectorAll(".button.secondary")) {
         const r = el.getBoundingClientRect();
         if (r.width === 0) continue;
-        // Effektiven Hintergrund suchen: erster Vorfahre mit Deckung.
-        let knoten = el;
-        let hg = "rgba(0, 0, 0, 0)";
-        while (knoten) {
-          const b = getComputedStyle(knoten).backgroundColor;
-          if (b && !b.startsWith("rgba(0, 0, 0, 0")) {
-            hg = b;
-            break;
-          }
-          knoten = knoten.parentElement;
-        }
-        out.push({ txt: (el.textContent ?? "").trim().slice(0, 24), vg: getComputedStyle(el).color, hg });
+        out.push({
+          txt: (el.textContent ?? "").trim().slice(0, 24),
+          vg: getComputedStyle(el).color,
+          kette: hgKette(el),
+        });
       }
       return out;
-    });
+    })()`);
     pruefe(p, sekundaer.length > 0, `${kennung}/secondary-gefunden`, "kein .button.secondary gefunden — Selektor kaputt?");
     for (const s of sekundaer) {
-      const v = rgb(s.vg);
-      const h = rgb(s.hg);
-      if (!v || !h) continue;
-      const k = kontrast(v, h);
-      pruefe(p, k >= 4.5, `${kennung}/secondary-kontrast`, `"${s.txt}" nur ${k.toFixed(2)}:1 (${s.vg} auf ${s.hg})`);
+      const grund = deckendeFarbe(s.kette);
+      const text = deckendeFarbe(s.kette, s.vg);
+      const k = kontrastObj(text, grund);
+      pruefe(p, k >= 4.5, `${kennung}/secondary-kontrast`, `"${s.txt}" nur ${k.toFixed(2)}:1 (${s.vg} auf ${s.kette[0] ?? "weiss"})`);
     }
 
     // Hero: .hero-content behielt unter 621px das padding-right der
@@ -442,6 +436,44 @@ async function breitePruefen(engine, seite, breite) {
       }
     }
 
+    // Rahmen von Bedienelementen: WCAG 1.4.11 verlangt 3:1 gegen die
+    // Umgebung. Die Felder standen auf --line (0.14 Deckung) und erreichten
+    // 1,33:1 — der Rahmen war praktisch nicht zu sehen.
+    if (FORMULAR_AKTIV) {
+      const rahmen = await seite.evaluate(`(() => {
+        ${HG_KETTE}
+        const out = [];
+        for (const el of document.querySelectorAll("input:not([type=checkbox]), textarea, select")) {
+          const cs = getComputedStyle(el);
+          if (cs.borderTopStyle === "none" || parseFloat(cs.borderTopWidth) === 0) continue;
+          out.push({
+            name: el.getAttribute("name") ?? el.tagName,
+            rahmen: cs.borderTopColor,
+            // Innen die Feldflaeche, aussen die Kette ohne das Feld selbst.
+            innen: hgKette(el),
+            aussen: el.parentElement ? hgKette(el.parentElement) : [],
+          });
+        }
+        return out;
+      })()`);
+      pruefe(p, rahmen.length >= 6, `${kennung}/feldrahmen-gefunden`, `nur ${rahmen.length} Felder mit Rahmen`);
+      for (const r of rahmen) {
+        // WCAG 1.4.11 will die Grenze erkennbar haben. Sie ist es, wenn der
+        // Rahmen zu mindestens EINER angrenzenden Flaeche 3:1 erreicht —
+        // innen zur Feldflaeche oder aussen zum Panel.
+        const linie = deckendeFarbe(r.innen, r.rahmen);
+        const kInnen = kontrastObj(linie, deckendeFarbe(r.innen));
+        const kAussen = kontrastObj(linie, deckendeFarbe(r.aussen));
+        const k = Math.max(kInnen, kAussen);
+        pruefe(
+          p,
+          k >= 3,
+          `${kennung}/feldrahmen-kontrast`,
+          `${r.name}: ${k.toFixed(2)}:1 (innen ${kInnen.toFixed(2)}, aussen ${kAussen.toFixed(2)}, ${r.rahmen}) — WCAG 1.4.11 verlangt 3:1`,
+        );
+      }
+    }
+
     // Honeypot. Wird er je sichtbar, fuellt ihn ein Mensch aus, bekommt vom
     // Worker {ok:true} und 200 — und seine Anfrage wird verworfen, ohne dass
     // es jemand merkt. Ein stiller Verlust von Buchungsanfragen, deshalb
@@ -472,6 +504,234 @@ async function breitePruefen(engine, seite, breite) {
   }
 }
 
+// ---------------------------------------------------------------- F
+
+/**
+ * Zugaenglichkeit der Beschriftungen, einmal je Engine ueber alle Routen.
+ *
+ * Zwei Regeln, beide aus dem UI-Audit vom 21.08.2026:
+ *  - aria-label auf einem <div>/<span> ohne role ist wirkungslos. Es sah
+ *    aus wie eine Beschriftung, wurde aber von keinem Screenreader ausgegeben.
+ *  - WCAG 2.5.3 (Label in Name): enthaelt ein Bedienelement sichtbaren Text,
+ *    muss der zugaengliche Name diesen Text enthalten. Der Burger hiess sichtbar
+ *    "Menü" und im Label "Navigation öffnen" — Sprachsteuerung traf ihn nicht.
+ */
+async function beschriftungPruefen(engine, browser) {
+  console.log("  E. Beschriftungen");
+  const ctx = await browser.newContext({ viewport: { width: 393, height: 852 }, isMobile: true, hasTouch: true });
+  const seite = await ctx.newPage();
+  seite.setDefaultTimeout(10_000);
+
+  for (const pfad of ROUTEN) {
+    await versuche(`${engine}${pfad}/E-beschriftung`, async () => {
+      await seite.goto(BASIS + pfad, { waitUntil: "load" });
+      const befund = await seite.evaluate(() => {
+        const wirkungslos = [];
+        for (const el of document.querySelectorAll("div[aria-label]:not([role]), span[aria-label]:not([role]), p[aria-label]:not([role])")) {
+          wirkungslos.push(`${el.tagName.toLowerCase()}[aria-label="${el.getAttribute("aria-label")}"]`);
+        }
+
+        const labelKonflikte = [];
+        for (const el of document.querySelectorAll("a[aria-label], button[aria-label], summary[aria-label], [role=button][aria-label]")) {
+          // innerText und nicht textContent: der Markenlink enthaelt <strong>
+          // und <small> als Bloecke, die visuell zwei Zeilen bilden. In
+          // textContent stossen sie ohne Leerzeichen aneinander
+          // ("KarlsonOne-Man-Band"), was kein Label je enthalten kann.
+          const sichtbar = (el.innerText ?? el.textContent ?? "").replace(/\s+/g, " ").trim();
+          const label = (el.getAttribute("aria-label") ?? "").replace(/\s+/g, " ").trim();
+          if (!sichtbar || !label) continue;
+          if (!label.toLowerCase().includes(sichtbar.toLowerCase())) {
+            labelKonflikte.push(`sichtbar "${sichtbar.slice(0, 30)}" fehlt in aria-label "${label.slice(0, 40)}"`);
+          }
+        }
+        return { wirkungslos, labelKonflikte };
+      });
+
+      pruefe(p, befund.wirkungslos.length === 0, `${engine}${pfad}/aria-label-wirksam`, befund.wirkungslos.join(", "));
+      pruefe(p, befund.labelKonflikte.length === 0, `${engine}${pfad}/label-in-name`, befund.labelKonflikte.join(" | "));
+    });
+  }
+
+  // Der Namenszusatz im Kopf ist 12,16px klein und braucht 4,5:1. Nur dort
+  // messen, wo er sichtbar ist — ab 960px wird er ausgeblendet.
+  await versuche(`${engine}/E-brand-kontrast`, async () => {
+    const ctxBreit = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const seiteBreit = await ctxBreit.newPage();
+    await seiteBreit.goto(BASIS + "/", { waitUntil: "load" });
+    const werte = await seiteBreit.evaluate(`(() => {
+      ${HG_KETTE}
+      const el = document.querySelector(".brand small");
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      if (r.width === 0) return { unsichtbar: true };
+      return {
+        vg: getComputedStyle(el).color,
+        kette: hgKette(el),
+        px: parseFloat(getComputedStyle(el).fontSize),
+      };
+    })()`);
+    pruefe(p, werte !== null, `${engine}/brand-small-gefunden`, ".brand small nicht gefunden — Selektor kaputt?");
+    if (werte && !werte.unsichtbar) {
+      const grund = deckendeFarbe(werte.kette);
+      const text = deckendeFarbe(werte.kette, werte.vg);
+      const k = kontrastObj(text, grund);
+      // Unter 18,66px gilt die strengere Schwelle.
+      const soll = werte.px >= 18.66 ? 3 : 4.5;
+      pruefe(p, k >= soll, `${engine}/brand-small-kontrast`, `${k.toFixed(2)}:1 bei ${werte.px}px (${werte.vg}), verlangt ${soll}:1`);
+    }
+    await ctxBreit.close();
+  });
+
+  // Abstaende: 88px oben und unten waren auf 375px zusammen fast eine halbe
+  // Bildschirmhoehe pro Abschnitt.
+  await versuche(`${engine}/E-section-abstand`, async () => {
+    const ctxEng = await browser.newContext({ viewport: { width: 375, height: 900 }, isMobile: true, hasTouch: true });
+    const seiteEng = await ctxEng.newPage();
+    await seiteEng.goto(BASIS + "/", { waitUntil: "load" });
+    const abstand = await seiteEng.evaluate(() => {
+      const el = document.querySelector("main .section");
+      if (!el) return null;
+      const cs = getComputedStyle(el);
+      return { oben: Math.round(parseFloat(cs.paddingTop)), unten: Math.round(parseFloat(cs.paddingBottom)) };
+    });
+    pruefe(p, abstand !== null, `${engine}/section-gefunden`, "main .section nicht gefunden — Selektor kaputt?");
+    if (abstand) {
+      pruefe(p, abstand.oben <= 60, `${engine}/section-abstand-mobil`, `padding-top ${abstand.oben}px auf 375px (erwartet <= 60px)`);
+    }
+    await ctxEng.close();
+  });
+
+  await ctx.close();
+}
+
+// ---------------------------------------------------------------- G
+
+/**
+ * Verhalten des Formulars bei leerer Eingabe. Loest bewusst keinen Versand
+ * aus: ein leeres Formular bricht vor dem fetch ab, und genau das wird hier
+ * mitgeprueft.
+ */
+async function formularVerhalten(engine, browser) {
+  if (!FORMULAR_AKTIV) return;
+  console.log("  F. Formularverhalten");
+
+  const ctx = await browser.newContext({ viewport: { width: 393, height: 852 }, isMobile: true, hasTouch: true });
+  const seite = await ctx.newPage();
+  seite.setDefaultTimeout(10_000);
+
+  await versuche(`${engine}/F-leeres-formular`, async () => {
+    const versandVersuche = [];
+    seite.on("request", (r) => {
+      if (r.url().includes("/api/contact")) versandVersuche.push(r.method());
+    });
+
+    await seite.goto(BASIS + "/buchung/", { waitUntil: "load" });
+    await seite.locator('form.form-panel button[type="submit"]').click();
+    await seite.waitForTimeout(400);
+
+    const nach = await seite.evaluate(() => {
+      const meldungen = [...document.querySelectorAll(".feld-fehler")]
+        .filter((el) => el.getBoundingClientRect().height > 0)
+        .map((el) => ({
+          id: el.id,
+          text: (el.textContent ?? "").trim().slice(0, 40),
+          // Zeigt ein Feld per aria-describedby auf genau diese Meldung?
+          verknuepft: el.id ? document.querySelector(`[aria-describedby="${el.id}"]`) !== null : false,
+        }));
+      const invalide = document.querySelectorAll('[aria-invalid="true"]').length;
+      const aktiv = document.activeElement;
+      return {
+        meldungen,
+        invalide,
+        fokusName: aktiv?.getAttribute("name") ?? aktiv?.tagName ?? "",
+      };
+    });
+
+    // Sechs Pflichtfelder: name, email, datum, ort, anlass, datenschutz.
+    pruefe(p, nach.meldungen.length >= 6, `${engine}/feldfehler-erscheinen`, `nur ${nach.meldungen.length} Meldungen bei leerem Formular`);
+    pruefe(p, nach.invalide >= 6, `${engine}/aria-invalid-gesetzt`, `nur ${nach.invalide} Felder mit aria-invalid`);
+    for (const m of nach.meldungen) {
+      pruefe(p, m.verknuepft, `${engine}/feldfehler-verknuepft`, `Meldung "${m.text}" (id ${m.id || "fehlt"}) ist keinem Feld per aria-describedby zugeordnet`);
+    }
+    // Der Fokus muss im ersten fehlerhaften Feld landen, nicht auf <body>.
+    pruefe(p, nach.fokusName === "name", `${engine}/fokus-erstes-fehlerfeld`, `Fokus liegt auf "${nach.fokusName}" statt auf "name"`);
+    // Und es darf nichts rausgegangen sein.
+    pruefe(p, versandVersuche.length === 0, `${engine}/kein-versand-bei-fehler`, `${versandVersuche.length} Request(s) an /api/contact trotz leerer Pflichtfelder`);
+  });
+
+  // --- Turnstile-Fehlerzustand ---
+  // Vorher blieb bei fehlgeschlagenem Turnstile eine leere Flaeche von 73px
+  // stehen, und der Besucher erfuhr erst aus einer Serverantwort, dass etwas
+  // nicht stimmt. Geprueft, indem Cloudflares Script blockiert wird.
+  const hatTurnstile = await seite.evaluate(() => document.querySelector(".turnstile-feld") !== null);
+  if (hatTurnstile) {
+    await versuche(`${engine}/F-turnstile-fehler`, async () => {
+      await seite.route("**challenges.cloudflare.com/**", (r) => r.abort());
+      await seite.goto(BASIS + "/buchung/", { waitUntil: "load" });
+      await seite.waitForTimeout(1500);
+      const meldung = await seite.evaluate(() => {
+        const el = document.querySelector(".turnstile-feld .feld-fehler");
+        return el ? { text: (el.textContent ?? "").trim().slice(0, 60), rolle: el.getAttribute("role") } : null;
+      });
+      pruefe(p, meldung !== null, `${engine}/turnstile-fehlermeldung`, "Turnstile blockiert, aber keine Meldung im Formular");
+      if (meldung) {
+        pruefe(p, meldung.rolle === "alert", `${engine}/turnstile-meldung-rolle`, `role="${meldung.rolle}" statt "alert"`);
+      }
+      await seite.unroute("**challenges.cloudflare.com/**");
+    });
+  } else {
+    p.hinweise.push(
+      `${engine}: Turnstile-Fehlerzustand nicht geprueft — auf dieser Fassung ist kein Sitekey gesetzt, das Widget fehlt also ganz.`,
+    );
+  }
+
+  // --- Fokus nach erfolgreichem Absenden ---
+  // Der Erfolgstext ersetzt das Formular; der Fokus lag auf dem Absendeknopf
+  // und fiel damit auf <body>. Hier wird die Antwort des Workers abgefangen,
+  // es geht also keine Mail raus.
+  if (!hatTurnstile) {
+    await versuche(`${engine}/F-erfolg-fokus`, async () => {
+      await seite.route("**/api/contact", (r) =>
+        r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) }),
+      );
+      await seite.goto(BASIS + "/buchung/", { waitUntil: "load" });
+      await seite.fill('input[name="name"]', "Testlauf Pruefharness");
+      await seite.fill('input[name="email"]', "test@example.org");
+      await seite.fill('input[name="datum"]', "2027-05-01");
+      await seite.fill('input[name="ort"]', "Ketzin");
+      await seite.fill('input[name="anlass"]', "Automatischer Test");
+      await seite.check('input[name="datenschutz"]');
+      await seite.locator('form.form-panel button[type="submit"]').click();
+      await seite.waitForTimeout(600);
+
+      const nach = await seite.evaluate(() => {
+        const panel = document.querySelector('[role="status"].form-panel');
+        return {
+          panelDa: panel !== null,
+          fokusIstPanel: panel !== null && document.activeElement === panel,
+          fokusTag: document.activeElement?.tagName ?? "",
+          formularWeg: document.querySelector("form.form-panel") === null,
+        };
+      });
+      pruefe(p, nach.panelDa, `${engine}/erfolg-panel`, "kein Erfolgspanel nach dem Absenden");
+      pruefe(p, nach.formularWeg, `${engine}/erfolg-ersetzt-formular`, "Formular steht nach dem Erfolg noch da");
+      pruefe(
+        p,
+        nach.fokusIstPanel,
+        `${engine}/erfolg-fokus`,
+        `Fokus liegt auf <${nach.fokusTag.toLowerCase()}> statt im Erfolgspanel — Tastatur und Screenreader verlieren die Stelle`,
+      );
+      await seite.unroute("**/api/contact");
+    });
+  } else {
+    p.hinweise.push(
+      `${engine}: Fokus nach Erfolg nicht geprueft — mit aktivem Turnstile laesst sich das Absenden nicht ohne echtes Token durchspielen. Gegen einen lokalen Build ohne Sitekey laeuft die Pruefung.`,
+    );
+  }
+
+  await ctx.close();
+}
+
 // ---------------------------------------------------------------- Ablauf
 
 async function lauf(engine, launcher) {
@@ -481,6 +741,8 @@ async function lauf(engine, launcher) {
   try {
     await mobilPruefungen(engine, browser);
     await breitenPruefungen(engine, browser);
+    await beschriftungPruefen(engine, browser);
+    await formularVerhalten(engine, browser);
   } finally {
     await browser.close();
   }

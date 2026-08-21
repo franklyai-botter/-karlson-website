@@ -55,7 +55,10 @@ export const metadata: Metadata = {
 function Header() {
   return (
     <header className="site-header">
-      <Link className="brand" href="/" aria-label="Karlson Startseite">
+      {/* Das aria-label muss den sichtbaren Text enthalten (WCAG 2.5.3).
+          Sichtbar stehen hier Name und Claim untereinander; "Karlson
+          Startseite" liess den Claim weg. */}
+      <Link className="brand" href="/" aria-label={`${site.name} ${site.claim} – zur Startseite`}>
         <Foto src="/karlson/logo.png" alt="" width={42} height={42} sizes="42px" priority />
         <span>
           <strong>{site.name}</strong>
@@ -71,13 +74,16 @@ function Header() {
         ))}
       </nav>
 
-      <div className="header-social" aria-label="Social Media">
+      {/* <nav> und nicht <div>: auf einem div ohne role ist aria-label
+          wirkungslos, der Name wird von keinem Screenreader ausgegeben. Der
+          Footer macht es an derselben Stelle schon richtig. */}
+      <nav className="header-social" aria-label="Social Media">
         {socialLinks.map((item) => (
           <a className={`social-button social-${item.label.toLowerCase()}`} key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
             {item.label}
           </a>
         ))}
-      </div>
+      </nav>
 
       {/* Zwei Beschriftungen, weil der Knopf auf dem Handy neben dem Burger
           stehen muss: "Auftritt anfragen" passt dort nicht in die Zeile,
@@ -89,7 +95,10 @@ function Header() {
       </Link>
 
       <MobileMenu>
-        <summary aria-label="Navigation öffnen">Menü</summary>
+        {/* Das aria-label muss den sichtbaren Text enthalten (WCAG 2.5.3,
+            Label in Name). "Navigation öffnen" tat das nicht: wer per Sprache
+            bedient und "Menü" sagt, traf den Knopf nicht. */}
+        <summary aria-label="Menü öffnen">Menü</summary>
         <div>
           {navItems.map((item) => (
             <Link key={item.href} href={item.href}>

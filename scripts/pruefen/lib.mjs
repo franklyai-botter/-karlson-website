@@ -258,6 +258,81 @@ export function rgb(str) {
   return m ? m.slice(0, 3).map(Number) : null;
 }
 
+/**
+ * CSS-Farbe als { r, g, b, a }. Fuer rgb() ist a = 1.
+ *
+ * Der Alphakanal ist hier der ganze Punkt: rgb() oben verwirft ihn, und damit
+ * rechnete die Kontrastpruefung bei `rgba(91,53,31,0.72)` mit dem vollen
+ * Braun — 8,26:1 statt der tatsaechlichen 4,12:1. Sie konnte den Befund, um
+ * dessentwillen sie existiert, gar nicht finden.
+ */
+export function farbe(str) {
+  const m = String(str).match(/[\d.]+/g);
+  if (!m || m.length < 3) return null;
+  return {
+    r: Number(m[0]),
+    g: Number(m[1]),
+    b: Number(m[2]),
+    a: m.length > 3 ? Number(m[3]) : 1,
+  };
+}
+
+/** Eine Farbe mit Alpha ueber eine deckende Farbe legen. */
+export function ueberlagern(oben, unten) {
+  const a = oben.a ?? 1;
+  return {
+    r: oben.r * a + unten.r * (1 - a),
+    g: oben.g * a + unten.g * (1 - a),
+    b: oben.b * a + unten.b * (1 - a),
+    a: 1,
+  };
+}
+
+/**
+ * Rechnet eine im Browser gesammelte Hintergrundkette (von innen nach aussen)
+ * plus optionalen Vordergrund zu einer deckenden Farbe zusammen. Basis ist
+ * Weiss, weil darunter kein Hintergrund mehr liegt.
+ */
+export function deckendeFarbe(ketteInnenNachAussen, vordergrund = null) {
+  let ergebnis = { r: 255, g: 255, b: 255, a: 1 };
+  for (const eintrag of [...ketteInnenNachAussen].reverse()) {
+    const f = farbe(eintrag);
+    if (f) ergebnis = ueberlagern(f, ergebnis);
+  }
+  if (vordergrund) {
+    const f = farbe(vordergrund);
+    if (f) ergebnis = ueberlagern(f, ergebnis);
+  }
+  return ergebnis;
+}
+
+/** Kontrast zweier { r, g, b }-Objekte. */
+export function kontrastObj(a, b) {
+  return kontrast([a.r, a.g, a.b], [b.r, b.g, b.b]);
+}
+
+/**
+ * JS-Schnipsel fuer seite.evaluate: sammelt die Hintergrundfarben eines
+ * Elements von innen nach aussen, bis eine voll deckende erreicht ist.
+ * Als String, damit ihn mehrere evaluate-Aufrufe teilen koennen.
+ */
+export const HG_KETTE = `
+  function hgKette(el) {
+    const kette = [];
+    let n = el;
+    while (n) {
+      const b = getComputedStyle(n).backgroundColor;
+      if (b && !/^rgba\\(0, 0, 0, 0\\)$/.test(b) && b !== "transparent") {
+        kette.push(b);
+        const m = b.match(/[\\d.]+/g);
+        if (!m || m.length < 4 || Number(m[3]) === 1) break;
+      }
+      n = n.parentElement;
+    }
+    return kette;
+  }
+`;
+
 // ------------------------------------------------------------ Bericht
 
 /** Schlussbericht ausgeben und Exit-Code setzen. */

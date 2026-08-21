@@ -53,9 +53,18 @@ export default function TerminePage() {
             vor dem Besuch noch einmal beim jeweiligen Veranstalter prüfen.
           </p>
         </div>
-        <ul className="event-list" aria-label="Öffentliche Termine 2026">
-          {publicEvents.map((event) => <EventCard key={event.date} event={event} />)}
-        </ul>
+        {publicEvents.length > 0 ? (
+          <ul className="event-list" aria-label="Öffentliche Termine 2026">
+            {publicEvents.map((event) => <EventCard key={event.date} event={event} />)}
+          </ul>
+        ) : (
+          <p className="muted">
+            Zurzeit stehen keine öffentlichen Termine fest. Neue Auftritte
+            erscheinen hier, sobald sie bestätigt sind. Wer Karlson für eine
+            eigene Veranstaltung möchte, fragt am besten direkt an:{" "}
+            <Link href="/buchung">Auftritt anfragen</Link>.
+          </p>
+        )}
       </section>
 
       <section className="split-band">
@@ -70,9 +79,16 @@ export default function TerminePage() {
               veröffentlichen.
             </p>
           </div>
-          <ul className="event-list event-list-compact" aria-label="Private Termine 2026">
-            {privateEvents.map((event) => <EventCard key={event.date} event={event} />)}
-          </ul>
+          {privateEvents.length > 0 ? (
+            <ul className="event-list event-list-compact" aria-label="Private Termine 2026">
+              {privateEvents.map((event) => <EventCard key={event.date} event={event} />)}
+            </ul>
+          ) : (
+            <p className="muted">
+              Zurzeit sind keine geschlossenen Veranstaltungen als belegt
+              eingetragen.
+            </p>
+          )}
         </div>
       </section>
 
