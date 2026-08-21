@@ -266,10 +266,11 @@ sie als E-Mail an Mailjet weiter. Danach ist sie aus dem Speicher weg.
 
 ### Schritt 1 — Mailjet-Konto und Absenderdomain
 
-1. Konto bei Mailjet anlegen. **Prüfen, dass das Konto auf die EU-Region
-   läuft.** Mailjet verarbeitet standardmäßig in Frankfurt und Saint-Ghislain,
-   der Sinch-Konzern betreibt aber auch US-Standorte — die Datenschutzerklärung
-   behauptet EU, also muss das stimmen.
+1. Konto bei Mailjet anlegen. **Im Konto nachsehen, dass es auf die EU-Region
+   läuft — nicht annehmen.** Sinch schreibt selbst „throughout the United
+   States **or** Europe, based on where you have selected to deploy": die
+   Region ist eine Einstellung beim Kontoaufbau, keine Zusage des Anbieters.
+   Die Datenschutzerklärung behauptet EU, also muss das stimmen.
 2. **AVV (Data Processing Agreement) abschließen** und die PDF zu Karlsons
    Unterlagen legen. Ohne AVV ist der Einsatz nicht sauber.
 3. Unter *Account → API Key Management* **API Key und Secret Key** erzeugen.
@@ -299,7 +300,7 @@ im Postfach ist die Folge. Also einrichten.
 ### Schritt 3 — Secrets im Worker hinterlegen
 
 Cloudflare-Dashboard → Worker `karlson-website` → *Settings → Variables and
-Secrets*. Diese vier als **Secret** (nicht als Variable), damit sie nicht
+Secrets*. Diese fünf als **Secret** (nicht als Variable), damit sie nicht
 lesbar sind:
 
 | Name | Wert |
