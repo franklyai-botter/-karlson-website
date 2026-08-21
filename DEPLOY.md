@@ -307,19 +307,38 @@ im Postfach ist die Folge. Also einrichten.
 
 ### Schritt 3 — Secrets im Worker hinterlegen
 
-Cloudflare-Dashboard → Worker `karlson-website` → *Settings → Variables and
-Secrets*. Diese fünf als **Secret** (nicht als Variable), damit sie nicht
-lesbar sind:
+⚠️ **Zwei Stolpersteine, beide am 21.08.2026 erlebt — zusammen gut eine
+Stunde Fehlsuche:**
+
+1. **Es gibt zwei Abschnitte namens „Variables and secrets".** Einer unter
+   *Settings → Build* (für die Build-Umgebung), einer weiter oben als
+   **„Runtime variables and secrets"** (für den laufenden Worker). Die Secrets
+   hier gehören in den **Runtime**-Abschnitt. Liegen sie im Build-Abschnitt,
+   ist das Formular sichtbar, antwortet beim Absenden aber mit 503 — der
+   Worker sieht sie nie. Umgekehrt gehören die `NEXT_PUBLIC_*` aus Schritt 5
+   ausschliesslich in den **Build**-Abschnitt.
+2. **Dashboard-Änderungen wirken erst mit dem nächsten Deployment.** Bei einem
+   Git-verbundenen Worker landet ein neu gesetztes Secret in der
+   Konfiguration, nicht in der laufenden Version. Nach dem Speichern also
+   einen Deploy auslösen (Push), sonst bleibt der 503 bestehen, obwohl die
+   Liste im Dashboard vollständig aussieht.
+
+`MAIL_FROM` und `MAIL_TO` stehen seit dem 21.08.2026 in `wrangler.jsonc` als
+`vars` und müssen hier **nicht** mehr eingetragen werden. Es bleiben drei:
+
+Cloudflare-Dashboard → Worker `karlson-website` → *Settings → Runtime
+variables and secrets*. Diese drei als **Secret** (Häkchen setzen!), damit sie
+nicht lesbar sind und kein Deploy sie löscht:
 
 | Name | Wert |
 |---|---|
 | `MAILJET_API_KEY` | API Key aus Schritt 1 |
 | `MAILJET_SECRET_KEY` | Secret Key aus Schritt 1 |
 | `TURNSTILE_SECRET_KEY` | Secret Key aus Schritt 2 |
-| `MAIL_FROM` | verifizierte Absenderadresse, z. B. `formular@karlson-solo-orchester.de` |
-| `MAIL_TO` | Karlsons Postfach (wohin die Anfragen gehen) |
 
-**Nie ins Repo.** `.env.example` dokumentiert nur die Namen, keine Werte.
+**Nie ins Repo.** `.env.example` dokumentiert nur die Namen, keine Werte. Das
+gilt für diese drei — `MAIL_FROM` und `MAIL_TO` sind keine Geheimnisse und
+stehen bewusst in `wrangler.jsonc`, siehe Begründung dort.
 
 ### Schritt 4 — Zustellungstest, bevor eingeschaltet wird
 
