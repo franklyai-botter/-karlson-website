@@ -94,12 +94,22 @@ export default function DatenschutzPage() {
             </p>
             {/*
               Anbieterangaben bewusst ohne Hausanschrift: die konkrete
-              Vertragspartei und ihre Adresse stehen im abgeschlossenen AVV und
-              gehoeren von dort uebernommen, nicht aus zweiter Hand. Belegt sind
-              die Rechenzentrumsstandorte (Mailjet Help Center) und der Sitz in
-              Paris. Sinch selbst betreibt auch US-Standorte — fuer Mailjet ist
-              die EU-Verarbeitung der Standard, das gehoert beim Kontoaufbau
-              aber geprueft (siehe DEPLOY.md).
+              Vertragspartei und ihre Adresse stehen im DPA und gehoeren von
+              dort uebernommen, nicht aus zweiter Hand.
+
+              Stand 21.08.2026, im Konto geprueft: Mailjet bietet KEINE Auswahl
+              der Verarbeitungsregion an — weder unter Account Information noch
+              in den Account settings gibt es Region, Data residency oder Data
+              location. Das Sinch-DPA enthaelt dazu ebenfalls nichts und sagt
+              stattdessen: "Sinch may transfer personal data within its company
+              group. These transfers are necessary to provide the Services
+              globally."
+
+              Deshalb steht hier KEINE Behauptung mehr, das Konto verarbeite in
+              der EU. Diverse Vergleichsseiten schreiben das, es sind aber
+              Sekundaerquellen. Falls Mailjet/Sinch je eine verbindliche
+              schriftliche Auskunft gibt (privacy@mailjet.com, dpo@sinch.com),
+              kann der Absatz praeziser werden — vorher nicht.
             */}
             <p>
               Für den Versand dieser E-Mail wird der Dienst{" "}
@@ -110,12 +120,12 @@ export default function DatenschutzPage() {
               Auftragsverarbeitungsvertrag nach Art. 28 DSGVO.
             </p>
             <p>
-              Das Konto ist auf die Verarbeitung in Rechenzentren innerhalb der
-              Europäischen Union eingestellt. Zur Sinch-Gruppe gehören auch
-              Gesellschaften in den USA; soweit im Einzelfall eine Übermittlung
-              in ein Drittland stattfindet, stützt sie sich auf die
-              Standardvertragsklauseln der EU-Kommission bzw. eine Zertifizierung
-              nach dem EU-US Data Privacy Framework.
+              Zur Sinch-Gruppe gehören auch Gesellschaften außerhalb der
+              Europäischen Union, unter anderem in den USA. Die Verarbeitung
+              kann daher auch außerhalb der Europäischen Union erfolgen. Soweit
+              eine Übermittlung in ein Drittland stattfindet, stützt sie sich
+              auf die Standardvertragsklauseln der EU-Kommission bzw. eine
+              Zertifizierung nach dem EU-US Data Privacy Framework.
             </p>
             <p>
               Die Anfrage wird anschließend im E-Mail-Postfach des

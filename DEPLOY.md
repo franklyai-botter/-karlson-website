@@ -266,13 +266,21 @@ sie als E-Mail an Mailjet weiter. Danach ist sie aus dem Speicher weg.
 
 ### Schritt 1 — Mailjet-Konto und Absenderdomain
 
-1. Konto bei Mailjet anlegen. **Im Konto nachsehen, dass es auf die EU-Region
-   läuft — nicht annehmen.** Sinch schreibt selbst „throughout the United
-   States **or** Europe, based on where you have selected to deploy": die
-   Region ist eine Einstellung beim Kontoaufbau, keine Zusage des Anbieters.
-   Die Datenschutzerklärung behauptet EU, also muss das stimmen.
-2. **AVV (Data Processing Agreement) abschließen** und die PDF zu Karlsons
-   Unterlagen legen. Ohne AVV ist der Einsatz nicht sauber.
+1. Konto bei Mailjet anlegen.
+
+   ⚠️ **Es gibt keine EU-Region zum Einstellen.** Am 21.08.2026 im Konto
+   geprüft: weder unter *Account Information* noch in den *Account settings*
+   existiert ein Punkt Region, Data residency oder Data location. Das
+   Sinch-DPA enthält dazu ebenfalls nichts und sagt stattdessen „Sinch may
+   transfer personal data within its company group. These transfers are
+   necessary to provide the Services globally." Der Datenschutztext ist
+   daraufhin angepasst und behauptet keine EU-Verarbeitung mehr — er nennt
+   Drittlandübermittlung auf Grundlage der Standardvertragsklauseln. **Diesen
+   Punkt also nicht suchen, er existiert nicht.**
+2. **AVV: nichts zu tun.** Das DPA „forms part of and is subject to the
+   underlying services agreement" — es ist automatisch Bestandteil der
+   akzeptierten Nutzungsbedingungen. Fassung für die Unterlagen:
+   <https://sinch.com/legal/terms-and-conditions/other-sinch-terms-conditions/data-processing-agreement/>
 3. Unter *Account → API Key Management* **API Key und Secret Key** erzeugen.
 4. **Absenderdomain verifizieren.** Mailjet verlangt dafür DKIM- und
    SPF-Einträge. Die DNS-Zone liegt bei **Cloudflare**, nicht bei IONOS — dort
@@ -341,11 +349,15 @@ gleichzeitig der Datenschutzabschnitt live, und der behauptet sie als
 Tatsache. Wer die Variable setzt, ohne dass sie stimmen, veröffentlicht eine
 falsche Angabe in einem Rechtstext:
 
-- [ ] **AVV mit Mailjet ist abgeschlossen** (nicht nur „verfügbar"). Der Text
-      sagt „Grundlage ist ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO".
-- [ ] **Das Mailjet-Konto verarbeitet in der EU** und das ist im Konto
-      nachgesehen, nicht angenommen. Der Text sagt „auf die Verarbeitung in
-      Rechenzentren innerhalb der Europäischen Union eingestellt".
+- [x] **AVV mit Mailjet** — erledigt, ohne Zutun. Das Sinch-DPA sagt selbst
+      „forms part of and is subject to the underlying services agreement", ist
+      also automatisch Bestandteil der beim Kontoaufbau akzeptierten
+      Nutzungsbedingungen. Es gibt keinen Knopf im Konto und nichts zu
+      unterschreiben. Fassung für die Unterlagen:
+      <https://sinch.com/legal/terms-and-conditions/other-sinch-terms-conditions/data-processing-agreement/>
+      Ein gegengezeichnetes Exemplar auf Wunsch über `privacy@mailjet.com`.
+- [x] **EU-Region** — hinfällig, siehe unten. Der Datenschutztext behauptet
+      keine EU-Verarbeitung mehr.
 - [ ] **Zustellungstest aus Schritt 4 ist geglückt**, inklusive Blick in den
       Spam-Ordner und Prüfung, dass „Antworten" beim Anfragenden landet.
 
