@@ -40,6 +40,10 @@ yarn-error.log*
 
 # cloudflare / wrangler
 .wrangler/
+# Lokale Worker-Secrets fuer `wrangler dev`. Wird von `.env*` oben NICHT
+# erfasst, deshalb hier eigens genannt — hier stehen echte Mailjet-Keys drin.
+.dev.vars
+.dev.vars.*
 
 # typescript
 *.tsbuildinfo

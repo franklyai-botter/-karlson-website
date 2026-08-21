@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Zwischendateien von `wrangler dev`/`wrangler deploy`. Generierter Code,
+    // den zu linten sinnlos ist — er erzeugte nur Rauschen im Lint-Lauf.
+    ".wrangler/**",
   ]),
 ]);
 

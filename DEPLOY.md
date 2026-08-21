@@ -247,6 +247,122 @@ dass keine anderen Cloudflare-Projekte an der Installation hängen.
 
 ---
 
+## 2b. Anfrageformular scharfstellen (einmalig)
+
+Das Formular auf `/buchung/` ist **gebaut und getestet, aber noch nicht
+eingeschaltet**. Solange die Variable aus Schritt 5 unten fehlt, zeigt die
+Seite nur Telefon und E-Mail — genau wie vorher. Das ist Absicht: ein
+Formular, das beim Absenden scheitert, kostet mehr Anfragen als keins.
+
+Wie es technisch läuft: `worker/index.js` liegt neben den statischen Dateien
+und wird laut `wrangler.jsonc` **nur für `/api/*`** aufgerufen
+(`run_worker_first`). Jede andere Adresse wird weiter direkt als Asset
+ausgeliefert — kostenlos und unbegrenzt wie bisher. Nur die Formularabsendung
+zählt auf das Kontingent von 100.000 Worker-Requests pro Tag; bei realistischem
+Anfrageaufkommen sind das ein paar Requests am Tag.
+
+Der Worker **speichert nichts**. Er nimmt die Anfrage an, prüft sie und gibt
+sie als E-Mail an Mailjet weiter. Danach ist sie aus dem Speicher weg.
+
+### Schritt 1 — Mailjet-Konto und Absenderdomain
+
+1. Konto bei Mailjet anlegen. **Prüfen, dass das Konto auf die EU-Region
+   läuft.** Mailjet verarbeitet standardmäßig in Frankfurt und Saint-Ghislain,
+   der Sinch-Konzern betreibt aber auch US-Standorte — die Datenschutzerklärung
+   behauptet EU, also muss das stimmen.
+2. **AVV (Data Processing Agreement) abschließen** und die PDF zu Karlsons
+   Unterlagen legen. Ohne AVV ist der Einsatz nicht sauber.
+3. Unter *Account → API Key Management* **API Key und Secret Key** erzeugen.
+4. **Absenderdomain verifizieren.** Mailjet verlangt dafür DKIM- und
+   SPF-Einträge. Die DNS-Zone liegt bei **Cloudflare**, nicht bei IONOS — dort
+   eintragen.
+
+   ⚠️ **SPF: es darf nur einen SPF-TXT-Record geben.** In der Zone steht schon
+   `v=spf1 include:_spf-eu.ionos.com ~all`. Mailjets `include` muss in **diesen
+   Record hinein**, kein zweiter TXT-Record daneben — sonst ist SPF für beide
+   Absender kaputt und die Mails landen im Spam.
+
+5. Absenderadresse auf der eigenen Domain wählen, z. B.
+   `formular@karlson-solo-orchester.de`. **Kein Freemail-Absender und nicht der
+   Testabsender des Anbieters** — beides landet im Spam.
+
+### Schritt 2 — Turnstile (Spam-Schutz)
+
+Cloudflare-Dashboard → *Turnstile* → *Add Site* für
+`karlson-solo-orchester.de`. Liefert ein Paar: **Sitekey** (öffentlich) und
+**Secret Key**.
+
+Ohne Turnstile funktioniert das Formular, hat dann aber nur den Honeypot als
+Schutz. Für eine öffentlich verlinkte Musikerseite ist das zu wenig — Bot-Müll
+im Postfach ist die Folge. Also einrichten.
+
+### Schritt 3 — Secrets im Worker hinterlegen
+
+Cloudflare-Dashboard → Worker `karlson-website` → *Settings → Variables and
+Secrets*. Diese vier als **Secret** (nicht als Variable), damit sie nicht
+lesbar sind:
+
+| Name | Wert |
+|---|---|
+| `MAILJET_API_KEY` | API Key aus Schritt 1 |
+| `MAILJET_SECRET_KEY` | Secret Key aus Schritt 1 |
+| `TURNSTILE_SECRET_KEY` | Secret Key aus Schritt 2 |
+| `MAIL_FROM` | verifizierte Absenderadresse, z. B. `formular@karlson-solo-orchester.de` |
+| `MAIL_TO` | Karlsons Postfach (wohin die Anfragen gehen) |
+
+**Nie ins Repo.** `.env.example` dokumentiert nur die Namen, keine Werte.
+
+### Schritt 4 — Zustellungstest, bevor eingeschaltet wird
+
+Lokal, ohne echten Versand:
+
+```bash
+# .dev.vars anlegen (steht in .gitignore, kommt nie ins Repo):
+#   MAIL_DRY_RUN=1
+#   MAIL_FROM=formular@karlson-solo-orchester.de
+#   MAIL_TO=<eigene Adresse>
+npm run vorschau      # = next build && wrangler dev
+```
+
+Dann `/buchung/` aufrufen und absenden. Mit `MAIL_DRY_RUN=1` wird die Mail
+gebaut und ins Log geschrieben, aber nicht gesendet — so lässt sich die ganze
+Kette prüfen, ohne Schlüssel zu brauchen.
+
+Für den echten Test `MAIL_DRY_RUN` weglassen und die Mailjet-Schlüssel in
+`.dev.vars` eintragen. **In den Spam-Ordner schauen** und prüfen, dass
+*Antworten* an den Absender der Anfrage geht (`ReplyTo`) und nicht an Karlson
+selbst.
+
+### Schritt 5 — Einschalten
+
+Erst wenn Schritt 4 geklappt hat, im Cloudflare-Projekt als **Variable**
+(nicht Secret, der Build braucht sie):
+
+| Name | Wert |
+|---|---|
+| `NEXT_PUBLIC_FORMULAR_AKTIV` | `1` |
+| `NEXT_PUBLIC_TURNSTILE_SITEKEY` | Sitekey aus Schritt 2 |
+
+Danach einen Deploy auslösen (Push oder *Retry deployment* im Dashboard).
+`NEXT_PUBLIC_*`-Werte werden beim Build ins HTML eingebacken — eine Änderung
+wirkt erst nach dem nächsten Build, nicht sofort.
+
+Mit `NEXT_PUBLIC_FORMULAR_AKTIV=1` schaltet sich auch der passende Abschnitt
+der **Datenschutzerklärung** mit ein (Mailjet, Turnstile, welche Felder,
+keine Speicherung). Beide hängen bewusst an derselben Variable, damit der
+Rechtstext nie etwas anderes behauptet als die Seite tut.
+
+### Danach noch offen
+
+- **Rate-Limit** über eine WAF-Regel im Dashboard (*Security → WAF → Rate
+  limiting rules*) auf `/api/contact`, z. B. 5 Anfragen pro Minute je IP.
+  Turnstile fängt das Meiste, aber ein Deckel kostet nichts.
+- Anbieteranschrift von Mailjet aus dem abgeschlossenen AVV in die
+  Datenschutzerklärung übernehmen — dort steht bewusst noch keine Hausadresse,
+  weil sie aus zweiter Hand nicht belegt war.
+
+---
+
 ## 3. Auslieferung lokal prüfen
 
 Der Build schreibt nach `./out`. So testet man genau das, was Cloudflare

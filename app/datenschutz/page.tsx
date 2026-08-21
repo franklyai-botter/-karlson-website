@@ -5,6 +5,11 @@ export const metadata = {
   robots: { index: false, follow: true },
 };
 
+// Muss an dieselbe Variable haengen wie das Formular auf /buchung/, sonst
+// beschreibt die Erklaerung einen anderen Zustand als die Website tatsaechlich
+// hat — und zwar in beide Richtungen falsch.
+const formularAktiv = process.env.NEXT_PUBLIC_FORMULAR_AKTIV === "1";
+
 export default function DatenschutzPage() {
   return (
     <main>
@@ -57,19 +62,67 @@ export default function DatenschutzPage() {
 
         <h2>3. Kontaktaufnahme</h2>
         <p>
-          Es gibt auf dieser Website kein Kontaktformular. Wenn Besucherinnen
-          oder Besucher per E-Mail oder Telefon Kontakt aufnehmen, werden die
-          dabei übermittelten Angaben ausschließlich zur Bearbeitung der
-          Anfrage und für mögliche Anschlussfragen verwendet. Rechtsgrundlage
-          ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen bzw.
-          Vertrags­abwicklung) bzw. Art. 6 Abs. 1 lit. f DSGVO (effiziente
-          Bearbeitung).
+          {formularAktiv
+            ? "Wenn Besucherinnen oder Besucher per Anfrageformular, E-Mail oder Telefon Kontakt aufnehmen, werden die dabei übermittelten Angaben ausschließlich zur Bearbeitung der Anfrage und für mögliche Anschlussfragen verwendet."
+            : "Es gibt auf dieser Website kein Kontaktformular. Wenn Besucherinnen oder Besucher per E-Mail oder Telefon Kontakt aufnehmen, werden die dabei übermittelten Angaben ausschließlich zur Bearbeitung der Anfrage und für mögliche Anschlussfragen verwendet."}{" "}
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche
+          Maßnahmen bzw. Vertrags­abwicklung) bzw. Art. 6 Abs. 1 lit. f DSGVO
+          (effiziente Bearbeitung).
         </p>
         <p>
           Die Daten werden gelöscht, sobald sie für die Bearbeitung nicht mehr
           erforderlich sind, soweit keine gesetzlichen Aufbewahrungs­pflichten
           entgegenstehen.
         </p>
+
+        {formularAktiv ? (
+          <>
+            <h3>Anfrageformular auf der Seite „Kontakt &amp; Buchung“</h3>
+            <p>
+              Über das Formular werden Name, E-Mail-Adresse und die Angaben zur
+              geplanten Veranstaltung übermittelt – Datum, Ort, Anlass sowie
+              optional Telefonnummer, Wunschprogramm, Dauer, Gästezahl, ob
+              drinnen oder Open-Air, und eine freie Nachricht. Pflichtangaben
+              sind im Formular mit einem Sternchen gekennzeichnet; ohne sie ist
+              keine Bearbeitung möglich.
+            </p>
+            <p>
+              Die Angaben werden <strong>nicht auf dieser Website gespeichert</strong> und
+              nicht in einer Datenbank abgelegt. Sie werden ausschließlich als
+              E-Mail an das Postfach des Verantwortlichen weitergeleitet und
+              dort im Rahmen der Anfragebearbeitung aufbewahrt.
+            </p>
+            {/*
+              Anbieterangaben bewusst ohne Hausanschrift: die konkrete
+              Vertragspartei und ihre Adresse stehen im abgeschlossenen AVV und
+              gehoeren von dort uebernommen, nicht aus zweiter Hand. Belegt sind
+              die Rechenzentrumsstandorte (Mailjet Help Center) und der Sitz in
+              Paris. Sinch selbst betreibt auch US-Standorte — fuer Mailjet ist
+              die EU-Verarbeitung der Standard, das gehoert beim Kontoaufbau
+              aber geprueft (siehe DEPLOY.md).
+            */}
+            <p>
+              Für den Versand dieser E-Mail wird der Dienst{" "}
+              <strong>Mailjet</strong> als Auftragsverarbeiter nach Art. 28 DSGVO
+              eingesetzt. Mailjet ist ein Dienst der Sinch-Gruppe mit Sitz in
+              Paris; die Verarbeitung und Speicherung erfolgt in Rechenzentren
+              innerhalb der Europäischen Union (Frankfurt am Main und
+              Saint-Ghislain, Belgien). Mailjet erhält dabei die im Formular
+              gemachten Angaben, um sie als E-Mail zuzustellen. Ein
+              Auftragsverarbeitungsvertrag liegt vor.
+            </p>
+            <p>
+              Zum Schutz vor automatisierten Massenanfragen wird{" "}
+              <strong>Cloudflare Turnstile</strong> eingesetzt. Turnstile prüft ohne
+              Rätsel und ohne Cookies, ob die Anfrage von einem Menschen stammt;
+              dabei werden technische Merkmale des Aufrufs und die IP-Adresse an
+              Cloudflare übermittelt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f
+              DSGVO – das berechtigte Interesse, den Posteingang und den Betrieb
+              der Website vor Missbrauch zu schützen. Turnstile wird nur auf der
+              Seite „Kontakt &amp; Buchung“ geladen, nicht auf den übrigen Seiten.
+            </p>
+          </>
+        ) : null}
 
         <h2>4. Cookies und TDDDG</h2>
         <p>
@@ -78,6 +131,9 @@ export default function DatenschutzPage() {
           Verlinkungen zu YouTube und Facebook sind als reine Textlinks
           umgesetzt; Inhalte dieser Plattformen werden erst nach einem Klick
           und einem Wechsel auf die Plattform geladen.
+          {formularAktiv
+            ? " Auf der Seite „Kontakt & Buchung“ wird zusätzlich Cloudflare Turnstile geladen (siehe Abschnitt 3); Turnstile setzt nach Angaben von Cloudflare keine Cookies zu Werbe- oder Trackingzwecken."
+            : ""}
         </p>
 
         <h2>5. Webanalyse</h2>

@@ -1,10 +1,18 @@
 import { site } from "../data";
+import { AnfrageFormular } from "./anfrage-formular";
 
 export const metadata = {
   title: "Kontakt & Buchung",
   description:
-    "Karlson direkt per E-Mail oder Telefon anfragen – für Stadtfeste, Firmenfeiern, Hochzeiten, private Feiern, Kulturabende und Kinderprogramme.",
+    "Karlson für einen Auftritt anfragen – per Formular, E-Mail oder Telefon. Für Stadtfeste, Firmenfeiern, Hochzeiten, private Feiern, Kulturabende und Kinderprogramme.",
 };
+
+// Das Formular wird erst ausgeliefert, wenn der Versand eingerichtet ist
+// (Mailjet-Konto, verifizierter Absender, Secrets im Cloudflare-Projekt).
+// Solange die Variable fehlt, zeigt die Seite wie bisher nur Telefon und
+// E-Mail — besser als ein Formular, das beim Absenden scheitert. Umschalten:
+// NEXT_PUBLIC_FORMULAR_AKTIV=1 im Cloudflare-Projekt setzen, siehe DEPLOY.md.
+const formularAktiv = process.env.NEXT_PUBLIC_FORMULAR_AKTIV === "1";
 
 const checklist = [
   "Datum und Uhrzeit",
@@ -15,7 +23,9 @@ const checklist = [
   "Wunschprogramm (Solo, One-Man-Band, Kinder, Duo mit Klavier)",
 ];
 
-const mailSubject = encodeURIComponent("Auftrittsanfrage über karlson-musik.de");
+// Frueher stand hier "karlson-musik.de" — das ist die Domain einer fremden
+// Band. Beim Domain-Wechsel am 20.08.2026 wurde diese Stelle uebersehen.
+const mailSubject = encodeURIComponent("Auftrittsanfrage über karlson-solo-orchester.de");
 const mailBody = encodeURIComponent(
   [
     "Hallo Karlson,",
@@ -44,11 +54,18 @@ export default function KontaktPage() {
           <span className="eyebrow">Kontakt &amp; Buchung</span>
           <h1>Auftritt anfragen – direkt und persönlich.</h1>
           <p>
-            Anfragen kommen am liebsten per E-Mail oder Telefon. So bleibt der
-            Kontakt persönlich und Karlson kann gleich konkret antworten.
+            {formularAktiv
+              ? "Formular ausfüllen, anrufen oder eine E-Mail schreiben – alle drei Wege landen direkt bei Karlson."
+              : "Anfragen kommen am liebsten per E-Mail oder Telefon. So bleibt der Kontakt persönlich und Karlson kann gleich konkret antworten."}
           </p>
         </div>
       </section>
+
+      {formularAktiv ? (
+        <section className="section">
+          <AnfrageFormular />
+        </section>
+      ) : null}
 
       <section className="section grid-2">
         <article className="card">
@@ -79,8 +96,15 @@ export default function KontaktPage() {
         </article>
 
         <article className="card">
-          <h2>Damit ein gutes Angebot rauskommt</h2>
-          <p>Diese Angaben helfen, schnell ein passendes Angebot zu machen:</p>
+          {/* Ohne Formular ist diese Liste die Anleitung fuer die Anfrage.
+              Mit Formular fragt das Formular dasselbe schon ab — dann ist die
+              Liste nur noch fuer den Anruf da und wird entsprechend betitelt. */}
+          <h2>{formularAktiv ? "Für den Anruf: das hilft" : "Damit ein gutes Angebot rauskommt"}</h2>
+          <p>
+            {formularAktiv
+              ? "Wer lieber telefoniert, hat diese Angaben am besten gleich parat:"
+              : "Diese Angaben helfen, schnell ein passendes Angebot zu machen:"}
+          </p>
           <ul>
             {checklist.map((item) => (
               <li key={item}>{item}</li>

@@ -1,8 +1,35 @@
 {
   "name": "karlson-website",
   "compatibility_date": "2026-08-20",
+
+  // Der Worker beantwortet ausschliesslich das Anfrageformular.
+  // Kein "nodejs_compat" noetig: worker/index.js nutzt nur Web-APIs
+  // (fetch, URL, FormData, btoa), die in Workers eingebaut sind.
+  "main": "worker/index.js",
+
   "assets": {
+    // Ergebnis von `npm run build` (Next.js mit output: "export").
     "directory": "./out",
-    "not_found_handling": "404-page"
+
+    // Unbekannter Pfad -> die exportierte 404-Seite.
+    "not_found_handling": "404-page",
+
+    // Erlaubt dem Worker, statische Dateien selbst auszuliefern. Wird im
+    // Normalbetrieb nicht gebraucht (siehe run_worker_first), ist aber der
+    // Rueckfall im Worker, falls die Routing-Regel einmal geaendert wird.
+    "binding": "ASSETS",
+
+    // Entscheidend fuer die Kosten: nur /api/* laeuft durch den Worker und
+    // zaehlt auf das Kontingent von 100.000 Worker-Requests pro Tag. Jede
+    // andere Adresse wird direkt als Asset ausgeliefert — kostenlos und
+    // unbegrenzt, genau wie vor dem Formular.
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Fuer die Fehlersuche im Cloudflare-Dashboard (Worker -> Logs). Erfasst
+  // wird, was worker/index.js per console.error schreibt, also
+  // Konfigurations- und Versandfehler — keine Formularinhalte.
+  "observability": {
+    "enabled": true
   }
 }

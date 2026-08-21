@@ -9,7 +9,7 @@
 //   node scripts/bilder-pruefen.mjs <datei> [<datei> ...]
 //   node scripts/bilder-pruefen.mjs --alle      (prueft alles in public/karlson)
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, extname, basename } from "node:path";
 
 const BILDORDNER = "public/karlson";

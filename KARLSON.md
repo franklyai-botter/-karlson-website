@@ -230,6 +230,27 @@ Bitte ihn: „Erklär mir das so, als ob ich kein Programmierer bin."
 - Keinen `vercel`- und keinen `wrangler`-Befehl im Terminal.
 - Nicht `git push --force` benutzen.
 - Keine Dateien in `.next/`, `out/` oder `node_modules/` anfassen.
+- **Den Ordner `worker/` nicht anfassen.** Da läuft das Anfrageformular. Wenn
+  daran etwas kaputtgeht, kommen keine Anfragen mehr an, und du siehst es
+  nicht auf der Webseite.
 - **Keine Passwörter, Codes oder Zugangsdaten in einen KI-Chat tippen.** Weder
   bei Codex noch sonst wo. Wenn ein Programm eine Anmeldung braucht, machst du
-  die selbst im Browser oder rufst Frank an.
+  die selbst im Browser oder rufst Frank an. Das gilt auch für die Schlüssel
+  vom Mailversand — die stehen nicht im Projekt und sollen da auch nicht rein.
+
+---
+
+## 7. Das Anfrageformular
+
+Auf der Seite **Kontakt & Buchung** gibt es ein Formular, über das Veranstalter
+direkt anfragen können. Die Anfrage kommt als **E-Mail in dein Postfach**, und
+wenn du auf „Antworten" drückst, geht die Antwort direkt an den Absender.
+
+Für dich ändert sich dadurch nichts an der Arbeitsweise. Wichtig nur:
+
+- Es wird **nichts auf der Webseite gespeichert.** Wenn du eine Anfrage
+  löschst, ist sie weg — es gibt keine zweite Liste irgendwo.
+- Kommt plötzlich **Werbemüll** über das Formular, ruf Frank an. Dann muss am
+  Spam-Schutz nachgestellt werden, das ist nichts, was du selbst machst.
+- Kommt **gar nichts mehr** an, obwohl jemand sagt, er habe angefragt: auch
+  Frank anrufen. Bitte nicht selbst am Formular herumprobieren.
