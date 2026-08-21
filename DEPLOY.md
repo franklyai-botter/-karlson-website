@@ -335,8 +335,21 @@ selbst.
 
 ### Schritt 5 — Einschalten
 
-Erst wenn Schritt 4 geklappt hat, im Cloudflare-Projekt als **Variable**
-(nicht Secret, der Build braucht sie):
+⚠️ **Vorher diese drei Punkte wirklich abhaken.** Mit dem Einschalten geht
+gleichzeitig der Datenschutzabschnitt live, und der behauptet sie als
+Tatsache. Wer die Variable setzt, ohne dass sie stimmen, veröffentlicht eine
+falsche Angabe in einem Rechtstext:
+
+- [ ] **AVV mit Mailjet ist abgeschlossen** (nicht nur „verfügbar"). Der Text
+      sagt „Grundlage ist ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO".
+- [ ] **Das Mailjet-Konto verarbeitet in der EU** und das ist im Konto
+      nachgesehen, nicht angenommen. Der Text sagt „auf die Verarbeitung in
+      Rechenzentren innerhalb der Europäischen Union eingestellt".
+- [ ] **Zustellungstest aus Schritt 4 ist geglückt**, inklusive Blick in den
+      Spam-Ordner und Prüfung, dass „Antworten" beim Anfragenden landet.
+
+Dann im Cloudflare-Projekt als **Variable** (nicht Secret, der Build braucht
+sie):
 
 | Name | Wert |
 |---|---|

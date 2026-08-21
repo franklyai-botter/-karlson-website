@@ -105,11 +105,24 @@ export default function DatenschutzPage() {
               Für den Versand dieser E-Mail wird der Dienst{" "}
               <strong>Mailjet</strong> als Auftragsverarbeiter nach Art. 28 DSGVO
               eingesetzt. Mailjet ist ein Dienst der Sinch-Gruppe mit Sitz in
-              Paris; die Verarbeitung und Speicherung erfolgt in Rechenzentren
-              innerhalb der Europäischen Union (Frankfurt am Main und
-              Saint-Ghislain, Belgien). Mailjet erhält dabei die im Formular
-              gemachten Angaben, um sie als E-Mail zuzustellen. Ein
-              Auftragsverarbeitungsvertrag liegt vor.
+              Paris und erhält die im Formular gemachten Angaben, um sie als
+              E-Mail zuzustellen. Grundlage ist ein
+              Auftragsverarbeitungsvertrag nach Art. 28 DSGVO.
+            </p>
+            <p>
+              Das Konto ist auf die Verarbeitung in Rechenzentren innerhalb der
+              Europäischen Union eingestellt. Zur Sinch-Gruppe gehören auch
+              Gesellschaften in den USA; soweit im Einzelfall eine Übermittlung
+              in ein Drittland stattfindet, stützt sie sich auf die
+              Standardvertragsklauseln der EU-Kommission bzw. eine Zertifizierung
+              nach dem EU-US Data Privacy Framework.
+            </p>
+            <p>
+              Die Anfrage wird anschließend im E-Mail-Postfach des
+              Verantwortlichen bearbeitet. Solange dafür die im Impressum
+              genannte Adresse bei einem Freemail-Anbieter genutzt wird,
+              verarbeitet auch dieser Anbieter die Nachricht als Betreiber des
+              Postfachs.
             </p>
             <p>
               Zum Schutz vor automatisierten Massenanfragen wird{" "}
