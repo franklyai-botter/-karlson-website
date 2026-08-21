@@ -79,8 +79,13 @@ function Header() {
         ))}
       </div>
 
+      {/* Zwei Beschriftungen, weil der Knopf auf dem Handy neben dem Burger
+          stehen muss: "Auftritt anfragen" passt dort nicht in die Zeile,
+          fehlen darf der Knopf aber auch nicht — ohne ihn war die Buchung
+          mobil erst nach 92 % Seitentiefe erreichbar. */}
       <Link className="header-cta" href="/buchung">
-        Auftritt anfragen
+        <span className="cta-lang">Auftritt anfragen</span>
+        <span className="cta-kurz">Anfragen</span>
       </Link>
 
       <MobileMenu>

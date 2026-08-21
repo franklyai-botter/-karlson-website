@@ -44,6 +44,31 @@ a {
   text-decoration: none;
 }
 
+/* Links im Fliesstext brauchen ein eigenes Aussehen. Ohne das waren Telefonnummer
+   und E-Mail-Adresse auf /buchung/ von normalem Text nicht zu unterscheiden —
+   gemessen am 21.08.2026: identische Farbe rgb(111,98,88), keine Unterstreichung,
+   gleiche Schriftstaerke. Wer nicht zufaellig draufzeigt, erkennt den Kontaktweg
+   nicht als anklickbar.
+
+   Bewusst nur Links OHNE Klasse: Knoepfe (.button), Social-Kacheln und die
+   Navigation bringen ihr Aussehen selbst mit und sollen nicht unterstrichen
+   werden. */
+p a:not([class]),
+li a:not([class]),
+dd a:not([class]),
+label a:not([class]) {
+  color: var(--blue-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+p a:not([class]):hover,
+li a:not([class]):hover,
+dd a:not([class]):hover,
+label a:not([class]):hover {
+  text-decoration-thickness: 2px;
+}
+
 img {
   max-width: 100%;
   display: block;
@@ -159,8 +184,29 @@ main {
   line-height: 1.2;
 }
 
+/* Diese Regel stand auf color:#fffaf2 mit transparentem Grund — gebaut fuer den
+   dunklen Hero, verwendet wird sie aber ausschliesslich in .notice-, .card- und
+   .form-panel-Kaesten, und die haben background: rgba(255,250,242,0.92). Also
+   nahezu weisse Schrift auf nahezu weissem Grund: Kontrast 1,00:1, der Knopf war
+   unsichtbar. Am 21.08.2026 an 72 Vorkommen gemessen, darunter drei von vier
+   CTAs im Abschlussblock der Startseite (app/page.tsx:239-246) und "Lieber
+   anrufen" auf /buchung/.
+
+   Eine Verwendung auf dunklem Grund gibt es im ganzen Projekt nicht, deshalb
+   steht die Grundfassung jetzt auf dunkler Schrift. Fuer dunkle Flaechen gibt es
+   darunter .button.secondary.auf-dunkel — dann bewusst gesetzt, nicht geraten. */
 .button.secondary {
   background: transparent;
+  border-color: rgba(91, 53, 31, 0.42);
+  color: var(--brown-dark);
+}
+
+.button.secondary:hover {
+  border-color: var(--blue-dark);
+  color: var(--blue-dark);
+}
+
+.button.secondary.auf-dunkel {
   border-color: rgba(255, 250, 242, 0.48);
   color: #fffaf2;
 }
@@ -649,6 +695,18 @@ textarea {
   background: #fff;
   color: var(--ink);
   font: inherit;
+  /* Zwei Korrekturen zu `font: inherit`, beide am 21.08.2026 gemessen:
+
+     font-weight: das Feld liegt in einem <label> mit font-weight:900, erbte das
+     und war typografisch nicht vom Label zu unterscheiden. Eingegebener Wert und
+     Feldbezeichnung sahen gleich aus.
+
+     font-size: geerbt waren 13,76px. iOS-Safari zoomt die Seite beim Antippen
+     jedes Feldes unter 16px automatisch hinein und kehrt nicht zurueck — beim
+     Ausfuellen des Anfrageformulars auf dem iPhone springt das Layout dann bei
+     jedem Feld. 1rem entspricht 16px und verhindert genau das. */
+  font-weight: 400;
+  font-size: 1rem;
 }
 
 input[type="checkbox"] {
@@ -787,14 +845,54 @@ textarea {
   }
 }
 
+.cta-kurz {
+  display: none;
+}
+
 @media (max-width: 960px) {
   .desktop-nav,
-  .header-social,
-  .header-cta {
+  .header-social {
     display: none;
   }
 
+  /* Der Buchungsknopf bleibt hier bewusst sichtbar. Vorher war er ab 960px
+     ausgeblendet, der Hero hat keinen eigenen Knopf, und der erste Knopf in
+     <main> stand bei 92,4 % Seitentiefe — auf dem Handy also 23 Bildschirme
+     Scrollen oder der Weg ueber das Burgermenue, um eine Anfrage zu stellen.
+     Bei einer Seite, die genau dafuer existiert.
+
+     Kurze Beschriftung, weil daneben noch der Burger steht: bei 360px Breite
+     reicht der Platz fuer "Auftritt anfragen" nicht. */
+  .header-cta {
+    margin-left: auto;
+    padding: 9px 13px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .cta-lang {
+    display: none;
+  }
+
+  .cta-kurz {
+    display: inline;
+  }
+
+  /* Damit der zusaetzliche Knopf ueberhaupt in die Kopfzeile passt, muessen
+     `min-width: 220px` von .brand und der 22px-Abstand weichen. Ohne diese
+     beiden Korrekturen brauchte der Header 454px bei 375px Platz: Knopf und
+     Burger ragten hinaus und die ganze Seite scrollte horizontal. Auf dem
+     Desktop bleibt die Mindestbreite erhalten, dort schuetzt sie die Marke. */
+  .site-header {
+    gap: 12px;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
   .mobile-menu {
+    margin-left: 0;
     display: block;
   }
 
@@ -844,6 +942,17 @@ textarea {
   .hero-content,
   .section {
     width: min(100% - 28px, 1120px);
+  }
+
+  /* Der rechte Innenabstand der Grundregel (clamp(360px, 38vw, 500px)) haelt
+     Platz fuer .hero-main-image frei. Das Bild ist hier unten aber ausgeblendet,
+     der Platzhalter blieb stehen: bei 375px Viewport greift das clamp-Minimum von
+     360px auf einer 347px breiten Flaeche, und fuer die Schrift bleiben 153px.
+     Folge (am 21.08.2026 gemessen): Hero 1415px hoch, die Ueberschrift bricht
+     Wort fuer Wort. Die Spalte ragte dabei 152px ueber den Rand — unsichtbar nur,
+     weil .hero overflow:hidden hat, weshalb kein Overflow-Test es bemerkte. */
+  .hero-content {
+    padding-right: 0;
   }
 
   .gallery-grid {
