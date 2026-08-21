@@ -6,7 +6,7 @@ also als Gate.
 | Befehl | Dauer (gemessen gegen live) | Was es abdeckt |
 |---|---|---|
 | `npm run pruefen:smoke` | ~40 s, 220 Pruefungen | 11 Routen × Desktop/Handy, nur Chromium. Status, Assets, Ueberlauf, JS-Fehler, Bilder, `alt`, genau eine `h1`. |
-| `npm run pruefen` | ~20 s, 1578 Pruefungen | Chromium **und WebKit**: Burgermenue, Social-Kacheln, 11 Routen, 14 Breiten mit Kontrast, Hero-Geometrie, CTA, Inline-Links, Formularfelder, Honeypot. |
+| `npm run pruefen` | ~20 s, 1658 Pruefungen | Chromium **und WebKit**: Burgermenue, Social-Kacheln, 11 Routen, 14 Breiten mit Kontrast, Hero-Geometrie, CTA, Inline-Links, Formularfelder, Checkbox-Zeile, Honeypot. |
 
 Nach jeder Aenderung Stufe 1. Vor dem Push und nach jeder CSS-Aenderung Stufe 2.
 
@@ -102,6 +102,19 @@ Ausnahme prueft die Lage im Viewport und **nicht**, ob ein Vorfahre clippt;
 sonst waere der Hero-Fall wieder unsichtbar. Gegengeprueft mit injiziertem
 `padding-right: 3000px` auf `.hero-content`: wird weiterhin gemeldet.
 
+## Checkbox-Zeile
+
+Bei mehrzeiligem Zustimmungstext muss das Kästchen neben der **ersten** Zeile
+stehen (Versatz <= Zeilenhöhe), nicht in der Mitte des Absatzes. Die Prüfung
+existiert, weil genau das kaputt war: `label:has(input[type="checkbox"])` hat die
+Spezifität (0,1,2) — `:has()` nimmt die Spezifität seines Arguments an — und
+schlug damit `.checkbox-zeile` (0,1,0) samt dessen `align-items: start`.
+
+Auf dem Desktop war das unsichtbar, weil der Satz in eine Zeile passt. Bei
+320 px brach er auf sechs Zeilen um, und das Kästchen hing 56 px tiefer, neben
+Zeile 3. Behoben durch `:where()` um die Grundregel, die sie
+spezifitätsfrei (0,0,1) macht.
+
 ## Honeypot
 
 Drei eigene Pruefungen auf `/buchung/`, weil hier ein CSS-Versehen Geld kostet:
@@ -117,9 +130,22 @@ Feld, schlagen alle drei fehl.
 ## Bekannte Meldungen
 
 In `lib.mjs` steht eine Liste dokumentierter Konsolenmeldungen, die nicht als
-Fehler zaehlen. Derzeit ein Eintrag: WebKit bricht das Nachladen der
-Next.js-Navigationsdaten ab (`RSC payload`) und laedt ganze Seiten neu.
-Funktional bricht nichts, die Navigation ist auf Apple-Geraeten nur langsamer.
+Fehler zaehlen. Gematcht wird gegen den Text **und** die Quelle — "Failed to load
+resource ... 404" nennt die Adresse nur in `location.url`. Zwei Eintraege:
+
+- **WebKit, `RSC payload`:** Safari bricht das Nachladen der
+  Next.js-Navigationsdaten ab und laedt ganze Seiten neu. Funktional bricht
+  nichts, die Navigation ist auf Apple-Geraeten nur langsamer. Offen.
+- **`nurLokal`, `__next.*__PAGE__.txt`:** unter `wrangler dev` fragt Next auf
+  `/buchung/` den RSC-Payload mit **Punkt** an
+  (`__next.buchung.__PAGE__.txt`), auf der Platte liegt er mit **Schraegstrich**
+  (`__next.buchung/__PAGE__.txt`). Die lokale Asset-Auslieferung loest das nicht
+  auf, die echte Workers-Runtime schon — live gemessen 0 Fehler. Warum sich
+  beide unterscheiden, ist nicht abschliessend geklaert.
+
+`nurLokal`-Ausnahmen gelten **nur** bei lokalem `BASIS`. Was live auftritt,
+bleibt ein Befund — sonst waere die Ausnahme ein Weg, einen echten Fehler
+wegzudefinieren.
 
 Die Liste wird in beide Richtungen ausgewertet: aufgetretene Ausnahmen stehen
 gezaehlt im Bericht, und wenn eine Ausnahme **nicht** mehr auftritt, sagt der
