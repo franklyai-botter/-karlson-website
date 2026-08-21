@@ -65,9 +65,24 @@ export const BEKANNTE_MELDUNGEN = [
     muster: /RSC payload|access control checks/i,
     nurEngine: "webkit",
     grund:
-      "WebKit bricht das Nachladen der Next.js-Navigationsdaten ab und laedt " +
-      "ganze Seiten neu. Funktional bricht nichts, die Navigation ist auf " +
-      "Apple-Geraeten nur langsamer. Offen, nicht behoben (Stand 21.08.2026).",
+      "Artefakt DIESES Laufs, kein Seitenfehler: page.goto bricht die noch " +
+      "laufenden RSC-Prefetches der vorigen Route ab, und WebKit meldet " +
+      "abgebrochene Fetches als \"due to access control checks\". Am 22.08.2026 " +
+      "belegt: derselbe Durchlauf ueber die 11 Routen ergibt ohne Ruhezeit 2 " +
+      "solche Meldungen, mit 1800 ms Ruhezeit je Route 0. Und die Navigation " +
+      "selbst ist in Ordnung — ein window-Marker ueberlebt den Klick in WebKit " +
+      "mobil wie desktop, es ist also eine Client-Navigation und kein " +
+      "Neuladen. Die frueher hier notierte Lesart (\"Safari laedt jede Seite " +
+      "neu, Apple-Geraete sind langsamer\") war falsch.",
+  },
+  {
+    muster: /challenges\.cloudflare\.com/i,
+    grund:
+      "Turnstile laeuft in einem iframe von challenges.cloudflare.com. Dessen " +
+      "Skript greift auf den umgebenden Frame zu, was der Browser " +
+      "unterbindet — Fremdcode, nicht reparierbar und ohne Wirkung auf das " +
+      "Formular. Faellt hier auf, weil ein pageerror keine Quell-URL mitbringt " +
+      "und deshalb nicht ueber die Origin-Trennung laeuft.",
   },
   {
     muster: /__next\..*__PAGE__\.txt/,
