@@ -361,8 +361,17 @@ falsche Angabe in einem Rechtstext:
 - [ ] **Zustellungstest aus Schritt 4 ist geglückt**, inklusive Blick in den
       Spam-Ordner und Prüfung, dass „Antworten" beim Anfragenden landet.
 
-Dann im Cloudflare-Projekt als **Variable** (nicht Secret, der Build braucht
-sie):
+⚠️ **Diese zwei gehören unter Settings → `Build` → *Build variables and
+secrets*, NICHT unter „Variables and Secrets" oben.** Am 21.08.2026 zuerst
+falsch eingetragen: das Formular blieb nach dem Deploy aus, obwohl beide Werte
+gesetzt waren. `NEXT_PUBLIC_*` wird von Next.js beim **Build** ins HTML
+gebacken — ein Laufzeit-Eintrag ist wirkungslos, weil der Build ihn nie sieht.
+Dasselbe steht schon in Schritt 2 oben; hier fehlte der Hinweis.
+
+Die fünf Secrets aus Schritt 3 bleiben dagegen unter „Variables and Secrets" —
+die liest der Worker zur Laufzeit.
+
+Also unter *Build variables and secrets*:
 
 | Name | Wert |
 |---|---|
