@@ -715,7 +715,18 @@ input[type="checkbox"] {
   height: 18px;
 }
 
-label:has(input[type="checkbox"]) {
+/* Grundstellung für Checkbox-Zeilen: Kästchen links, Text daneben, mittig —
+   richtig für einzeilige Beschriftungen.
+
+   Das `:where()` ist kein Zierrat, sondern der Zweck der Regel. Ohne es hat
+   `label:has(input[type="checkbox"])` die Spezifität (0,1,2), weil `:has()` die
+   Spezifität seines Arguments annimmt — und schlägt damit `.checkbox-zeile`
+   (0,1,0), das für seinen mehrzeiligen Satz ausdrücklich `align-items: start`
+   setzt. Auf dem Desktop fiel das nie auf, weil der Satz dort in eine Zeile
+   passt; auf 320 px brach er auf sechs Zeilen um und das Kästchen hing neben
+   der dritten. `:where()` macht diese Regel spezifitätsfrei (0,0,1), damit jede
+   Klasse sie überschreiben kann. */
+label:where(:has(input[type="checkbox"])) {
   grid-template-columns: 18px 1fr;
   align-items: center;
 }

@@ -397,6 +397,45 @@ async function breitePruefen(engine, seite, breite) {
       pruefe(p, felder.length === 0, `${kennung}/formular-wirklich-aus`, `${felder.length} Felder da, obwohl FORMULAR=0 erwartet wurde`);
     }
 
+    // Checkbox-Zeile: bei mehrzeiligem Text muss das Kaestchen neben der
+    // ERSTEN Zeile stehen, nicht in der Mitte des Absatzes. Das ist kein
+    // Geschmacksurteil — `.checkbox-zeile` setzt dafuer `align-items: start`,
+    // verliert aber gegen `label:has(input[type=checkbox])`: (0,1,0) gegen
+    // (0,1,2), weil :has() die Spezifitaet seines Arguments annimmt. Auf dem
+    // Desktop ist der Text einzeilig und der Fehler unsichtbar, mobil bricht
+    // er auf fuenf Zeilen um.
+    if (FORMULAR_AKTIV) {
+      const zustimmung = await seite.evaluate(() => {
+        const lab = document.querySelector("label.checkbox-zeile");
+        if (!lab) return null;
+        const box = lab.querySelector('input[type="checkbox"]');
+        if (!box) return { ohneBox: true };
+        const lr = lab.getBoundingClientRect();
+        const br = box.getBoundingClientRect();
+        const cs = getComputedStyle(lab);
+        const zeilenhoehe = parseFloat(cs.lineHeight) || 0;
+        return {
+          zeilenhoehe: Math.round(zeilenhoehe),
+          zeilen: zeilenhoehe ? Math.round((lr.height / zeilenhoehe) * 10) / 10 : 0,
+          versatz: Math.round(br.top - lr.top),
+          alignItems: cs.alignItems,
+        };
+      });
+      pruefe(p, zustimmung !== null, `${kennung}/checkbox-zeile-gefunden`, "label.checkbox-zeile nicht gefunden — Selektor kaputt?");
+      if (zustimmung && !zustimmung.ohneBox) {
+        pruefe(p, zustimmung.zeilenhoehe > 0, `${kennung}/checkbox-zeilenhoehe`, "line-height nicht messbar");
+        if (zustimmung.zeilen >= 1.5) {
+          pruefe(
+            p,
+            zustimmung.versatz <= zustimmung.zeilenhoehe,
+            `${kennung}/checkbox-neben-erster-zeile`,
+            `Kaestchen ${zustimmung.versatz}px unter dem Textanfang bei ${zustimmung.zeilenhoehe}px Zeilenhoehe ` +
+              `(${zustimmung.zeilen} Zeilen, align-items: ${zustimmung.alignItems})`,
+          );
+        }
+      }
+    }
+
     // Honeypot. Wird er je sichtbar, fuellt ihn ein Mensch aus, bekommt vom
     // Worker {ok:true} und 200 — und seine Anfrage wird verworfen, ohne dass
     // es jemand merkt. Ein stiller Verlust von Buchungsanfragen, deshalb

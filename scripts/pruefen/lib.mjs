@@ -45,10 +45,10 @@ export const BASIS = (process.env.BASIS ?? "https://karlson-solo-orchester.de").
  * Default: live ist das Formular an, ein lokaler Build ohne
  * NEXT_PUBLIC_FORMULAR_AKTIV hat es aus.
  */
-const istLokal = /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])/.test(BASIS);
+export const IST_LOKAL = /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])/.test(BASIS);
 export const FORMULAR_AKTIV = process.env.FORMULAR
   ? process.env.FORMULAR === "1"
-  : !istLokal;
+  : !IST_LOKAL;
 
 export const EIGENER_HOST = new URL(BASIS).host;
 
@@ -68,6 +68,18 @@ export const BEKANNTE_MELDUNGEN = [
       "WebKit bricht das Nachladen der Next.js-Navigationsdaten ab und laedt " +
       "ganze Seiten neu. Funktional bricht nichts, die Navigation ist auf " +
       "Apple-Geraeten nur langsamer. Offen, nicht behoben (Stand 21.08.2026).",
+  },
+  {
+    muster: /__next\..*__PAGE__\.txt/,
+    nurLokal: true,
+    grund:
+      "Nur unter `wrangler dev` auf /buchung/: Next fragt den RSC-Payload als " +
+      "__next.buchung.__PAGE__.txt an (mit Punkt), auf der Platte liegt er als " +
+      "__next.buchung/__PAGE__.txt (mit Schraegstrich). Die lokale " +
+      "Asset-Auslieferung loest das nicht auf, die echte Workers-Runtime schon " +
+      "— live gemessen: 0 Fehler auf allen Routen. Warum sich beide " +
+      "unterscheiden, ist nicht abschliessend geklaert; belegt ist nur, dass es " +
+      "live nicht auftritt. Gilt deshalb ausschliesslich bei lokalem BASIS.",
   },
 ];
 
@@ -195,11 +207,20 @@ export function konsoleAuswerten(p, engine, meldungen) {
       p.fremd.push({ engine, host, text });
       continue;
     }
+    // Adresse mitfuehren, damit der Bericht und die Ausnahmepruefung sie sehen.
+    const volltext = url ? `${text} <- ${url}` : text;
     const treffer = BEKANNTE_MELDUNGEN.find(
-      (b) => b.muster.test(text) && (!b.nurEngine || b.nurEngine === engine),
+      (b) =>
+        // Auch gegen die Quelle pruefen: "Failed to load resource: ... 404"
+        // nennt die Adresse nicht im Text, sondern nur in location.url.
+        (b.muster.test(text) || (url && b.muster.test(url))) &&
+        (!b.nurEngine || b.nurEngine === engine) &&
+        // Lokale Artefakte nie gegen live durchlassen: was live auftritt, ist
+        // ein Befund, auch wenn es lokal erklaerbar waere.
+        (!b.nurLokal || IST_LOKAL),
     );
-    if (treffer) p.bekannt.push({ engine, text, grund: treffer.grund });
-    else unbekannt.push(text);
+    if (treffer) p.bekannt.push({ engine, text: volltext, grund: treffer.grund });
+    else unbekannt.push(volltext);
   }
   return unbekannt;
 }
@@ -274,6 +295,7 @@ export function bericht(p, titel) {
   // der Smoke-Test (nur Chromium) eine WebKit-Ausnahme als erledigt.
   for (const b of BEKANNTE_MELDUNGEN) {
     if (b.nurEngine && !p.engines.has(b.nurEngine)) continue;
+    if (b.nurLokal && !IST_LOKAL) continue;
     if (p.bekannt.some((x) => b.muster.test(x.text))) continue;
     console.log(
       `\nHinweis: die bekannte Meldung /${b.muster.source}/ trat in diesem Lauf ` +
