@@ -162,11 +162,16 @@ export const faqs = [
   },
 ];
 
+// Zeigt auf gallery-full/, nicht auf einen eigenen Ordner: der frueher hier
+// verwendete Ordner public/karlson/gallery/ enthielt byteidentische Kopien
+// (live-01 = foto-06, live-02 = foto-19, live-03 = foto-26, live-04 = foto-43,
+// per sha256 geprueft). Die Dateien lagen doppelt im Repo und wurden doppelt
+// ausgeliefert; portrait-01.jpg war gar nicht eingebunden.
 export const galleryImages = [
   { src: "/karlson/hero.jpg", alt: "Karlson mit Gitarre vor einer Backsteinwand" },
-  { src: "/karlson/gallery/live-01.jpg", alt: "Karlson bei einem Live-Auftritt" },
-  { src: "/karlson/gallery/live-02.jpg", alt: "Karlson mit Gitarre und Bühnenaufbau" },
-  { src: "/karlson/gallery/live-03.jpg", alt: "Karlson als Alleinunterhalter" },
-  { src: "/karlson/gallery/live-04.jpg", alt: "Live-Musik von Karlson" },
+  { src: "/karlson/gallery-full/foto-06.jpg", alt: "Karlson bei einem Live-Auftritt" },
+  { src: "/karlson/gallery-full/foto-19.jpg", alt: "Karlson mit Gitarre und Bühnenaufbau" },
+  { src: "/karlson/gallery-full/foto-26.jpg", alt: "Karlson als Alleinunterhalter" },
+  { src: "/karlson/gallery-full/foto-43.jpg", alt: "Live-Musik von Karlson" },
   { src: "/karlson/remise-setup.jpg", alt: "Auftrittssetup mit Gitarre, Mikrofon und Technik in einer Remise" },
 ];

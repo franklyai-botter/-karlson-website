@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Foto, SIZES_GALERIE_VOLL } from "../foto";
 import { galleryImages } from "../gallery";
 import { youtubeLinks } from "../data";
 
@@ -24,7 +24,14 @@ export default function EindrueckePage() {
 
       <section className="section gallery-grid gallery-grid-full">
         {galleryImages.map((image) => (
-          <Image src={image.src} alt={image.alt} width={900} height={1125} key={image.src} />
+          <Foto
+            src={image.src}
+            alt={image.alt}
+            width={900}
+            height={1125}
+            sizes={SIZES_GALERIE_VOLL}
+            key={image.src}
+          />
         ))}
       </section>
 

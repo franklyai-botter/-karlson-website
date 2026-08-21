@@ -10,7 +10,7 @@
 //   node scripts/bilder-pruefen.mjs --alle      (prueft alles in public/karlson)
 
 import { readFileSync, readdirSync } from "node:fs";
-import { join, extname, basename } from "node:path";
+import { join, extname, basename, dirname } from "node:path";
 
 const BILDORDNER = "public/karlson";
 const MAX_BYTES_FEHLER = 1_000_000; // 1 MB
@@ -93,6 +93,32 @@ function hatGpsDaten(buf) {
   return false;
 }
 
+/**
+ * Liegt die Datei selbst in der Ablage der erzeugten WebP-Fassungen? Die
+ * braucht keine eigenen Fassungen, sonst prueft sich das Skript im Kreis.
+ */
+function istGeneriert(pfad) {
+  return pfad.replace(/\\/g, "/").includes("public/karlson/webp/");
+}
+
+/** Gibt es mindestens eine erzeugte WebP-Fassung zu diesem Bild? */
+function hatWebpFassung(pfad) {
+  const p = pfad.replace(/\\/g, "/");
+  if (!p.startsWith(`${BILDORDNER}/`)) return true; // ausserhalb der Bildablage
+  if (![".jpg", ".jpeg", ".png"].includes(extname(p).toLowerCase())) return true;
+
+  const relativ = p.slice(BILDORDNER.length + 1);
+  const ordner = join(BILDORDNER, "webp", dirname(relativ));
+  const stamm = basename(relativ, extname(relativ));
+  try {
+    return readdirSync(ordner).some(
+      (d) => d.startsWith(`${stamm}-`) && d.endsWith(".webp"),
+    );
+  } catch {
+    return false; // Zielordner gibt es noch nicht
+  }
+}
+
 // ---------------------------------------------------------------- Pruefung
 
 const argumente = process.argv.slice(2);
@@ -167,6 +193,18 @@ for (const pfad of dateien) {
   }
   if (m && m.breite > MAX_BREITE_HINWEIS) {
     hinweise.push(`${name}: ${m.breite} Pixel breit. Mehr als 1800 bringt nichts.`);
+  }
+
+  // Zu jedem Foto gehoeren verkleinerte WebP-Fassungen; sonst geht das
+  // Original an jeden Besucher (der statische Export verkleinert nichts von
+  // allein). Bewusst nur ein Hinweis und kein Abbruch: das Bild funktioniert
+  // auch ohne, es ist nur unnoetig schwer.
+  if (!istGeneriert(pfad) && !hatWebpFassung(pfad)) {
+    hinweise.push(
+      `${name}: es gibt noch keine verkleinerten Fassungen.\n` +
+      `      So loest du es: einmal  npm run bilder:webp  ausfuehren und die\n` +
+      `      neuen Dateien mit committen.`
+    );
   }
 }
 

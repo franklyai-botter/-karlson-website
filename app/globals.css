@@ -49,6 +49,16 @@ img {
   display: block;
 }
 
+/* Fotos liegen in <picture>, damit WebP-Fassungen mit srcset ausgeliefert
+   werden (siehe app/foto.tsx). <picture> ist von sich aus ein Inline-Element
+   und wuerde als Grid-Item seine Breite vom Inhalt nehmen, statt die Spalte zu
+   fuellen — dann greifen Regeln wie `.gallery-grid img { width: 100% }` ins
+   Leere und das Raster bricht. Deshalb verhaelt es sich hier wie das <img>,
+   das vorher an dieser Stelle stand. */
+picture {
+  display: block;
+}
+
 main {
   min-height: 60vh;
 }
@@ -242,14 +252,39 @@ main {
   background: #221a15;
 }
 
-.hero-background {
+/* Die Klasse sitzt am <picture>, nicht am <img>: das <picture> muss die
+   Positionierung tragen, sonst belegt es als Grid-Item des .hero eine eigene
+   Zelle. Der zweite Selektor greift, falls fuer dieses Bild keine
+   WebP-Fassungen im Manifest stehen — dann rendert app/foto.tsx nur ein
+   <img> und die Klasse landet dort. */
+.hero-background,
+img.hero-background-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  opacity: 0.72;
+}
+
+.hero-background img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center center;
-  opacity: 0.72;
+}
+
+img.hero-background-img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Das Hauptmotiv im Hero hatte seine Groesse vorher von next/image "fill".
+   Jetzt kommt sie aus dem CSS — der Rahmen .hero-main-image gibt die Masse
+   vor, Bild und <picture> fuellen ihn aus. */
+.hero-main-image picture,
+.hero-main-image img {
+  width: 100%;
+  height: 100%;
 }
 
 .hero::after {

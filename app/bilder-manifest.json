@@ -1,0 +1,576 @@
+{
+  "/karlson/gallery-full/foto-01.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-01-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-01-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-01-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-02.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-02-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-02-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-03.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-03-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-03-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-04.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-04-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-04-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-04-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-05.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-05-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-05-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-06.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-06-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-06-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-06-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-07.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-07-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-07-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-08.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-08-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-08-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-08-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-09.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-09-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-09-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-10.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-10-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-10-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-10-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-11.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-11-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-11-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-11-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-12.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-12-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-12-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-12-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-13.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-13-400.webp",
+      "breite": 400
+    }
+  ],
+  "/karlson/gallery-full/foto-14.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-14-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-14-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-15.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-15-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-15-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-15-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-16.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-16-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-16-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-17.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-17-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-17-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-17-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-18.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-18-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-18-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-18-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-19.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-19-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-19-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-19-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-20.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-20-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-20-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-20-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-21.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-21-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-21-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-21-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-22.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-22-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-22-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-23.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-23-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-23-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-23-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-24.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-24-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-24-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-24-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-25.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-25-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-25-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-26.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-26-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-26-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-26-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-27.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-27-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-27-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-27-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-28.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-28-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-28-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-28-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-29.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-29-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-29-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-30.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-30-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-30-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-30-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-31.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-31-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-31-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-32.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-32-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-32-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-32-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-33.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-33-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-33-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-34.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-34-400.webp",
+      "breite": 400
+    }
+  ],
+  "/karlson/gallery-full/foto-35.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-35-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-35-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-35-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-36.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-36-400.webp",
+      "breite": 400
+    }
+  ],
+  "/karlson/gallery-full/foto-37.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-37-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-37-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-37-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-38.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-38-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-38-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-38-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-39.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-39-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-39-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-39-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-40.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-40-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-40-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-40-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-41.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-41-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-41-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-42.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-42-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-42-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/gallery-full/foto-43.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-43-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-43-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-43-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/gallery-full/foto-44.jpg": [
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-44-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-44-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/gallery-full/foto-44-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/hero.jpg": [
+    {
+      "pfad": "/karlson/webp/hero-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/hero-800.webp",
+      "breite": 800
+    }
+  ],
+  "/karlson/logo.png": [
+    {
+      "pfad": "/karlson/webp/logo-120.webp",
+      "breite": 120
+    },
+    {
+      "pfad": "/karlson/webp/logo-200.webp",
+      "breite": 200
+    },
+    {
+      "pfad": "/karlson/webp/logo-400.webp",
+      "breite": 400
+    }
+  ],
+  "/karlson/remise-setup.jpg": [
+    {
+      "pfad": "/karlson/webp/remise-setup-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/remise-setup-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/remise-setup-1200.webp",
+      "breite": 1200
+    }
+  ]
+}

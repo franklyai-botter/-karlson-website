@@ -179,7 +179,12 @@ Codex trägt es in `app/data.ts` ein.
 
 ### Bild austauschen
 1. Neues Bild in `~/karlson-website/public/karlson/` ablegen
-2. Codex sagen: „Tausch das Bild XY auf der Startseite gegen `bildname.jpg`"
+2. Im Terminal einmal `npm run bilder:webp` ausführen.
+   Das erzeugt kleinere Fassungen des Bildes fürs Handy. Ohne diesen Schritt
+   lädt die Seite unnötig lange — kaputt ist dann nichts, nur langsam.
+3. Codex sagen: „Tausch das Bild XY auf der Startseite gegen `bildname.jpg`"
+
+Wenn du Schritt 2 vergisst, sagt dir das beim Commit von allein Bescheid.
 
 ### Text ändern
 Codex sagen: „Auf der Seite /ueber-karlson den zweiten Absatz neu

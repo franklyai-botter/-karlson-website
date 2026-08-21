@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond } from "next/font/google";
-import Image from "next/image";
 import Link from "next/link";
 import "./globals.css";
 import { navItems, site, siteUrl, socialLinks } from "./data";
+import { Foto } from "./foto";
 import { ArtistJsonLd } from "./structured-data";
 
 const cormorant = Cormorant_Garamond({
@@ -55,7 +55,7 @@ function Header() {
   return (
     <header className="site-header">
       <Link className="brand" href="/" aria-label="Karlson Startseite">
-        <Image src="/karlson/logo.png" alt="" width={42} height={42} />
+        <Foto src="/karlson/logo.png" alt="" width={42} height={42} sizes="42px" priority />
         <span>
           <strong>{site.name}</strong>
           <small>{site.claim}</small>
@@ -106,7 +106,7 @@ function Footer() {
   return (
     <footer className="site-footer">
       <div>
-        <Image src="/karlson/logo.png" alt="" width={54} height={54} />
+        <Foto src="/karlson/logo.png" alt="" width={54} height={54} sizes="54px" />
         <p>
           {site.name} ist Liedermacher, Singer-Songwriter und One-Man-Band
           aus Ketzin im Havelland.

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Foto } from "../foto";
 
 export const metadata = {
   title: "Über Karlson",
@@ -21,7 +21,14 @@ export default function UeberKarlsonPage() {
         </div>
       </section>
       <section className="section media-band">
-        <Image className="about-portrait" src="/karlson/gallery-full/foto-14.jpg" alt="Karlson mit Gitarre vor einer Backsteinwand" width={900} height={1600} />
+        <Foto
+          className="about-portrait"
+          src="/karlson/gallery-full/foto-14.jpg"
+          alt="Karlson mit Gitarre vor einer Backsteinwand"
+          width={900}
+          height={1600}
+          sizes="(max-width: 820px) calc(100vw - 28px), 420px"
+        />
         <div>
           <h2>Eine kleine Band in einer Person.</h2>
           <p className="muted">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { Foto } from "../foto";
 import { programs } from "../data";
 
 export const metadata = {
@@ -34,7 +34,13 @@ export default function ProgrammePage() {
       </section>
       <section className="split-band">
         <div className="section media-band">
-          <Image src="/karlson/remise-setup.jpg" alt="Karlsons Technik und Instrumente" width={1600} height={1200} />
+          <Foto
+            src="/karlson/remise-setup.jpg"
+            alt="Karlsons Technik und Instrumente"
+            width={1600}
+            height={1200}
+            sizes="(max-width: 820px) calc(100vw - 28px), 540px"
+          />
           <div>
             <span className="eyebrow">Technik</span>
             <h2>Kompakt, flexibel, bühnentauglich.</h2>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { Foto, SIZES_GALERIE } from "./foto";
 import {
   appearancePlaces,
   faqs,
@@ -18,24 +18,34 @@ export default function Home() {
     <main>
       <FaqJsonLd />
       <section className="hero">
-        <Image
-          className="hero-background"
+        <Foto
+          pictureClassName="hero-background"
+          className="hero-background-img"
           src="/karlson/remise-setup.jpg"
           alt="Remise mit Bühne und Karlsons Auftrittssetup"
-          fill
-          priority
+          width={1600}
+          height={1200}
           sizes="100vw"
+          priority
         />
         <div className="hero-main-image" aria-hidden="true">
-          <Image src="/karlson/hero.jpg" alt="" fill priority sizes="(max-width: 960px) 72vw, 34vw" />
+          <Foto
+            src="/karlson/hero.jpg"
+            alt=""
+            width={1090}
+            height={1599}
+            sizes="(max-width: 960px) 72vw, 420px"
+            priority
+          />
         </div>
         <div className="hero-content">
-          <Image
+          <Foto
             className="hero-logo"
             src="/karlson/logo.png"
             alt="Karlson Logo"
-            width={128}
-            height={128}
+            width={400}
+            height={400}
+            sizes="192px"
             priority
           />
           <span className="eyebrow">Live-Musik aus Ketzin · Brandenburg · Berlin</span>
@@ -146,7 +156,13 @@ export default function Home() {
               {repertoireGroups.map((group) => <span key={group}>{group}</span>)}
             </div>
           </div>
-          <Image src="/karlson/remise-setup.jpg" alt="Karlsons Auftrittssetup mit Gitarre und Technik" width={1600} height={1200} />
+          <Foto
+            src="/karlson/remise-setup.jpg"
+            alt="Karlsons Auftrittssetup mit Gitarre und Technik"
+            width={1600}
+            height={1200}
+            sizes="(max-width: 820px) calc(100vw - 28px), 540px"
+          />
         </div>
       </section>
 
@@ -180,7 +196,14 @@ export default function Home() {
           </div>
           <div className="gallery-grid">
             {galleryImages.slice(0, 12).map((image) => (
-              <Image src={image.src} alt={image.alt} width={900} height={1125} key={image.src} />
+              <Foto
+                src={image.src}
+                alt={image.alt}
+                width={900}
+                height={1125}
+                sizes={SIZES_GALERIE}
+                key={image.src}
+              />
             ))}
           </div>
         </div>

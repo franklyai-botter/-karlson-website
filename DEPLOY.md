@@ -396,9 +396,17 @@ prüfen: ein Aufruf wie `/gibtsnicht/` muss mit Status 404 antworten.
 - **Nie `wrangler deploy`, nie `vercel --prod`.** Immer über `git push`.
 - **Vor jeder Session `git pull`.** Lokal muss gleich GitHub sein.
 - **Nach UI-Änderungen einmal lokal durchklicken**, bevor gepusht wird.
-- **Bilder klein halten.** Der statische Export hat keinen Image-Optimizer,
-  jede Datei geht in Originalgröße an den Besucher. Richtwert: 400 px
-  Kantenlänge, unter 200 KB.
+- **Nach jedem neuen Bild `npm run bilder:webp` laufen lassen** und die
+  erzeugten Dateien mitcommitten. Der statische Export hat keinen
+  Image-Optimizer; ohne diesen Schritt geht das Original in voller Größe an
+  jeden Besucher. Das Skript schreibt verkleinerte WebP-Fassungen nach
+  `public/karlson/webp/` und ein Manifest nach `app/bilder-manifest.json`,
+  aus dem `app/foto.tsx` das `srcset` baut. Der Pre-Commit-Hook weist darauf
+  hin, wenn Fassungen fehlen (Hinweis, kein Abbruch).
+- **Warum die Fassungen im Repo liegen:** so braucht der Build bei Cloudflare
+  kein `sharp`. Fehlt zu einem Bild ein Eintrag im Manifest, liefert
+  `app/foto.tsx` einfach das Original — das Bild ist dann nur nicht
+  verkleinert, es fehlt nicht.
 - **Termine aktualisieren sich nur beim Build.** Der Stichtag ist das
   Build-Datum. Wer vergangene Termine verschwinden lassen will, muss einen
   Deploy auslösen, ein Aufruf im Browser genügt nicht.
