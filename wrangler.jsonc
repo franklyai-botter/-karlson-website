@@ -26,6 +26,25 @@
     "run_worker_first": ["/api/*"]
   },
 
+  // Absender und Empfaenger der Formular-Mail. Bewusst hier und nicht im
+  // Dashboard:
+  //
+  // 1. Beides ist kein Geheimnis. karlson.11.10@gmail.com steht in
+  //    app/data.ts und auf jeder Seite der Website verlinkt.
+  // 2. `npx wrangler deploy` loescht Plaintext-Variablen, die im Dashboard
+  //    stehen, aber in dieser Datei fehlen. Am 21.08.2026 genau so passiert:
+  //    Formular live, aber 503 beim Absenden.
+  //
+  // Die drei echten Geheimnisse (MAILJET_API_KEY, MAILJET_SECRET_KEY,
+  // TURNSTILE_SECRET_KEY) gehoeren NICHT hierher, sondern als Secret unter
+  // Worker -> Settings -> "Variables and secrets" im LAUFZEIT-Abschnitt.
+  // Achtung: Cloudflare hat zwei Abschnitte dieses Namens, einen fuer Build
+  // und einen fuer die Laufzeit. Die Secrets gehoeren in den zweiten.
+  "vars": {
+    "MAIL_FROM": "formular@karlson-solo-orchester.de",
+    "MAIL_TO": "karlson.11.10@gmail.com"
+  },
+
   // Fuer die Fehlersuche im Cloudflare-Dashboard (Worker -> Logs). Erfasst
   // wird, was worker/index.js per console.error schreibt, also
   // Konfigurations- und Versandfehler — keine Formularinhalte.
