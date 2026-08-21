@@ -763,6 +763,22 @@ textarea {
   line-height: 1.5;
 }
 
+/* Das Kästchen auf die Mitte der ERSTEN Textzeile setzen, nicht auf deren
+   Oberkante. `align-items: start` stellt es sonst exakt auf Label-Oberkante,
+   und weil die Box (18px) flacher ist als die Zeile (0.9rem * 1.5 = 21.6px),
+   sitzt es sichtbar zu hoch.
+
+   1.8px ist gerechnet, nicht geschätzt: (21.6px - 18px) / 2. Fester Wert und
+   kein calc(), weil die Einheiten hier in die Falle laufen — `1lh` und `1.5em`
+   beziehen sich auf die font-size der Checkbox selbst, und die erbt über
+   `input { font: inherit; font-size: 1rem }` die 16px, nicht die 14.4px des
+   Labels. Ein calc() daraus wäre falsch und würde nur so aussehen, als ginge es
+   bei einer Schriftänderung mit. Ändert sich font-size oder line-height der
+   Zeile, muss dieser Wert mit — die Prüfung in scripts/pruefen schlägt sonst an. */
+.checkbox-zeile input[type="checkbox"] {
+  margin-top: 1.8px;
+}
+
 .turnstile-feld {
   margin-bottom: 18px;
   /* Platzhalterhöhe des Turnstile-Widgets: verhindert, dass der Absende-Knopf

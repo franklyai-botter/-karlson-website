@@ -418,6 +418,8 @@ async function breitePruefen(engine, seite, breite) {
           zeilenhoehe: Math.round(zeilenhoehe),
           zeilen: zeilenhoehe ? Math.round((lr.height / zeilenhoehe) * 10) / 10 : 0,
           versatz: Math.round(br.top - lr.top),
+          // Mitte des Kaestchens, gemessen von der Oberkante des Labels.
+          boxMitte: Math.round(br.top - lr.top + br.height / 2),
           alignItems: cs.alignItems,
         };
       });
@@ -425,12 +427,16 @@ async function breitePruefen(engine, seite, breite) {
       if (zustimmung && !zustimmung.ohneBox) {
         pruefe(p, zustimmung.zeilenhoehe > 0, `${kennung}/checkbox-zeilenhoehe`, "line-height nicht messbar");
         if (zustimmung.zeilen >= 1.5) {
+          // Nicht "irgendwo in der ersten Zeile", sondern die MITTE des
+          // Kaestchens auf der ersten Zeile. Die schwaechere Fassung (Oberkante
+          // innerhalb der Zeilenhoehe) haette ein um 20px verschobenes
+          // Kaestchen noch bestehen lassen.
           pruefe(
             p,
-            zustimmung.versatz <= zustimmung.zeilenhoehe,
+            zustimmung.boxMitte > 0 && zustimmung.boxMitte <= zustimmung.zeilenhoehe,
             `${kennung}/checkbox-neben-erster-zeile`,
-            `Kaestchen ${zustimmung.versatz}px unter dem Textanfang bei ${zustimmung.zeilenhoehe}px Zeilenhoehe ` +
-              `(${zustimmung.zeilen} Zeilen, align-items: ${zustimmung.alignItems})`,
+            `Kaestchenmitte ${zustimmung.boxMitte}px unter dem Textanfang, erste Zeile reicht bis ` +
+              `${zustimmung.zeilenhoehe}px (${zustimmung.zeilen} Zeilen, align-items: ${zustimmung.alignItems})`,
           );
         }
       }
