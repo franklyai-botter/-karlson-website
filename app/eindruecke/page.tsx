@@ -1,6 +1,7 @@
 import { galerieBilder, SIZES_GALERIE_VOLL } from "../foto";
 import { Galerie } from "../galerie";
 import { galleryImages } from "../gallery";
+import { Video } from "../video";
 import { youtubeLinks } from "../data";
 
 export const metadata = {
@@ -41,25 +42,33 @@ export default function EindrueckePage() {
             <h2>Videos auf YouTube ansehen.</h2>
           </div>
           <p>
-            Die Videos werden erst nach einem Klick auf YouTube geöffnet – so
-            werden beim Aufruf dieser Seite keine Daten an YouTube übertragen.
+            Die Videos laufen direkt hier auf der Seite. Geladen werden sie
+            erst mit einem Klick – beim Aufruf dieser Seite wird noch nichts an
+            YouTube übertragen.
           </p>
         </div>
         <div className="grid-2">
           {youtubeLinks.map((video) => (
-            <a
-              className="card"
+            <Video
               key={video.id}
-              href={`https://www.youtube.com/watch?v=${video.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <h3>{video.label}</h3>
-              <p className="muted">Wird in einem neuen Tab auf YouTube geöffnet.</p>
-              <p><strong>Auf YouTube ansehen →</strong></p>
-            </a>
+              id={video.id}
+              label={video.label}
+              note={video.note}
+              vorschau={video.vorschau}
+            />
           ))}
         </div>
+        <p className="muted video-kanal">
+          Mehr Videos auf{" "}
+          <a
+            href="https://www.youtube.com/@karlikarlson1967"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Karlsons YouTube-Kanal
+          </a>
+          .
+        </p>
       </section>
     </main>
   );

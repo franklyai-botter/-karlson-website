@@ -11,9 +11,11 @@
     "hooks": "git config core.hooksPath .githooks && echo Bildpruefung aktiviert.",
     "vorschau": "next build && wrangler dev",
     "bilder:webp": "node scripts/bilder-optimieren.mjs",
+    "video:vorschau": "node scripts/video-vorschau.mjs",
     "pruefen:smoke": "node scripts/pruefen/smoke.mjs",
-    "pruefen": "node scripts/pruefen/frontend.mjs && node scripts/pruefen/galerie.mjs",
-    "pruefen:galerie": "node scripts/pruefen/galerie.mjs"
+    "pruefen": "node scripts/pruefen/frontend.mjs && node scripts/pruefen/galerie.mjs && node scripts/pruefen/video.mjs",
+    "pruefen:galerie": "node scripts/pruefen/galerie.mjs",
+    "pruefen:video": "node scripts/pruefen/video.mjs"
   },
   "dependencies": {
     "next": "16.2.6",

@@ -43,26 +43,54 @@ export const navItems = [
   { href: "/veranstalter", label: "Für Veranstalter" },
 ];
 
+/**
+ * Die vier Programme, mit Foto.
+ *
+ * Karlson hatte am 26.08.2026 gefragt, ob die Programme noch mit Fotos
+ * hinterlegt werden muessen — bis dahin waren es reine Textkarten.
+ *
+ * Die Zuordnung entstand nach Sichtung aller 44 Galeriebilder. Zwei passen
+ * genau, zwei sind Notloesungen, weil es die Motive schlicht nicht gibt:
+ *
+ *   - **Kein einziges Foto vom Kinderprogramm.** Genutzt wird ersatzweise ein
+ *     verspieltes Motiv. Ein echtes Bild aus einem Kinderauftritt waere hier
+ *     deutlich staerker — dabei ist allerdings zu klaeren, ob abgebildete
+ *     Kinder gezeigt werden duerfen. Ein Bild, auf dem nur Karlson zu sehen
+ *     ist, umgeht die Frage.
+ *   - **Kein Foto der Duo-Besetzung.** foto-21 ist das einzige Bild im ganzen
+ *     Bestand, auf dem ueberhaupt ein Klavier zu sehen ist, zeigt aber nur den
+ *     Raum. Ein Foto der tatsaechlichen Duo-Besetzung fehlt.
+ *
+ * `bild` ist optional: fehlt es, rendert die Karte wie frueher nur Text.
+ */
 export const programs = [
   {
     title: "Alleinunterhalter (One-Man-Band)",
     text: "Gitarre, Mundharmonika, Fußpercussion, Kazoo und Gesang – alles gleichzeitig. Ein Mann, ein Sound wie eine kleine Band.",
     details: "Für Stadt- und Dorffeste, Firmenfeiern, Neujahrsempfänge, Hochzeiten, Gartenpartys und private Feiern.",
+    bild: "/karlson/gallery-full/foto-11.jpg",
+    bildAlt: "Karlson allein auf einer Festbühne mit Gitarre, Mikrofon und Technik",
   },
   {
     title: "Liedermacher-Abend",
     text: "Eigene Havelland-Lieder, persönliche Geschichten und bekannte Songs in Karlsons eigener Handschrift.",
     details: "Für Kulturabende, Wohnzimmerkonzerte, Vereine und besondere private Anlässe.",
+    bild: "/karlson/gallery-full/foto-12.jpg",
+    bildAlt: "Warm beleuchteter Raum mit Stehlampe, Sesseln und Karlsons Technik für ein Wohnzimmerkonzert",
   },
   {
     title: "Kinderlieder-Mitmachprogramm",
     text: "Ein etwa einstündiges Mitmachprogramm mit musiktherapeutischer Erfahrung und viel Nähe zum Publikum.",
     details: "Für Kitas, Schulen, Familienfeste, Kinderfeste und kommunale Veranstaltungen.",
+    bild: "/karlson/gallery-full/foto-35.jpg",
+    bildAlt: "Karlson springt am Havelufer in die Luft, Gitarre und Hut fliegen mit",
   },
   {
     title: "Duo-Besetzung mit Klavier",
     text: "Auf Wunsch ergänzt Karlson sein Solo-Programm um Klavierbegleitung – mehr Klangfülle für besondere Abende.",
     details: "Für Hochzeiten, Empfänge, Kulturveranstaltungen und stimmungsvolle Privatfeiern.",
+    bild: "/karlson/gallery-full/foto-21.jpg",
+    bildAlt: "Salon mit Kronleuchtern, Klavier an der Wand und aufgebauter Gitarre samt Technik",
   },
 ];
 
@@ -92,13 +120,14 @@ export const highlightAppearances = [
   },
 ];
 
+// Die ersten drei Eintraege stehen auf der Startseite zusaetzlich als
+// Highlight-Karte. `weitereAppearancePlaces` weiter unten filtert sie heraus,
+// damit sie in der Liste darunter nicht ein zweites Mal auftauchen.
 export const appearancePlaces = [
   "Fischerfest Ketzin",
   "Brandenburgtag Perleberg",
   "Grüne Woche Berlin",
   "Baumblüte Werder",
-  // Fortsetzung unten. `weitereAppearancePlaces` filtert die drei Eintraege
-  // heraus, die oben schon als Highlight-Karte stehen.
   "BraLa Paaren im Glien",
   "Werder Classics",
   "Ketzür rockt",
@@ -153,9 +182,37 @@ const upcomingEventsCutoff = new Date().toISOString().slice(0, 10);
 
 export const upcomingEvents2026 = events2026.filter((event) => event.date >= upcomingEventsCutoff);
 
+/**
+ * Videos auf der Seite „Eindruecke".
+ *
+ * Die Videos liegen auf Karlsons YouTube-Kanal, werden aber **auf der Website**
+ * abgespielt statt in einem neuen Tab bei YouTube. Anlass war Karlsons Frage
+ * vom 26.08.2026: „Wie kommt man von YouTube-Videos von mir auf die Website
+ * zurueck?" — bis dahin gar nicht, die Links fuehrten mit `target="_blank"`
+ * weg und der Besucher kam nicht wieder.
+ *
+ * `vorschau` ist eine **lokale** Datei. Sie muss lokal liegen, sonst laedt die
+ * Seite beim blossen Aufruf ein Bild von `i.ytimg.com` — und damit waere die
+ * Zusage in der Datenschutzerklaerung hinfaellig, dass ohne Klick nichts an
+ * YouTube geht. Neue Vorschaubilder holt `npm run video:vorschau`.
+ *
+ * Ein neues Video hinzufuegen: Eintrag hier ergaenzen (id aus der YouTube-URL
+ * nach `watch?v=`), dann `npm run video:vorschau`, dann pushen. Ausfuehrlich
+ * in KARLSON.md.
+ */
 export const youtubeLinks = [
-  { id: "c-FGXQMpaXw", label: "Karlson live auf YouTube" },
-  { id: "MrqLqCjhr_o", label: "Karlson live auf YouTube" },
+  {
+    id: "c-FGXQMpaXw",
+    label: "„Halt mich“",
+    note: "Eigenes Lied von Karlson",
+    vorschau: "/karlson/video/c-FGXQMpaXw.jpg",
+  },
+  {
+    id: "MrqLqCjhr_o",
+    label: "„Du bist gut“",
+    note: "Text, Musik und Video von Karlson",
+    vorschau: "/karlson/video/MrqLqCjhr_o.jpg",
+  },
 ];
 
 export const faqs = [

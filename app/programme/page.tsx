@@ -24,11 +24,23 @@ export default function ProgrammePage() {
       </section>
       <section className="section grid-2">
         {programs.map((program) => (
-          <article className="card" key={program.title}>
-            <h2>{program.title}</h2>
-            <p>{program.text}</p>
-            <p><strong>{program.details}</strong></p>
-            <Link className="button" href="/buchung">Dieses Programm anfragen</Link>
+          <article className="card programm-karte" key={program.title}>
+            {program.bild ? (
+              <Foto
+                className="programm-bild"
+                src={program.bild}
+                alt={program.bildAlt ?? ""}
+                width={1200}
+                height={800}
+                sizes="(max-width: 820px) calc(100vw - 28px), 540px"
+              />
+            ) : null}
+            <div className="programm-text">
+              <h2>{program.title}</h2>
+              <p>{program.text}</p>
+              <p><strong>{program.details}</strong></p>
+              <Link className="button" href="/buchung">Dieses Programm anfragen</Link>
+            </div>
           </article>
         ))}
       </section>

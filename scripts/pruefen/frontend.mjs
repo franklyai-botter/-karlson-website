@@ -112,8 +112,17 @@ async function mobilPruefungen(engine, browser) {
     pruefe(p, await menueOeffnen(seite), `${engine}/menue-oeffnet`, "summary-Klick oeffnete das Menue nicht");
     const linkAnzahl = await seite.locator("details.mobile-menu div a").count();
     pruefe(p, linkAnzahl >= 5, `${engine}/menue-hat-links`, `nur ${linkAnzahl} Links im Menue`);
+    const ziel = await seite.locator("details.mobile-menu div a").first().getAttribute("href");
     await seite.locator("details.mobile-menu div a").first().click();
-    await seite.waitForLoadState("load");
+    // Auf die tatsaechliche Adressaenderung warten, nicht auf `load`: bei einer
+    // Client-Navigation feuert kein neues load-Ereignis, `waitForLoadState`
+    // kehrt also sofort zurueck. Der naechste Test startete dadurch sein
+    // `goto` mitten in die noch laufende Navigation und brach mit
+    // "interrupted by another navigation" ab — ein Fehler im Test, nicht auf
+    // der Seite. Aufgefallen am 28.08.2026, als die Startseite durch die
+    // Galerie-Grossansicht etwas mehr Client-Code bekam und sich das Timing
+    // verschob.
+    await seite.waitForURL(`**${ziel}**`, { timeout: 10_000 });
     pruefe(p, !(await istOffen(seite)), `${engine}/schliesst-bei-navigation`, "Menue blieb nach Navigation offen");
   });
 

@@ -150,10 +150,11 @@ export default function DatenschutzPage() {
         <h2>4. Cookies und TDDDG</h2>
         <p>
           Beim Erstaufruf dieser Website werden keine nicht notwendigen
-          Cookies, keine Tracking-Pixel und keine externen Medien gesetzt.
-          Verlinkungen zu YouTube und Facebook sind als reine Textlinks
-          umgesetzt; Inhalte dieser Plattformen werden erst nach einem Klick
-          und einem Wechsel auf die Plattform geladen.
+          Cookies, keine Tracking-Pixel und keine externen Medien geladen. Die
+          Videos auf der Seite „Eindrücke“ zeigen zunächst nur ein Vorschaubild,
+          das von diesem Server stammt; das Video selbst wird erst nach einem
+          ausdrücklichen Klick von YouTube nachgeladen (siehe Abschnitt 6).
+          Verlinkungen zu Facebook sind reine Textlinks.
           {formularAktiv
             ? " Auf der Seite „Kontakt & Buchung“ wird zusätzlich Cloudflare Turnstile geladen (siehe Abschnitt 3); Turnstile setzt nach Angaben von Cloudflare keine Cookies zu Werbe- oder Trackingzwecken."
             : ""}
@@ -166,13 +167,46 @@ export default function DatenschutzPage() {
           erforderlich – eine Einwilligung eingeholt.
         </p>
 
-        <h2>6. Eingebettete Inhalte und externe Links</h2>
+        <h2>6. Videos von YouTube und externe Links</h2>
         <p>
-          Verlinkungen auf YouTube (Google Ireland Limited / Google LLC) und
-          Facebook (Meta Platforms Ireland Ltd.) sind Textlinks. Inhalte dieser
-          Anbieter werden erst geladen, wenn der Link ausdrücklich angeklickt
-          wird. Eine Datenübertragung an diese Anbieter findet folglich erst
-          dann statt.
+          Auf der Seite „Eindrücke“ sind Videos eingebunden, die bei YouTube
+          liegen (Anbieter: Google Ireland Limited, Gordon House, Barrow Street,
+          Dublin 4, Irland; Mutterunternehmen Google LLC, USA). Die Einbindung
+          erfolgt in zwei Schritten: Zunächst ist nur ein Vorschaubild zu sehen,
+          das auf diesem Server gespeichert ist. Solange nicht auf das Video
+          geklickt wird, besteht <strong>keine</strong> Verbindung zu Google.
+        </p>
+        <p>
+          Erst mit dem Klick auf das Vorschaubild wird das Video vom Dienst
+          <em> youtube-nocookie.com</em> geladen. Dabei erhält Google die
+          IP-Adresse, Angaben zum verwendeten Browser und Gerät sowie die
+          Information, welche Seite aufgerufen wurde, und kann Cookies oder
+          vergleichbare Technologien auf dem Endgerät speichern. Wer währenddessen
+          bei YouTube angemeldet ist, ermöglicht Google, die Wiedergabe dem
+          eigenen Nutzerkonto zuzuordnen. Auf Umfang und Zweck dieser
+          Verarbeitung besteht kein Einfluss.
+        </p>
+        <p>
+          Rechtsgrundlage für das Laden des Videos und für die Speicherung von
+          Informationen auf dem Endgerät ist die durch den Klick erteilte
+          Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG). Die
+          Einwilligung kann jederzeit für die Zukunft widerrufen werden, indem
+          das Video nicht gestartet wird. Eine Übermittlung in die USA ist dabei
+          nicht ausgeschlossen; Google LLC ist nach dem EU-US Data Privacy
+          Framework zertifiziert. Einzelheiten zur Verarbeitung durch Google:{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            policies.google.com/privacy
+          </a>
+          .
+        </p>
+        <p>
+          Verlinkungen auf Facebook (Meta Platforms Ireland Ltd.) und auf
+          Karlsons YouTube-Kanal sind reine Textlinks. Inhalte dieser Anbieter
+          werden erst geladen, wenn der Link ausdrücklich angeklickt wird.
         </p>
 
         <h2>7. Betroffenenrechte</h2>

@@ -572,5 +572,33 @@
       "pfad": "/karlson/webp/remise-setup-1200.webp",
       "breite": 1200
     }
+  ],
+  "/karlson/video/c-FGXQMpaXw.jpg": [
+    {
+      "pfad": "/karlson/webp/video/c-FGXQMpaXw-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/video/c-FGXQMpaXw-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/video/c-FGXQMpaXw-1200.webp",
+      "breite": 1200
+    }
+  ],
+  "/karlson/video/MrqLqCjhr_o.jpg": [
+    {
+      "pfad": "/karlson/webp/video/MrqLqCjhr_o-400.webp",
+      "breite": 400
+    },
+    {
+      "pfad": "/karlson/webp/video/MrqLqCjhr_o-800.webp",
+      "breite": 800
+    },
+    {
+      "pfad": "/karlson/webp/video/MrqLqCjhr_o-1200.webp",
+      "breite": 1200
+    }
   ]
 }

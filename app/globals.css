@@ -757,6 +757,159 @@ h3 {
   }
 }
 
+/* --------------------------------------------------------------- Programme */
+
+/* Programmkarte mit Foto. Das Bild sitzt buendig an der Oberkante, deshalb
+   traegt die Karte hier kein eigenes Innenpolster mehr — das uebernimmt
+   .programm-text. */
+.programm-karte {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.programm-karte picture,
+.programm-bild {
+  display: block;
+  width: 100%;
+}
+
+.programm-bild {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.programm-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 24px 26px 26px;
+}
+
+/* Die Karten stehen nebeneinander und sollen gleich hoch sein — sonst haengt
+   der Anfrage-Knopf je nach Textlaenge auf unterschiedlicher Hoehe. */
+.programm-text p {
+  margin: 0;
+}
+
+.programm-text .button {
+  margin-top: auto;
+}
+
+/* ------------------------------------------------------------------- Videos */
+
+/* Zwei-Klick-Einbettung. Vor dem Klick ist nur das lokale Vorschaubild da,
+   danach steht das YouTube-Fenster an derselben Stelle — deshalb tragen beide
+   Zustaende denselben Rahmen mit festem Seitenverhaeltnis, sonst springt das
+   Layout beim Start. */
+.video-karte {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 250, 242, 0.92);
+  box-shadow: 0 12px 34px rgba(34, 26, 21, 0.08);
+  overflow: hidden;
+}
+
+.video-start {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.video-start:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: -3px;
+}
+
+.video-rahmen {
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #1c1512;
+  overflow: hidden;
+}
+
+.video-rahmen img,
+.video-rahmen iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+.video-ohne-bild {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #2a1f18, #4a382b);
+}
+
+/* Abspielknopf. Liegt ueber dem Bild und faengt keine Klicks ab — der Klick
+   gehoert dem Knopf darunter, damit es genau ein Bedienelement gibt. */
+.video-knopf {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.video-knopf svg {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
+  opacity: 0.92;
+}
+
+.video-start:hover .video-knopf,
+.video-start:focus-visible .video-knopf {
+  transform: scale(1.08);
+}
+
+.video-start:hover .video-knopf svg {
+  opacity: 1;
+}
+
+.video-text {
+  display: block;
+  padding: 18px 20px 20px;
+}
+
+.video-hinweis {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.video-karte figcaption {
+  padding: 16px 20px 18px;
+}
+
+.video-kanal {
+  margin-top: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-knopf {
+    transition: none;
+  }
+
+  .video-start:hover .video-knopf,
+  .video-start:focus-visible .video-knopf {
+    transform: none;
+  }
+}
+
 /* ------------------------------------------------------------- Grossansicht */
 
 .galerie-ansicht {
