@@ -174,29 +174,66 @@ for (const engineName of ["chromium", "webkit"]) {
         // --- Vollstaendig sichtbar? ----------------------------------------
         // Der eigentliche Punkt aus Karins Meldung: in der Grossansicht darf
         // nichts mehr abgeschnitten sein.
-        const gross = await seite.evaluate(() => {
-          const img = document.querySelector(".galerie-buehne img");
-          if (!img) return null;
-          const r = img.getBoundingClientRect();
-          return {
-            objectFit: getComputedStyle(img).objectFit,
-            echtesVerhaeltnis: img.naturalWidth / img.naturalHeight,
-            dargestelltesVerhaeltnis: r.width / r.height,
-            passtInsFenster:
-              r.width <= window.innerWidth + 1 && r.height <= window.innerHeight + 1,
-            breite: Math.round(r.width),
-            hoehe: Math.round(r.height),
-          };
-        });
+        //
+        // Erst auf das geladene Bild warten. Ohne das misst die Pruefung
+        // `naturalWidth === 0` und rechnet damit weiter — heraus kommt NaN,
+        // und die Meldung lautet "weicht um NaN % ab". Das ist keine Aussage,
+        // sondern eine kaputte Messung, die als Befund getarnt daherkommt.
+        // Lokal fiel es nicht auf, weil das Bild sofort da war; gegen die
+        // Live-Seite mit der 1200er Fassung schlug es zu (28.08.2026).
+        const bildGeladen = await seite
+          .waitForFunction(
+            () => {
+              const img = document.querySelector(".galerie-buehne img");
+              return !!img && img.complete && img.naturalWidth > 0;
+            },
+            { timeout: 10_000 },
+          )
+          .then(() => true)
+          .catch(() => false);
 
         pruefe(
           p,
-          gross !== null,
-          `[${engineName}] Grossansicht zeigt ein Bild`,
-          "kein <img> in .galerie-buehne",
+          bildGeladen,
+          `[${engineName}] Bild der Grossansicht laedt innerhalb von 10 Sekunden`,
+          "naturalWidth blieb 0 — das Bild kommt nicht an, die Grossansicht " +
+            "bleibt leer",
         );
 
-        if (gross) {
+        const gross = !bildGeladen
+          ? null
+          : await seite.evaluate(() => {
+              const img = document.querySelector(".galerie-buehne img");
+              if (!img) return null;
+              const r = img.getBoundingClientRect();
+              // Messbarkeit ausdruecklich mitgeben, statt sie stillschweigend
+              // vorauszusetzen: aus einer Null in einem der Werte entstuende
+              // sonst weiter unten ein NaN, das wie ein Messergebnis aussieht.
+              if (!img.naturalWidth || !img.naturalHeight || !r.width || !r.height) {
+                return { messbar: false };
+              }
+              return {
+                messbar: true,
+                objectFit: getComputedStyle(img).objectFit,
+                echtesVerhaeltnis: img.naturalWidth / img.naturalHeight,
+                dargestelltesVerhaeltnis: r.width / r.height,
+                passtInsFenster:
+                  r.width <= window.innerWidth + 1 && r.height <= window.innerHeight + 1,
+                breite: Math.round(r.width),
+                hoehe: Math.round(r.height),
+              };
+            });
+
+        pruefe(
+          p,
+          gross !== null && gross.messbar,
+          `[${engineName}] Grossansicht zeigt ein messbares Bild`,
+          gross === null
+            ? "kein <img> in .galerie-buehne"
+            : "Bild hat keine Ausdehnung (naturalWidth oder Bounding-Box ist 0)",
+        );
+
+        if (gross?.messbar) {
           // Bei `contain` bleibt das Seitenverhaeltnis erhalten. Weicht das
           // dargestellte Verhaeltnis vom echten ab, ist das Bild verzerrt oder
           // beschnitten.
