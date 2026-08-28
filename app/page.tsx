@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Foto, SIZES_GALERIE } from "./foto";
+import { Foto, galerieBilder, SIZES_GALERIE } from "./foto";
+import { Galerie } from "./galerie";
 import {
-  appearancePlaces,
   faqs,
   highlightAppearances,
   programs,
@@ -9,6 +9,7 @@ import {
   site,
   socialLinks,
   upcomingEvents2026,
+  weitereAppearancePlaces,
 } from "./data";
 import { galleryImages } from "./gallery";
 import { FaqJsonLd } from "./structured-data";
@@ -109,6 +110,7 @@ export default function Home() {
           <p>
             Drei Auftritte stehen exemplarisch für die Bandbreite – vom
             Traditionsfest im Havelland bis zur internationalen Messe in Berlin.
+            Darunter steht die vollständige Auswahl.
           </p>
         </div>
         <div className="grid-3">
@@ -119,6 +121,14 @@ export default function Home() {
             </article>
           ))}
         </div>
+        {/* Die Ueberschrift traegt bewusst „Feste", „Buehnen" und „Region":
+            beim Zusammenlegen der beiden Abschnitte ist die alte H2 „Bekannt
+            auf Festen und Buehnen der Region" entfallen, und mit ihr waeren
+            sonst die lokalen Suchbegriffe aus der Gliederung verschwunden. */}
+        <h3 className="orte-titel">Weitere Feste, Bühnen und Anlässe in der Region</h3>
+        <ul className="place-list">
+          {weitereAppearancePlaces.map((place) => <li key={place}>{place}</li>)}
+        </ul>
       </section>
 
       <section className="section home-events">
@@ -168,22 +178,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="section-head">
-          <div>
-            <span className="eyebrow">Auftrittsorte</span>
-            <h2>Bekannt auf Festen und Bühnen der Region.</h2>
-          </div>
-          <p>
-            Eine Auswahl aus dem Havelland, Brandenburg und Berlin – für
-            Gemeinden, Vereine, Veranstalter und private Buchungen.
-          </p>
-        </div>
-        <ul className="place-list">
-          {appearancePlaces.map((place) => <li key={place}>{place}</li>)}
-        </ul>
-      </section>
-
       <section className="split-band">
         <div className="section">
           <div className="section-head">
@@ -196,18 +190,15 @@ export default function Home() {
               Havelland, Bühne und Live-Atmosphäre.
             </p>
           </div>
-          <div className="gallery-grid">
-            {galleryImages.slice(0, 12).map((image) => (
-              <Foto
-                src={image.src}
-                alt={image.alt}
-                width={900}
-                height={1125}
-                sizes={SIZES_GALERIE}
-                key={image.src}
-              />
-            ))}
-          </div>
+          <Galerie
+            bilder={galerieBilder(galleryImages.slice(0, 12))}
+            rasterKlasse="gallery-grid"
+            sizes={SIZES_GALERIE}
+            zugeschnitten
+          />
+          <Link className="text-link" href="/eindruecke">
+            Alle Bilder ansehen
+          </Link>
         </div>
       </section>
 

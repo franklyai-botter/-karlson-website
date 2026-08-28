@@ -97,6 +97,8 @@ export const appearancePlaces = [
   "Brandenburgtag Perleberg",
   "Grüne Woche Berlin",
   "Baumblüte Werder",
+  // Fortsetzung unten. `weitereAppearancePlaces` filtert die drei Eintraege
+  // heraus, die oben schon als Highlight-Karte stehen.
   "BraLa Paaren im Glien",
   "Werder Classics",
   "Ketzür rockt",
@@ -106,6 +108,23 @@ export const appearancePlaces = [
   "Neujahrsempfänge und Gartenpartys",
   "Kinderfeste",
 ];
+
+/**
+ * Die Auftrittsorte ohne die drei, die als Highlight-Karte hervorgehoben sind.
+ *
+ * Hintergrund: „Wo Karlson schon gespielt hat" und „Auftrittsorte" waren bis
+ * zum 28.08.2026 zwei getrennte Abschnitte auf der Startseite, deren erste drei
+ * Eintraege identisch waren. Karin hatte gemeldet, der obere Abschnitt „oeffnet
+ * sich nicht" — die drei Karten dort tragen Kartenoptik mit Schatten, hatten
+ * aber kein Klickziel (an der Live-Seite nachgemessen: null anklickbare
+ * Elemente im Abschnitt). Beide Abschnitte stehen jetzt zusammen, damit die
+ * vollstaendige Antwort ohne Klick sichtbar ist.
+ */
+const highlightTitel = new Set(highlightAppearances.map((h) => h.title));
+
+export const weitereAppearancePlaces = appearancePlaces.filter(
+  (ort) => !highlightTitel.has(ort),
+);
 
 export const events2026 = [
   { date: "2026-01-16", displayDate: "16.1.", title: "Grüne Woche", location: "Berlin", type: "public" },

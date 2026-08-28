@@ -12,7 +12,8 @@
     "vorschau": "next build && wrangler dev",
     "bilder:webp": "node scripts/bilder-optimieren.mjs",
     "pruefen:smoke": "node scripts/pruefen/smoke.mjs",
-    "pruefen": "node scripts/pruefen/frontend.mjs"
+    "pruefen": "node scripts/pruefen/frontend.mjs && node scripts/pruefen/galerie.mjs",
+    "pruefen:galerie": "node scripts/pruefen/galerie.mjs"
   },
   "dependencies": {
     "next": "16.2.6",

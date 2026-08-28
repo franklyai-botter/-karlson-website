@@ -1,4 +1,5 @@
-import { Foto, SIZES_GALERIE_VOLL } from "../foto";
+import { galerieBilder, SIZES_GALERIE_VOLL } from "../foto";
+import { Galerie } from "../galerie";
 import { galleryImages } from "../gallery";
 import { youtubeLinks } from "../data";
 
@@ -22,17 +23,15 @@ export default function EindrueckePage() {
         </div>
       </section>
 
-      <section className="section gallery-grid gallery-grid-full">
-        {galleryImages.map((image) => (
-          <Foto
-            src={image.src}
-            alt={image.alt}
-            width={900}
-            height={1125}
-            sizes={SIZES_GALERIE_VOLL}
-            key={image.src}
-          />
-        ))}
+      <section className="section">
+        <p className="galerie-hinweis">
+          Ein Klick auf ein Bild zeigt es vollständig und in groß.
+        </p>
+        <Galerie
+          bilder={galerieBilder(galleryImages)}
+          rasterKlasse="gallery-masonry"
+          sizes={SIZES_GALERIE_VOLL}
+        />
       </section>
 
       <section className="section">

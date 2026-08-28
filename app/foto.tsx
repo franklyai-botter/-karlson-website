@@ -90,6 +90,47 @@ export function Foto({
 }
 
 /**
+ * Baut die Bilddaten fuer die Galerie-Lightbox auf.
+ *
+ * Warum hier und nicht in der Lightbox selbst: `bilder-manifest.json` ist
+ * 13 KB. Importiert die Client-Komponente es direkt, landet es vollstaendig im
+ * JavaScript-Bundle — auch die Eintraege fuer Hero und Programme, die in der
+ * Galerie nie vorkommen. Diese Funktion laeuft zur Build-Zeit auf dem Server
+ * und gibt nur die fertigen srcSet-Zeichenketten weiter.
+ *
+ * `gallery.ts` liest das Dateisystem und darf aus demselben Grund nicht in eine
+ * Client-Komponente wandern — deshalb reicht die Server-Seite die Liste als
+ * Prop durch, statt dass die Lightbox sie selbst holt.
+ */
+export type GalerieBild = {
+  src: string;
+  alt: string;
+  /** WebP-Fassungen fuer die Kachel im Raster. */
+  kachelSrcSet: string;
+  /** WebP-Fassungen fuer die grosse Ansicht. */
+  grossSrcSet: string;
+};
+
+export function galerieBilder(
+  bilder: { src: string; alt: string }[],
+): GalerieBild[] {
+  return bilder.map(({ src, alt }) => {
+    const webp = fassungen[src] ?? [];
+    const alle = webp.map((f) => `${f.pfad} ${f.breite}w`).join(", ");
+    return {
+      src,
+      alt,
+      // Die Kachel bekommt alle Fassungen und waehlt ueber `sizes` die kleinste
+      // passende. Die grosse Ansicht bekommt dieselbe Liste, aber ein `sizes`
+      // von 100vw — dadurch laedt sie die 1200er Fassung, ohne dass hier eine
+      // Breite fest verdrahtet wird.
+      kachelSrcSet: alle,
+      grossSrcSet: alle,
+    };
+  });
+}
+
+/**
  * `sizes` fuer die Galeriekacheln. Aus dem Layout in globals.css abgeleitet,
  * nicht geschaetzt: Container ist `min(1120px, 100% - 40px)`, Abstand 18px.
  *
