@@ -162,8 +162,11 @@ Wichtige Regeln:
 - Nach Änderungen: `npm run dev` läuft lassen, ich schaue im Browser ob es passt.
 - Wenn ich OK gebe: `git add . && git commit -m "..." && git push`.
 - Niemals direkt deployen. Keine "vercel"- und keine "wrangler"-Befehle. Nur git push.
-- Bilder klein halten: nichts über 400 Pixel Kantenlänge und nichts über 200 KB
-  in public/karlson/ ablegen, sonst wird die Seite langsam.
+- Bilder: rund 1200 bis 1800 Pixel breit ablegen, Dateigröße möglichst unter
+  500 KB, auf keinen Fall über 1 MB. Nicht kleiner als 1200 Pixel — die
+  Webseite rechnet sich die kleinen Fassungen selbst aus (`npm run bilder:webp`),
+  kann aber ein zu kleines Bild nicht wieder vergrößern, und in der
+  Großansicht der Galerie sähe es dann unscharf aus.
 - Wenn unklar: kurz nachfragen statt raten.
 
 Deployt automatisch nach 1 bis 2 Minuten auf Cloudflare, sobald gepusht wurde.
@@ -186,9 +189,86 @@ Codex trägt es in `app/data.ts` ein.
 
 Wenn du Schritt 2 vergisst, sagt dir das beim Commit von allein Bescheid.
 
+### Neues Foto in die Galerie
+
+Die Galerie auf **Eindrücke** liest den Ordner selbst aus. Du musst also nichts
+eintragen und Codex nichts sagen:
+
+1. Foto als `foto-45.jpg` (nächste freie Nummer) in
+   `public/karlson/gallery-full/` legen
+2. `npm run bilder:webp`
+3. `git add . && git commit -m "neues Foto" && git push`
+
+Seit dem 28.08. kann man die Bilder **anklicken** — dann gehen sie groß auf und
+sind vollständig zu sehen. Vorher war jedes Bild in der Übersicht beschnitten
+und ein Klick tat gar nichts. Das war Karins Hinweis, er stimmte.
+
+Damit die Großansicht etwas taugt, sollte das Foto mindestens 1200 Pixel breit
+sein. Bilder direkt vom Handy oder aus der Kamera sind das ohnehin.
+
 ### Text ändern
 Codex sagen: „Auf der Seite /ueber-karlson den zweiten Absatz neu
 schreiben: [neuer Text]".
+
+### Ein Video auf die Seite bringen
+
+Kurze Antwort auf deine Frage vom 26.08.: **Die Videodatei selbst kommt nicht
+auf die Webseite. Du lädst sie zu YouTube hoch, und die Webseite holt sie sich
+von dort.** Komprimieren musst du nichts — das macht YouTube.
+
+Warum nicht direkt: Der Server, der deine Seite ausliefert, nimmt pro Datei
+höchstens **25 MB**. Ein Video von fünf Minuten hat in ordentlicher Qualität
+leicht 100 MB und mehr. Und alles, was einmal im Projektordner landet, bleibt
+dort dauerhaft gespeichert — auch wenn du es später löschst. Bei ein paar
+Videos wäre der Ordner irgendwann so groß, dass das Herunterladen bei dir
+minutenlang dauert.
+
+YouTube kostet dich dabei nichts und übernimmt die ganze Arbeit: es rechnet das
+Video in verschiedene Größen um, damit es auf dem Handy genauso läuft wie am
+großen Bildschirm.
+
+**Wichtig, und neu seit dem 28.08.:** Die Videos laufen jetzt **auf deiner
+Seite**. Wer draufklickt, bleibt bei dir und landet nicht mehr bei YouTube in
+deren Vorschlägen. Vorher war das anders.
+
+So gehst du vor:
+
+1. **Video bei YouTube hochladen**, auf deinen Kanal `@karlikarlson1967`.
+   Sichtbarkeit auf **„Nicht gelistet"** oder **„Öffentlich"** stellen — bei
+   „Privat" kann die Webseite es nicht zeigen.
+2. **Die Video-Kennung abschreiben.** Die steht in der Adresse hinter `v=`:
+   `https://www.youtube.com/watch?v=`**`c-FGXQMpaXw`** — der fett gedruckte
+   Teil ist gemeint.
+3. **Codex sagen:** „Trag ein neues Video in `app/data.ts` bei `youtubeLinks`
+   ein. Kennung: `<die Kennung>`, Titel: `<wie das Lied heißt>`, Zusatz:
+   `<z. B. Live beim Fischerfest 2026>`."
+4. **Im Terminal einmal:**
+   ```bash
+   npm run video:vorschau
+   ```
+   Das holt das Vorschaubild von YouTube und legt es bei dir ab. Ohne diesen
+   Schritt bleibt die Fläche auf der Seite grau.
+5. **Wie immer hochladen:**
+   ```bash
+   git add .
+   git commit -m "neues Video: <Titel>"
+   git push
+   ```
+
+Das Vorschaubild muss deshalb bei dir liegen, weil auf der Seite steht, dass
+ohne Klick nichts an Google übertragen wird. Käme das Bild direkt von YouTube,
+wäre das eine Übertragung — und die Aussage auf der Datenschutzseite wäre
+falsch.
+
+**Damit Leute von YouTube auch zu dir finden:** Trag deine Adresse
+`https://karlson-solo-orchester.de` bei YouTube selbst ein — einmal unter
+*Kanal anpassen → Basisinfos → Links*, und bei jedem Video oben in die
+Beschreibung. Das kann nur über deinen YouTube-Zugang gemacht werden, nicht
+über die Webseite.
+
+**Wenn du gar nicht bei YouTube hochladen willst:** ruf Frank an. Es gibt
+Alternativen, die brauchen aber eine Einrichtung und kosten je nach Menge
+etwas.
 
 ### Termin als „vergangen" markieren / entfernen
 Codex sagen: „Termin vom [Datum] aus der Liste entfernen". Codex passt
