@@ -16,7 +16,14 @@
  * ersetzt, gebaut, geprueft — die Pruefung „Beim Laden geht nichts an Google"
  * schlug an und meldete den Host. Danach zurueckgesetzt.
  */
-import { BASIS, bericht, neuesProtokoll, playwrightOderAbbruch, pruefe } from "./lib.mjs";
+import {
+  BASIS,
+  bericht,
+  neuesProtokoll,
+  playwrightOderAbbruch,
+  pruefe,
+  warteAufHydration,
+} from "./lib.mjs";
 
 const pw = playwrightOderAbbruch();
 const p = neuesProtokoll();
@@ -134,7 +141,26 @@ for (const engineName of ["chromium", "webkit"]) {
       `${iframesVorher} iframe(s) schon vor dem Klick vorhanden`,
     );
 
+    // --- Der Knopf muss bedienbar sein, bevor geklickt wird -------------------
+    // Eigene Pruefung, kein stilles Warten: ein Knopf, der nach 15 Sekunden
+    // immer noch nicht hydriert ist, ist fuer den Besucher genauso kaputt wie
+    // einer ohne Handler. Er sieht anklickbar aus und tut nichts.
+    const hydriert = await warteAufHydration(seite, ".video-start");
+    pruefe(
+      p,
+      hydriert.ok,
+      `[${engineName}] Der Video-Knopf ist bedienbar (hydriert)`,
+      `nach ${hydriert.ms} ms haengt an .video-start kein React-Fiber — entweder ` +
+        "hydriert die Seite nicht (dann tut der Knopf auch fuer Besucher nichts) " +
+        "oder React hat den internen Schluessel `__reactFiber$` umbenannt; dann " +
+        "gehoert warteAufHydration() in lib.mjs angepasst",
+    );
+
     // --- Klick laedt das Video ------------------------------------------------
+    // Bewusst genau EIN Klick, keine Wiederholschleife: die Zusicherung lautet
+    // "der erste Klick laedt das Video". Wer hier in einer Schleife klickt,
+    // macht aus einem echten Befund ("der erste Klick geht verloren") ein
+    // Gruen.
     await starter.first().click();
     const rahmen = seite.locator(".video-karte iframe");
     const kam = await rahmen
@@ -147,7 +173,10 @@ for (const engineName of ["chromium", "webkit"]) {
       p,
       kam,
       `[${engineName}] Klick laedt das Video auf der Seite`,
-      "nach dem Klick erscheint kein iframe — das Video startet nicht",
+      hydriert.ok
+        ? "nach dem Klick erscheint kein iframe — das Video startet nicht"
+        : "nach dem Klick erscheint kein iframe; die Seite war aber schon nicht " +
+          "hydriert, also zuerst die Pruefung darueber ansehen",
     );
 
     if (kam) {

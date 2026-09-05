@@ -40,6 +40,7 @@ import {
   neuesProtokoll,
   playwrightOderAbbruch,
   pruefe,
+  warteAufHydration,
 } from "./lib.mjs";
 
 const { chromium, webkit } = playwrightOderAbbruch();
@@ -56,13 +57,54 @@ const p = neuesProtokoll();
 
 // ---------------------------------------------------------------- Hilfsmittel
 
+/**
+ * Menue oeffnen — aber erst, wenn React es uebernommen hat.
+ *
+ * Der Unterschied ist hier besonders heimtueckisch: das <details> **oeffnet**
+ * sich auch ohne JavaScript, der summary-Klick sieht also immer erfolgreich
+ * aus. Die drei Schliessmechanismen (Aussenklick, Escape, Navigation) haengen
+ * dagegen an `useEffect`-Handlern in app/mobile-menu.tsx und existieren vor der
+ * Hydration nicht. A2 bis A4 haetten also gemeldet "Escape schloss das Menue
+ * nicht", obwohl der Handler in Ordnung ist.
+ *
+ * Am 05.09.2026 nachgestellt: `goto` mit `domcontentloaded`, dann klicken —
+ * Menue offen, React-Marker 0, und Escape laesst es offen. Die Pruefungen
+ * liefen bis dahin sogar nur mit `waitUntil: "load"`, also mit der
+ * schwaechsten Zusicherung von allen.
+ *
+ * Bei Zeitueberschreitung wird geworfen statt gewartet: `versuche()` macht
+ * daraus einen Befund mit Text. Stilles Weiterlaufen waere genau das, was
+ * dieser Harness vermeiden soll.
+ */
 async function menueOeffnen(seite) {
+  const bereit = await warteAufHydration(seite, "details.mobile-menu");
+  if (!bereit.ok) {
+    throw new Error(
+      `Menue nach ${bereit.ms} ms nicht hydriert — die Schliessmechanismen ` +
+        "(Aussenklick, Escape, Navigation) existieren dann noch nicht",
+    );
+  }
   await seite.locator("details.mobile-menu summary").click();
   return seite.locator("details.mobile-menu").evaluate((el) => el.open);
 }
 
 function istOffen(seite) {
   return seite.locator("details.mobile-menu").evaluate((el) => el.open);
+}
+
+/**
+ * Dasselbe fuer das Anfrageformular: erst bedienen, wenn React es uebernommen
+ * hat. Wirft bei Zeitueberschreitung, damit `versuche()` einen benannten
+ * Befund daraus macht statt eines irrefuehrenden.
+ */
+async function formularBereit(seite) {
+  const bereit = await warteAufHydration(seite, "form.form-panel");
+  if (!bereit.ok) {
+    throw new Error(
+      `Formular nach ${bereit.ms} ms nicht hydriert — ohne onSubmit-Handler ` +
+        "misst jede folgende Pruefung etwas anderes als das Formularverhalten",
+    );
+  }
 }
 
 /**
@@ -635,6 +677,11 @@ async function formularVerhalten(engine, browser) {
     });
 
     await seite.goto(BASIS + "/buchung/", { waitUntil: "load" });
+    // Ohne Hydration haengt kein onSubmit am Formular: der Klick loest dann
+    // entweder gar nichts aus oder einen nativen Versand, und die Pruefung
+    // meldet "nur 0 Meldungen bei leerem Formular" — ein falsches Rot, das wie
+    // ein echter Befund aussieht.
+    await formularBereit(seite);
     await seite.locator('form.form-panel button[type="submit"]').click();
     await seite.waitForTimeout(400);
 
@@ -677,6 +724,10 @@ async function formularVerhalten(engine, browser) {
     await versuche(`${engine}/F-turnstile-fehler`, async () => {
       await seite.route("**challenges.cloudflare.com/**", (r) => r.abort());
       await seite.goto(BASIS + "/buchung/", { waitUntil: "load" });
+      await formularBereit(seite);
+      // Die 1500 ms bleiben: sie gelten nicht der Hydration, sondern dem
+      // abgebrochenen Turnstile-Request, der erst danach in eine Meldung
+      // muendet.
       await seite.waitForTimeout(1500);
       const meldung = await seite.evaluate(() => {
         const el = document.querySelector(".turnstile-feld .feld-fehler");
@@ -704,6 +755,7 @@ async function formularVerhalten(engine, browser) {
         r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) }),
       );
       await seite.goto(BASIS + "/buchung/", { waitUntil: "load" });
+      await formularBereit(seite);
       await seite.fill('input[name="name"]', "Testlauf Pruefharness");
       await seite.fill('input[name="email"]', "test@example.org");
       await seite.fill('input[name="datum"]', "2027-05-01");

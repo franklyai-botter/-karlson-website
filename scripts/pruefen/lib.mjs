@@ -251,6 +251,54 @@ export function fehlerSammler(seite, topf) {
   seite.on("pageerror", (e) => topf.push({ text: "pageerror: " + e.message.slice(0, 140), url: "" }));
 }
 
+// --------------------------------------------------------------- Hydration
+
+/**
+ * Wartet, bis React das Element uebernommen hat — also bis sein `onClick`
+ * wirklich haengt.
+ *
+ * Warum das noetig ist: die Seite ist ein statischer Export. Ein `<button>` aus
+ * einer Client-Komponente steht im ausgelieferten HTML fertig da, sieht
+ * anklickbar aus und **tut vor der Hydration nichts**. Ein Klick geht dann ins
+ * Leere, ohne Fehler, ohne Spur.
+ *
+ * `waitUntil: "networkidle"` deckt das nicht ab: es sagt aus, dass das Bundle
+ * geladen ist, nicht dass es gelaufen ist. Genau daran hing der Video-Test —
+ * er wartete nach dem Laden 1500 ms und klickte dann. Am 05.09.2026 unter
+ * WebKit einmal rot ("nach dem Klick erscheint kein iframe"), in den
+ * Wiederholungen gruen. Nachgestellt und belegt: `goto` mit
+ * `domcontentloaded`, sofort klicken → **kein iframe**. Der Fehler war also
+ * echt, nur nicht der, den die Meldung nannte.
+ *
+ * Ein fester Wartewert waere nur ein groesserer Wuerfel. Gewartet wird deshalb
+ * auf einen **Zustand**: React haengt beim Hydrieren `__reactFiber$…` an jeden
+ * Host-Knoten. Am 05.09.2026 an `.video-start` nachgemessen — vor der
+ * Hydration `[]`, danach `["__reactFiber$…","__reactProps$…"]`.
+ *
+ * Das ist bewusst ein React-Interna. Sollte React den Namen aendern, laeuft
+ * diese Funktion in die Frist und meldet `ok: false` — die Pruefung schlaegt
+ * also **fehl**, statt still durchzuwinken. Das ist die Richtung, in die ein
+ * Irrtum hier fallen darf: ein falsches Rot faellt auf, ein falsches Gruen
+ * nicht.
+ *
+ * @returns {Promise<{ok: boolean, ms: number}>}
+ */
+export async function warteAufHydration(seite, selektor, frist = 15000) {
+  const start = Date.now();
+  const ok = await seite
+    .waitForFunction(
+      (sel) => {
+        const el = document.querySelector(sel);
+        return !!el && Object.keys(el).some((k) => k.startsWith("__reactFiber$"));
+      },
+      selektor,
+      { timeout: frist, polling: 100 },
+    )
+    .then(() => true)
+    .catch(() => false);
+  return { ok, ms: Date.now() - start };
+}
+
 // ------------------------------------------------------------ WCAG-Kontrast
 
 /** Relative Luminanz nach WCAG 2.x */

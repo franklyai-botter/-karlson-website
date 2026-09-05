@@ -27,7 +27,14 @@
  * Dort muessen die Pruefungen fehlschlagen. Tun sie das nicht, pruefen sie
  * nichts — siehe README, Abschnitt „Gegenprobe".
  */
-import { BASIS, bericht, neuesProtokoll, playwrightOderAbbruch, pruefe } from "./lib.mjs";
+import {
+  BASIS,
+  bericht,
+  neuesProtokoll,
+  playwrightOderAbbruch,
+  pruefe,
+  warteAufHydration,
+} from "./lib.mjs";
 
 const pw = playwrightOderAbbruch();
 const p = neuesProtokoll();
@@ -156,6 +163,20 @@ for (const engineName of ["chromium", "webkit"]) {
       );
 
       // --- Oeffnen ----------------------------------------------------------
+      // Erst warten, bis React die Kachel uebernommen hat. Dieselbe Falle wie
+      // im Video-Test: die Kachel steht als fertiger <button> im statischen
+      // HTML und tut vor der Hydration nichts. Hier hat es noch nicht
+      // geflackert, die Konstruktion war aber dieselbe — Begruendung in
+      // warteAufHydration() in lib.mjs.
+      const kachelBereit = await warteAufHydration(seite, ".galerie-kachel");
+      pruefe(
+        p,
+        kachelBereit.ok,
+        `[${engineName}] Die Galeriekachel ist bedienbar (hydriert)`,
+        `nach ${kachelBereit.ms} ms haengt an .galerie-kachel kein React-Fiber — ` +
+          "die Kachel sieht anklickbar aus, tut aber nichts",
+      );
+
       await kacheln.nth(2).click();
       const dialog = seite.locator(".galerie-ansicht");
       const gingAuf = await dialog
@@ -167,7 +188,10 @@ for (const engineName of ["chromium", "webkit"]) {
         p,
         gingAuf,
         `[${engineName}] Klick auf ein Bild oeffnet die Grossansicht`,
-        "nach dem Klick erscheint kein Dialog — das Bild baut sich nicht auf",
+        kachelBereit.ok
+          ? "nach dem Klick erscheint kein Dialog — das Bild baut sich nicht auf"
+          : "nach dem Klick erscheint kein Dialog; die Kachel war aber schon " +
+            "nicht hydriert, also zuerst die Pruefung darueber ansehen",
       );
 
       if (gingAuf) {
