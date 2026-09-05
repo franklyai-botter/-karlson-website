@@ -32,7 +32,9 @@ export default function RepertoirePage() {
 
       <section className="section">
         <span className="eyebrow">Stilrichtungen</span>
-        <div className="tag-list">
+        {/* tag-raster statt der freien Wolke: gleich breite Spalten, damit die
+            acht Stilrichtungen in zwei gleich langen Zeilen stehen. */}
+        <div className="tag-list tag-raster">
           {repertoireGroups.map((group) => (
             <span key={group}>{group}</span>
           ))}
@@ -48,7 +50,10 @@ export default function RepertoirePage() {
               und Geschichten aus der Region. Diese Lieder sind kein Beiwerk,
               sondern der ehrlichste Unterschied zu reinen Cover-Acts.
             </p>
-            <p className="muted">
+            {/* karte-fuss: schliesst die Karte ab und sitzt deshalb am
+                Kartenboden — auf derselben Hoehe wie der Abschluss der
+                Nachbarkarte. */}
+            <p className="muted karte-fuss">
               Karlson ist nicht GEMA-Mitglied; die eigenen Lieder sind nicht
               GEMA-pflichtig.
             </p>

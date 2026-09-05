@@ -22,6 +22,19 @@
      nicht gilt. */
   --line-feld: rgba(34, 26, 21, 0.55);
   --shadow: 0 24px 70px rgba(34, 26, 21, 0.15);
+
+  /* Ebenen in einer Karte. Beide Werte stehen hier und nicht je Seite, damit
+     nebeneinanderliegende Karten dieselbe Gliederung zeigen — Ueberschrift,
+     Text, unterer Abschluss, immer im gleichen Abstand und auf gleicher Hoehe.
+     Vorher gab es weder das eine noch das andere: Tailwinds Preflight setzt
+     `p { margin: 0 }`, und in `.card` stand kein Ersatz, also stiessen zwei
+     Absaetze ohne Luecke aneinander.
+     --karte-titel ist noetig, weil `h2` mit 2,65 rem in einer rund 380 px
+     breiten Karte umbricht. Bricht der Titel der einen Karte und der der
+     Nachbarkarte nicht, beginnt der Text auf verschiedenen Hoehen — genau der
+     Versatz, der am 05.09.2026 gemeldet wurde. */
+  --karte-abstand: 14px;
+  --karte-titel: 1.6rem;
 }
 
 * {
@@ -608,7 +621,12 @@ h3 {
   box-shadow: 0 12px 34px rgba(34, 26, 21, 0.08);
 }
 
+/* Auch die Kennzahlen sind ein Ebenenstapel — Zahl oben, Beschriftung darunter,
+   im selben Abstand wie in jeder Karte. */
 .stat {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--karte-abstand) / 2);
   padding: 22px;
 }
 
@@ -619,12 +637,71 @@ h3 {
   color: var(--blue-dark);
 }
 
+/* Karten als Ebenenstapel.
+ *
+ * Das Muster ist nicht neu, es stand bisher nur an einer einzigen Stelle:
+ * `.programm-text` weiter unten macht seit jeher Flex-Spalte + fester gap +
+ * `margin-top: auto` auf dem Knopf, mit dem Kommentar „sonst haengt der
+ * Anfrage-Knopf je nach Textlaenge auf unterschiedlicher Hoehe". Genau das gilt
+ * fuer jede Karte, nicht nur fuer die auf /programme/.
+ *
+ * `align-items: flex-start` ist Pflicht, nicht Kosmetik: ein `<a class="button">`
+ * ist `inline-flex` und wuerde sich als Flex-Kind sonst ueber die volle
+ * Kartenbreite ziehen. Auf /termine/ steht so ein Knopf ohne `.actions`-Huelle
+ * direkt in der Karte.
+ *
+ * `.form-panel` teilt die Kartenoptik, bleibt hier aber bewusst aussen vor —
+ * es ist ein Formular mit eigenem `.form-grid`.
+ */
 .card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--karte-abstand);
   padding: 26px;
 }
 
-.card p {
+/* Alle Textebenen einer Karte in derselben Farbe. Absaetze waren schon
+   `--muted`, Listen erbten dagegen `--ink` — gleiche Ebene, zwei Farben, und in
+   zwei nebeneinanderstehenden Karten fiel genau das auf. */
+.card p,
+.card ul,
+.card li {
   color: var(--muted);
+}
+
+/* Eine Karte fuehrt ihre eigene Ueberschriftengroesse, unabhaengig davon, ob im
+   Markup h2 oder h3 steht. Ueber den Kontextselektor und nicht durch Umschreiben
+   der Tags: die Gliederungsebene gehoert dem Dokument, nicht dem Layout — der
+   Pruefharness besteht je Route auf genau einer h1, und Screenreader lesen die
+   Ebene, nicht die Schriftgroesse. */
+.card :is(h2, h3) {
+  font-size: var(--karte-titel);
+}
+
+/* Die unterste Ebene sitzt am Kartenboden, damit sie in nebeneinanderstehenden
+   Karten auf einer Linie liegt — gleichgueltig, ob dort ein Knopf, eine
+   Knopfreihe oder ein Schlusshinweis steht.
+ *
+ * Bewusst ueber Klassen und nicht ueber `:last-child`: in einer reinen
+ * Textkarte wuerde `:last-child` den einzigen Absatz an den Boden ziehen und
+ * ein Loch hinter die Ueberschrift setzen. Der Abschluss wird deshalb im Markup
+ * ausgezeichnet (`.karte-fuss`), wo es einer ist. */
+.card > .actions,
+.card > .button,
+.card > .karte-fuss {
+  /* ersetzt zugleich das `margin-top: 28px`, das `.actions` fuer den Einsatz
+     ausserhalb von Karten mitbringt — in der Karte kommt der Abstand aus dem
+     gap, sonst zaehlt er doppelt */
+  margin-top: auto;
+}
+
+/* Zwei Knopfreihen hintereinander (Startseite, Abschlussblock): nur die erste
+   wird nach unten gedrueckt, die zweite haengt sich mit dem normalen gap an.
+   Steht bewusst NACH der Regel darueber — gleiche Spezifitaet plus ein
+   Kombinator gewinnt, umgekehrt waere `margin-top: auto` wieder weg. */
+.card > .actions ~ .actions {
+  margin-top: 0;
 }
 
 .split-band {
@@ -658,12 +735,33 @@ h3 {
 }
 
 .tag-list span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 9px 12px;
   background: #fff;
   color: var(--brown-dark);
   font-weight: 700;
+  text-align: center;
+}
+
+/* Stilrichtungen auf /repertoire/ als Raster statt als Wolke.
+ *
+ * Als `flex-wrap` ergab sich die Zeilenlaenge aus den Wortlaengen: sieben Tags
+ * standen in Zeile 1, „Eigene Havelland-Lieder" hing allein in Zeile 2. Mit
+ * gleich breiten Spalten sind beide Zeilen gleich lang und der Block ist ein
+ * sauberes Rechteck.
+ *
+ * Vier Spalten passen zu den acht Eintraegen in `repertoireGroups`
+ * (app/data.ts) — 4 + 4. Kommt ein neunter dazu, steht er allein in Zeile 3;
+ * dann gehoert die Spaltenzahl hier angepasst (3 Spalten fuer 9, 5 fuer 10).
+ * Deshalb eine feste Zahl und kein `auto-fit`: das haengt an der Containerbreite
+ * und ergibt gerade nicht verlaesslich gleich lange Zeilen. */
+.tag-raster {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .place-list {
@@ -799,6 +897,13 @@ h3 {
   flex-direction: column;
   padding: 0;
   overflow: hidden;
+  /* Hier NICHT der Kartenabstand: Bild und Textblock sollen buendig
+     aneinanderstossen, das Bild sitzt an der Kartenkante. Die Ebenenabstaende
+     dieser Karte verwaltet .programm-text. */
+  gap: 0;
+  /* Das Bild soll die volle Breite fuellen — die Grundregel .card stellt auf
+     flex-start, damit ein Knopf nicht ueber die ganze Karte laeuft. */
+  align-items: stretch;
 }
 
 .programm-karte picture,
@@ -816,7 +921,8 @@ h3 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  /* derselbe Ebenenabstand wie in jeder anderen Karte */
+  gap: var(--karte-abstand);
   padding: 24px 26px 26px;
 }
 
@@ -1478,6 +1584,13 @@ textarea[aria-invalid="true"] {
 
   .place-list {
     columns: 1;
+  }
+
+  /* Vier Spalten waeren hier je rund 80 px breit. Zwei Spalten teilen die acht
+     Stilrichtungen in vier gleich lange Zeilen — dieselbe Ordnung wie oben,
+     nur hochkant. */
+  .tag-raster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

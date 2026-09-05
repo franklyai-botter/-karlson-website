@@ -110,7 +110,9 @@ export default function KontaktPage() {
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <p className="muted">
+          {/* karte-fuss: sitzt am Kartenboden, damit dieser Abschluss auf
+              derselben Hoehe liegt wie die Knopfreihe der Karte daneben. */}
+          <p className="muted karte-fuss">
             Wenn etwas davon noch offen ist: einfach mit anrufen, das klären wir
             gemeinsam.
           </p>
