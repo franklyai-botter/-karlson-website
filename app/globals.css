@@ -327,13 +327,17 @@ main {
    Zelle. Der zweite Selektor greift, falls fuer dieses Bild keine
    WebP-Fassungen im Manifest stehen — dann rendert app/foto.tsx nur ein
    <img> und die Klasse landet dort. */
+/* Kein opacity mehr auf dem Bild. Es lag bei 0.72 und mischte damit 28 Prozent
+   des Hero-Hintergrunds (#221a15, Luma 27) ins Foto — zusaetzlich zum Verlauf
+   in .hero::after. Beide zusammen ergaben links eine gemessene Luma von 33 von
+   255: das Foto war praktisch schwarz. Abgedunkelt wird ausschliesslich im
+   ::after, damit es genau eine Stellschraube gibt (Messung: 05.09.2026). */
 .hero-background,
 img.hero-background-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.72;
 }
 
 .hero-background img {
@@ -357,13 +361,41 @@ img.hero-background-img {
   height: 100%;
 }
 
+/* Der Verlauf hat genau eine Aufgabe: die helle Schrift (#fffaf2) lesbar
+   halten. Er darf nur so dunkel sein, wie dafuer noetig ist.
+   remise-setup.jpg ist von Haus aus dunkel (mittlere Luma 91 von 255, unten 58,
+   oben 125) — es braucht deshalb wenig Zusatz. Waagerecht liegt das Gewicht
+   links, wo der Text steht; rechts bleibt das Foto fast unberuehrt. Senkrecht
+   nur ein leichter Fussverlauf, weil das Bild unten ohnehin dunkel ist.
+   Rechnerisch links jetzt Luma ~69 statt ~33, Kontrast zur Schrift rund 9:1 —
+   also weit ueber den 4,5:1 der WCAG-Schwelle. Wer hier nachschaerft: erst
+   messen, dann drehen, sonst steht das Foto wieder im Dunkeln. */
 .hero::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(34, 26, 21, 0.86), rgba(34, 26, 21, 0.28)),
-    linear-gradient(180deg, rgba(34, 26, 21, 0.08), rgba(34, 26, 21, 0.86));
+    linear-gradient(
+      90deg,
+      rgba(34, 26, 21, 0.52) 0%,
+      rgba(34, 26, 21, 0.34) 52%,
+      rgba(34, 26, 21, 0.06) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(34, 26, 21, 0) 0%,
+      rgba(34, 26, 21, 0.1) 40%,
+      rgba(34, 26, 21, 0.48) 100%
+    );
+}
+
+/* Der waagerechte Verlauf haelt die Schrift links lesbar. Wo sie ueber die
+   ganze Breite laeuft, traegt er nicht mehr — deshalb der Textschatten als
+   zweite, ortsunabhaengige Absicherung. Er kostet keine Bildhelligkeit. */
+.hero h1,
+.hero .lead,
+.hero .eyebrow {
+  text-shadow: 0 2px 14px rgba(34, 26, 21, 0.55);
 }
 
 .hero-main-image {
@@ -1427,6 +1459,21 @@ textarea[aria-invalid="true"] {
 
   .hero-main-image {
     display: none;
+  }
+
+  /* Hier laeuft die Schrift ueber die volle Breite (padding-right: 0, Portrait
+     ausgeblendet). Der waagerechte Verlauf der Grundregel faellt rechts auf
+     0.06 ab und traegt dort nichts mehr — also stattdessen ein gleichmaessiger
+     Schleier von oben nach unten. Er ist bewusst schwaecher als der alte
+     Zustand: das Foto bleibt sichtbar, die Schrift steht zusaetzlich auf dem
+     Textschatten. */
+  .hero::after {
+    background: linear-gradient(
+      180deg,
+      rgba(34, 26, 21, 0.2) 0%,
+      rgba(34, 26, 21, 0.4) 45%,
+      rgba(34, 26, 21, 0.62) 100%
+    );
   }
 
   .place-list {
